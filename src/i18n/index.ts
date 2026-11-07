@@ -258,6 +258,17 @@ export interface Translations {
   markResolved: string;
   dismissReport: string;
   noReportsFound: string;
+  circuitsShort: string;
+  nearMeShort: string;
+  myDarshanShort: string;
+  allAreasShort: string;
+  ecoFriendlyShort: string;
+  twentyFourHoursShort: string;
+  crowdLowShort: string;
+  crowdHighShort: string;
+  filtersButton: string;
+  applyFilters: string;
+  filtersModalTitle: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -512,6 +523,17 @@ export const translations: Record<Language, Translations> = {
     markResolved: "Mark Resolved",
     dismissReport: "Dismiss",
     noReportsFound: "No active user reports found.",
+    circuitsShort: "Walking Tours",
+    nearMeShort: "Near Me",
+    myDarshanShort: "My Darshan",
+    allAreasShort: "All Areas",
+    ecoFriendlyShort: "Eco-Friendly",
+    twentyFourHoursShort: "24-Hour",
+    crowdLowShort: "Low Wait",
+    crowdHighShort: "High Rush",
+    filtersButton: "Filters",
+    applyFilters: "Apply Filters",
+    filtersModalTitle: "Filters",
   },
 
   hi: {
@@ -765,6 +787,17 @@ export const translations: Record<Language, Translations> = {
     markResolved: "हल किया हुआ चिह्नित करें",
     dismissReport: "खारिज करें",
     noReportsFound: "कोई सक्रिय रिपोर्ट नहीं मिली।",
+    circuitsShort: "पदयात्रा",
+    nearMeShort: "निकट",
+    myDarshanShort: "दर्शन",
+    allAreasShort: "सभी क्षेत्र",
+    ecoFriendlyShort: "इको-फ्रेंडली",
+    twentyFourHoursShort: "24-घंटे",
+    crowdLowShort: "कम प्रतीक्षा",
+    crowdHighShort: "भारी भीड़",
+    filtersButton: "फ़िल्टर",
+    applyFilters: "लागू करें",
+    filtersModalTitle: "फ़िल्टर",
   },
 
   mr: {
@@ -1018,5 +1051,16 @@ export const translations: Record<Language, Translations> = {
     markResolved: "निवारण झाले",
     dismissReport: "रद्द करा",
     noReportsFound: "कोणतेही प्रलंबित अहवाल नाहीत.",
+    circuitsShort: "पदयात्रा",
+    nearMeShort: "जवळ",
+    myDarshanShort: "दर्शन",
+    allAreasShort: "सर्व परिसर",
+    ecoFriendlyShort: "पर्यावरणपूरक",
+    twentyFourHoursShort: "२४-तास",
+    crowdLowShort: "कमी प्रतीक्षा",
+    crowdHighShort: "मोठी गर्दी",
+    filtersButton: "फिल्टर",
+    applyFilters: "लागू करा",
+    filtersModalTitle: "फिल्टर",
   },
 };

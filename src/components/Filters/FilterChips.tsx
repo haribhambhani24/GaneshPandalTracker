@@ -1,8 +1,19 @@
-import React from 'react';
-import { Clock, Compass, Leaf, Locate, MapPin, Star, Users, X } from 'lucide-react';
+import React, { useState } from 'react';
+import {
+  Clock,
+  Compass,
+  Leaf,
+  Locate,
+  MapPin,
+  SlidersHorizontal,
+  Star,
+  Users,
+  X,
+} from 'lucide-react';
 import type { CrowdLevel } from '../../types/pandal';
 import type { Circuit } from '../../types/circuit';
 import { useI18n } from '../../context/I18nContext';
+import { MobileFiltersModal } from '../Modal/MobileFiltersModal';
 
 interface FilterChipsProps {
   selectedArea: string;
@@ -31,21 +42,31 @@ interface FilterChipsProps {
   totalCount?: number;
 }
 
-// Shared control style specifications:
-// - Height: exactly 40px on mobile (h-10) and 36px on desktop (sm:h-9)
-// - Horizontal padding: 14px on mobile (px-3.5) and 12px on desktop (sm:px-3)
-// - Font: 14px (text-sm) font-semibold
-// - Border: 1px solid (border) rounded-full
-// - Icons: Lucide 16px (w-4 h-4 shrink-0)
-// - Spacing: gap-1.5 between icon and text
+// Consistent styles across all controls:
+// - Selected: solid orange (#EA580C / bg-orange-600), white text & icon, 1px matching border (WCAG AA > 4.5:1)
+// - Unselected: high contrast stone-700 / stone-200 with 1px border (WCAG AAA > 9:1)
+const selectedClass =
+  'bg-orange-600 text-white border-orange-600 shadow-xs hover:bg-orange-700';
+
+const unselectedClass =
+  'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-750 hover:border-stone-400 dark:hover:border-stone-600 shadow-xs';
+
+// Desktop/Tablet (>= 768px):
+// - Height: 36px (h-9)
+// - Padding: 10px on tablet, 12px on desktop (px-2.5 lg:px-3)
+// - Font size: 13px on tablet, 14px on desktop (text-[13px] lg:text-sm font-semibold)
+// - Icons: 16px (w-4 h-4 shrink-0)
+// - Gap icon-to-label: 6px (gap-1.5)
+// - Flex: flex-1 min-w-0 justify-center
 const baseControlClass =
-  'shrink-0 inline-flex items-center gap-1.5 h-10 sm:h-9 px-3.5 sm:px-3 rounded-full text-sm font-semibold border transition-all cursor-pointer whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-stone-900 disabled:opacity-40 disabled:cursor-not-allowed select-none';
+  'flex-1 min-w-0 inline-flex items-center justify-center gap-1.5 h-9 px-2.5 lg:px-3 rounded-full text-[13px] lg:text-sm font-semibold border transition-all cursor-pointer whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-stone-900 disabled:opacity-40 disabled:cursor-not-allowed select-none';
 
-const baseSelectClass =
-  'shrink-0 appearance-none h-10 sm:h-9 pl-8 pr-7 sm:pl-7.5 sm:pr-6 rounded-full text-sm font-semibold border transition-all cursor-pointer whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-stone-900 disabled:opacity-40 disabled:cursor-not-allowed select-none';
-
-const inactiveClass =
-  'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-750 hover:border-stone-300 dark:hover:border-stone-600 shadow-xs';
+// Mobile (< 768px):
+// - Height: 40px (h-10)
+// - Horizontal padding: px-2.5 sm:px-3
+// - Font: text-xs sm:text-sm font-semibold
+const mobileControlClass =
+  'flex-1 min-w-0 inline-flex items-center justify-center gap-1.5 h-10 px-2.5 sm:px-3 rounded-full text-xs sm:text-sm font-semibold border transition-all cursor-pointer whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-stone-900 select-none';
 
 export const FilterChips: React.FC<FilterChipsProps> = ({
   selectedArea,
@@ -73,75 +94,61 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
   filteredCount,
 }) => {
   const { t, formatNumber } = useI18n();
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+
+  // Modal active filters count (excluding Near Me and Area which remain visible on mobile)
+  const activeModalFiltersCount =
+    (activeCircuit ? 1 : 0) +
+    (myDarshanFilterOnly ? 1 : 0) +
+    (ecoFriendlyFilter ? 1 : 0) +
+    (twentyFourHoursFilter ? 1 : 0) +
+    (crowdFilter !== 'All' ? 1 : 0);
 
   return (
-    <div className="w-full bg-amber-50/95 dark:bg-stone-900/95 backdrop-blur-md border-b border-amber-200/80 dark:border-stone-800 px-3 py-2 z-[970] shadow-xs">
+    <div className="w-full bg-amber-50/95 dark:bg-stone-900/95 backdrop-blur-md border-b border-amber-200/80 dark:border-stone-800 px-2 sm:px-3 py-2 z-[970] shadow-xs">
       <div className="max-w-7xl mx-auto space-y-2">
-        {/* Main Filters Scrollable Row */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1">
-          {/* Walking Trails Button */}
-          {onOpenCircuits && (
-            <button
-              type="button"
-              onClick={onOpenCircuits}
-              className={`${baseControlClass} ${
-                activeCircuit
-                  ? 'bg-orange-600 text-white border-orange-600 shadow-xs hover:bg-orange-700'
-                  : 'bg-white dark:bg-stone-800 text-orange-700 dark:text-orange-400 border-orange-300 dark:border-orange-800 hover:bg-orange-50/70 dark:hover:bg-orange-950/40 shadow-xs'
-              }`}
-            >
-              <Compass className={`w-4 h-4 shrink-0 ${activeCircuit ? 'text-white' : 'text-orange-600 dark:text-orange-400'}`} />
-              <span>{activeCircuit ? `${t.trail}: ${activeCircuit.name.split(' ')[0]}` : t.circuits}</span>
-            </button>
-          )}
-
-          {/* Near Me Button with Clear States */}
+        {/* MOBILE CONTROLS ROW (< 768px): Near Me, All Areas, Filters with badge */}
+        <div id="filter-bar-mobile" className="flex md:hidden items-center gap-2 w-full overflow-hidden">
+          {/* Near Me Button */}
           <button
             type="button"
             onClick={onToggleSortByDistance}
-            id="near-me-btn"
+            id="near-me-btn-mobile"
             title={sortByDistance ? t.nearMeActive : t.nearMe}
-            className={`${baseControlClass} ${
-              sortByDistance
-                ? 'bg-orange-600 text-white border-orange-600 shadow-xs hover:bg-orange-700'
-                : 'bg-white dark:bg-stone-800 text-orange-700 dark:text-orange-400 border-orange-300 dark:border-orange-800 hover:bg-orange-50/70 dark:hover:bg-orange-950/40 shadow-xs'
-            }`}
+            aria-label={sortByDistance ? t.nearMeActive : t.nearMe}
+            className={`${mobileControlClass} ${sortByDistance ? selectedClass : unselectedClass}`}
           >
-            <Locate className={`w-4 h-4 shrink-0 ${locatingDistance ? 'animate-spin' : ''} ${sortByDistance ? 'text-white' : 'text-orange-600 dark:text-orange-400'}`} />
-            <span>{locatingDistance ? t.nearMeLocating : sortByDistance ? t.nearMeActive : t.nearMe}</span>
+            <Locate
+              className={`w-4 h-4 shrink-0 ${locatingDistance ? 'animate-spin' : ''} ${
+                sortByDistance ? 'text-white' : 'text-stone-600 dark:text-stone-300'
+              }`}
+            />
+            <span className="truncate">
+              {locatingDistance ? t.nearMeLocating : sortByDistance ? t.nearMeActive : t.nearMeShort}
+            </span>
           </button>
 
-          {/* My Darshan Bookmark Pill */}
-          {onToggleMyDarshanFilter && (
-            <button
-              type="button"
-              onClick={onToggleMyDarshanFilter}
-              className={`${baseControlClass} ${
-                myDarshanFilterOnly
-                  ? 'bg-amber-500 text-white border-amber-500 shadow-xs hover:bg-amber-600'
-                  : inactiveClass
+          {/* Area Dropdown Button */}
+          <div
+            className={`relative ${mobileControlClass} ${
+              selectedArea !== 'All' ? selectedClass : unselectedClass
+            }`}
+            title={t.allAreas}
+          >
+            <MapPin
+              className={`w-4 h-4 shrink-0 ${
+                selectedArea !== 'All' ? 'text-white' : 'text-stone-600 dark:text-stone-300'
               }`}
-            >
-              <Star className={`w-4 h-4 shrink-0 ${myDarshanFilterOnly ? 'fill-white text-white' : 'fill-amber-400 text-amber-500'}`} />
-              <span>{t.myDarshan} ({formatNumber(myDarshanCount)})</span>
-            </button>
-          )}
-
-          {/* Area Dropdown */}
-          <div className="shrink-0 relative">
-            <label htmlFor="area-select" className="sr-only">
-              {t.allAreas}
-            </label>
+            />
+            <span className="truncate">
+              {selectedArea !== 'All' ? selectedArea : t.allAreasShort}
+            </span>
             <select
-              id="area-select"
+              id="area-select-mobile"
               aria-label={t.allAreas}
               value={selectedArea}
               onChange={(e) => onAreaChange(e.target.value)}
-              className={`${baseSelectClass} ${
-                selectedArea !== 'All'
-                  ? 'bg-amber-600 text-white border-amber-600 shadow-xs hover:bg-amber-700'
-                  : inactiveClass
-              }`}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             >
               {areas.map((area) => (
                 <option key={area} value={area} className="text-stone-900 bg-white dark:bg-stone-800 dark:text-white">
@@ -149,66 +156,192 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
                 </option>
               ))}
             </select>
-            <MapPin
-              className={`w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none ${
-                selectedArea !== 'All' ? 'text-white' : 'text-stone-500 dark:text-stone-400'
-              }`}
-            />
           </div>
 
-          {/* Eco-Friendly Filter */}
+          {/* Filters Button */}
+          <button
+            type="button"
+            onClick={() => setShowMobileFilters(true)}
+            id="mobile-filters-trigger-btn"
+            title={t.filtersModalTitle || t.filtersButton}
+            aria-label={`${t.filtersButton}${activeModalFiltersCount > 0 ? ` (${activeModalFiltersCount})` : ''}`}
+            className={`${mobileControlClass} ${
+              activeModalFiltersCount > 0 ? selectedClass : unselectedClass
+            }`}
+          >
+            <SlidersHorizontal
+              className={`w-4 h-4 shrink-0 ${
+                activeModalFiltersCount > 0 ? 'text-white' : 'text-stone-600 dark:text-stone-300'
+              }`}
+            />
+            <span className="truncate">{t.filtersButton}</span>
+            {activeModalFiltersCount > 0 && (
+              <span className="inline-flex items-center justify-center min-w-4 h-4 px-1 rounded-full text-[10px] font-bold bg-white text-orange-600 shrink-0">
+                {formatNumber(activeModalFiltersCount)}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* DESKTOP & TABLET ROW (>= 768px): All 8 Controls in a single line with flex-nowrap and NO scrollbar */}
+        <div id="filter-bar-desktop" className="hidden md:flex items-center gap-2 w-full flex-nowrap overflow-hidden">
+          {/* 1. Walking Tours */}
+          {onOpenCircuits && (
+            <button
+              type="button"
+              onClick={onOpenCircuits}
+              title={activeCircuit ? `${t.trail}: ${activeCircuit.name}` : t.circuitsModalTitle || t.circuits}
+              aria-label={activeCircuit ? `${t.trail}: ${activeCircuit.name}` : t.circuitsModalTitle || t.circuits}
+              className={`${baseControlClass} ${activeCircuit ? selectedClass : unselectedClass}`}
+            >
+              <Compass
+                className={`w-4 h-4 shrink-0 ${activeCircuit ? 'text-white' : 'text-stone-600 dark:text-stone-300'}`}
+              />
+              <span className={`truncate ${activeCircuit ? 'inline' : 'hidden lg:inline'}`}>
+                {activeCircuit ? `${t.trail}: ${activeCircuit.name.split(' ')[0]}` : t.circuitsShort}
+              </span>
+            </button>
+          )}
+
+          {/* 2. Near Me */}
+          <button
+            type="button"
+            onClick={onToggleSortByDistance}
+            id="near-me-btn"
+            title={sortByDistance ? t.nearMeActive : t.nearMe}
+            aria-label={sortByDistance ? t.nearMeActive : t.nearMe}
+            className={`${baseControlClass} ${sortByDistance ? selectedClass : unselectedClass}`}
+          >
+            <Locate
+              className={`w-4 h-4 shrink-0 ${locatingDistance ? 'animate-spin' : ''} ${
+                sortByDistance ? 'text-white' : 'text-stone-600 dark:text-stone-300'
+              }`}
+            />
+            <span className={`truncate ${sortByDistance ? 'inline' : 'hidden lg:inline'}`}>
+              {locatingDistance ? t.nearMeLocating : sortByDistance ? t.nearMeActive : t.nearMeShort}
+            </span>
+          </button>
+
+          {/* 3. My Darshan */}
+          {onToggleMyDarshanFilter && (
+            <button
+              type="button"
+              onClick={onToggleMyDarshanFilter}
+              title={`${t.myDarshan} (${formatNumber(myDarshanCount)})`}
+              aria-label={`${t.myDarshan} (${formatNumber(myDarshanCount)})`}
+              className={`${baseControlClass} ${myDarshanFilterOnly ? selectedClass : unselectedClass}`}
+            >
+              <Star
+                className={`w-4 h-4 shrink-0 ${
+                  myDarshanFilterOnly ? 'fill-white text-white' : 'fill-amber-400 text-amber-500'
+                }`}
+              />
+              <span className={`truncate ${myDarshanFilterOnly ? 'inline' : 'hidden lg:inline'}`}>
+                {t.myDarshanShort} ({formatNumber(myDarshanCount)})
+              </span>
+            </button>
+          )}
+
+          {/* 4. All Areas Dropdown */}
+          <div
+            className={`relative ${baseControlClass} focus-within:ring-2 focus-within:ring-orange-500 focus-within:ring-offset-1 dark:focus-within:ring-offset-stone-900 ${
+              selectedArea !== 'All' ? selectedClass : unselectedClass
+            }`}
+            title={t.allAreas}
+          >
+            <MapPin
+              className={`w-4 h-4 shrink-0 ${
+                selectedArea !== 'All' ? 'text-white' : 'text-stone-600 dark:text-stone-300'
+              }`}
+            />
+            <span className={`truncate ${selectedArea !== 'All' ? 'inline' : 'hidden lg:inline'}`}>
+              {selectedArea !== 'All' ? selectedArea : t.allAreasShort}
+            </span>
+            <select
+              id="area-select"
+              aria-label={t.allAreas}
+              value={selectedArea}
+              onChange={(e) => onAreaChange(e.target.value)}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            >
+              {areas.map((area) => (
+                <option key={area} value={area} className="text-stone-900 bg-white dark:bg-stone-800 dark:text-white">
+                  {area === 'All' ? t.allAreas : area}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 5. Eco-Friendly */}
           <button
             type="button"
             onClick={() => onEcoFriendlyFilterChange(!ecoFriendlyFilter)}
-            className={`${baseControlClass} ${
-              ecoFriendlyFilter
-                ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs hover:bg-emerald-700'
-                : inactiveClass
-            }`}
+            title={t.ecoFriendly}
+            aria-label={t.ecoFriendly}
+            className={`${baseControlClass} ${ecoFriendlyFilter ? selectedClass : unselectedClass}`}
           >
-            <Leaf className={`w-4 h-4 shrink-0 ${ecoFriendlyFilter ? 'text-white' : 'text-emerald-600 dark:text-emerald-400'}`} />
-            <span>{t.ecoFriendly}</span>
+            <Leaf
+              className={`w-4 h-4 shrink-0 ${
+                ecoFriendlyFilter ? 'text-white' : 'text-emerald-600 dark:text-emerald-400'
+              }`}
+            />
+            <span className={`truncate ${ecoFriendlyFilter ? 'inline' : 'hidden lg:inline'}`}>
+              {t.ecoFriendlyShort}
+            </span>
           </button>
 
-          {/* 24-Hour Darshan Filter */}
+          {/* 6. 24-Hour Darshan */}
           <button
             type="button"
             onClick={() => onTwentyFourHoursFilterChange(!twentyFourHoursFilter)}
-            className={`${baseControlClass} ${
-              twentyFourHoursFilter
-                ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs hover:bg-indigo-700'
-                : inactiveClass
-            }`}
+            title={t.twentyFourHours}
+            aria-label={t.twentyFourHours}
+            className={`${baseControlClass} ${twentyFourHoursFilter ? selectedClass : unselectedClass}`}
           >
-            <Clock className={`w-4 h-4 shrink-0 ${twentyFourHoursFilter ? 'text-white' : 'text-indigo-600 dark:text-indigo-400'}`} />
-            <span>{t.twentyFourHours}</span>
+            <Clock
+              className={`w-4 h-4 shrink-0 ${
+                twentyFourHoursFilter ? 'text-white' : 'text-indigo-600 dark:text-indigo-400'
+              }`}
+            />
+            <span className={`truncate ${twentyFourHoursFilter ? 'inline' : 'hidden lg:inline'}`}>
+              {t.twentyFourHoursShort}
+            </span>
           </button>
 
-          {/* Crowd Filter Pills */}
+          {/* 7. Low Wait Time (WCAG AA Compliant High Contrast) */}
           <button
             type="button"
             onClick={() => onCrowdFilterChange(crowdFilter === 'Low' ? 'All' : 'Low')}
-            className={`${baseControlClass} ${
-              crowdFilter === 'Low'
-                ? 'bg-teal-700 text-white border-teal-700 shadow-xs hover:bg-teal-800'
-                : inactiveClass
-            }`}
+            title={t.crowdLow}
+            aria-label={t.crowdLow}
+            className={`${baseControlClass} ${crowdFilter === 'Low' ? selectedClass : unselectedClass}`}
           >
-            <Users className={`w-4 h-4 shrink-0 ${crowdFilter === 'Low' ? 'text-white' : 'text-teal-600 dark:text-teal-400'}`} />
-            <span>{t.crowdLow}</span>
+            <Users
+              className={`w-4 h-4 shrink-0 ${
+                crowdFilter === 'Low' ? 'text-white' : 'text-teal-600 dark:text-teal-400'
+              }`}
+            />
+            <span className={`truncate ${crowdFilter === 'Low' ? 'inline' : 'hidden lg:inline'}`}>
+              {t.crowdLowShort}
+            </span>
           </button>
 
+          {/* 8. High Rush / Long Queue */}
           <button
             type="button"
             onClick={() => onCrowdFilterChange(crowdFilter === 'High' ? 'All' : 'High')}
-            className={`${baseControlClass} ${
-              crowdFilter === 'High'
-                ? 'bg-red-600 text-white border-red-600 shadow-xs hover:bg-red-700'
-                : inactiveClass
-            }`}
+            title={t.crowdHigh}
+            aria-label={t.crowdHigh}
+            className={`${baseControlClass} ${crowdFilter === 'High' ? selectedClass : unselectedClass}`}
           >
-            <Users className={`w-4 h-4 shrink-0 ${crowdFilter === 'High' ? 'text-white' : 'text-red-600 dark:text-red-400'}`} />
-            <span>{t.crowdHigh}</span>
+            <Users
+              className={`w-4 h-4 shrink-0 ${
+                crowdFilter === 'High' ? 'text-white' : 'text-red-600 dark:text-red-400'
+              }`}
+            />
+            <span className={`truncate ${crowdFilter === 'High' ? 'inline' : 'hidden lg:inline'}`}>
+              {t.crowdHighShort}
+            </span>
           </button>
         </div>
 
@@ -234,7 +367,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
                   <button
                     type="button"
                     onClick={onClearCircuit}
-                    className="hover:text-amber-200 p-0.5 rounded-full ml-0.5"
+                    className="hover:text-amber-200 p-0.5 rounded-full ml-0.5 cursor-pointer"
                     title={t.exitCircuit}
                   >
                     <X className="w-3.5 h-3.5" />
@@ -245,13 +378,13 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
 
             {/* My Darshan chip */}
             {myDarshanFilterOnly && onToggleMyDarshanFilter && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500 text-white font-semibold shrink-0 text-xs">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-600 text-white font-semibold shrink-0 text-xs shadow-xs">
                 <Star className="w-3.5 h-3.5 fill-white text-white" />
                 <span>{t.myDarshan}</span>
                 <button
                   type="button"
                   onClick={onToggleMyDarshanFilter}
-                  className="hover:text-amber-200 p-0.5 rounded-full ml-0.5"
+                  className="hover:text-amber-200 p-0.5 rounded-full ml-0.5 cursor-pointer"
                   title={t.clearAllFilters}
                 >
                   <X className="w-3.5 h-3.5" />
@@ -266,7 +399,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
                 <button
                   type="button"
                   onClick={onClearSearchQuery}
-                  className="hover:text-red-600 p-0.5 rounded-full ml-0.5"
+                  className="hover:text-red-600 p-0.5 rounded-full ml-0.5 cursor-pointer"
                   title="Clear search query"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -276,13 +409,13 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
 
             {/* Area chip */}
             {selectedArea !== 'All' && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 font-medium border border-amber-300 dark:border-stone-700 shrink-0 text-xs">
-                <MapPin className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-600 text-white font-semibold shadow-xs shrink-0 text-xs">
+                <MapPin className="w-3.5 h-3.5 text-white" />
                 <span>{selectedArea}</span>
                 <button
                   type="button"
                   onClick={() => onAreaChange('All')}
-                  className="hover:text-red-600 p-0.5 rounded-full ml-0.5"
+                  className="hover:text-amber-200 p-0.5 rounded-full ml-0.5 cursor-pointer"
                   title="Clear area filter"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -292,13 +425,13 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
 
             {/* Eco chip */}
             {ecoFriendlyFilter && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-900 dark:text-emerald-200 font-medium border border-emerald-300 dark:border-emerald-800 shrink-0 text-xs">
-                <Leaf className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
-                <span>{t.ecoFriendly}</span>
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-600 text-white font-semibold shadow-xs shrink-0 text-xs">
+                <Leaf className="w-3.5 h-3.5 text-white" />
+                <span>{t.ecoFriendlyShort}</span>
                 <button
                   type="button"
                   onClick={() => onEcoFriendlyFilterChange(false)}
-                  className="hover:text-red-600 p-0.5 rounded-full ml-0.5"
+                  className="hover:text-amber-200 p-0.5 rounded-full ml-0.5 cursor-pointer"
                   title="Remove eco filter"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -308,13 +441,13 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
 
             {/* 24-Hours chip */}
             {twentyFourHoursFilter && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950/80 text-indigo-900 dark:text-indigo-200 font-medium border border-indigo-300 dark:border-indigo-800 shrink-0 text-xs">
-                <Clock className="w-3.5 h-3.5 text-indigo-700 dark:text-indigo-400" />
-                <span>{t.twentyFourHours}</span>
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-600 text-white font-semibold shadow-xs shrink-0 text-xs">
+                <Clock className="w-3.5 h-3.5 text-white" />
+                <span>{t.twentyFourHoursShort}</span>
                 <button
                   type="button"
                   onClick={() => onTwentyFourHoursFilterChange(false)}
-                  className="hover:text-red-600 p-0.5 rounded-full ml-0.5"
+                  className="hover:text-amber-200 p-0.5 rounded-full ml-0.5 cursor-pointer"
                   title="Remove 24-hour darshan filter"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -324,13 +457,13 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
 
             {/* Crowd chip */}
             {crowdFilter !== 'All' && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 font-medium border border-stone-300 dark:border-stone-700 shrink-0 text-xs">
-                <Users className={`w-3.5 h-3.5 ${crowdFilter === 'High' ? 'text-red-500' : 'text-teal-500'}`} />
-                <span>{crowdFilter === 'High' ? t.crowdHigh : t.crowdLow}</span>
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-600 text-white font-semibold shadow-xs shrink-0 text-xs">
+                <Users className="w-3.5 h-3.5 text-white" />
+                <span>{crowdFilter === 'High' ? t.crowdHighShort : t.crowdLowShort}</span>
                 <button
                   type="button"
                   onClick={() => onCrowdFilterChange('All')}
-                  className="hover:text-red-600 p-0.5 rounded-full ml-0.5"
+                  className="hover:text-amber-200 p-0.5 rounded-full ml-0.5 cursor-pointer"
                   title="Remove crowd filter"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -340,7 +473,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
           </div>
 
           {/* Single-tap Clear All button */}
-          {(hasActiveFilters || activeCircuit || myDarshanFilterOnly) && (
+          {(hasActiveFilters || activeCircuit || myDarshanFilterOnly || selectedArea !== 'All') && (
             <button
               type="button"
               onClick={onClearAllFilters}
@@ -352,6 +485,30 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
           )}
         </div>
       </div>
+
+      {/* Mobile Filters Bottom Sheet */}
+      <MobileFiltersModal
+        isOpen={showMobileFilters}
+        onClose={() => setShowMobileFilters(false)}
+        selectedArea={selectedArea}
+        onAreaChange={onAreaChange}
+        areas={areas}
+        ecoFriendlyFilter={ecoFriendlyFilter}
+        onEcoFriendlyFilterChange={onEcoFriendlyFilterChange}
+        twentyFourHoursFilter={twentyFourHoursFilter}
+        onTwentyFourHoursFilterChange={onTwentyFourHoursFilterChange}
+        crowdFilter={crowdFilter}
+        onCrowdFilterChange={onCrowdFilterChange}
+        myDarshanFilterOnly={myDarshanFilterOnly}
+        onToggleMyDarshanFilter={onToggleMyDarshanFilter}
+        myDarshanCount={myDarshanCount}
+        activeCircuit={activeCircuit}
+        onOpenCircuits={onOpenCircuits}
+        onClearCircuit={onClearCircuit}
+        filteredCount={filteredCount}
+        onClearAllFilters={onClearAllFilters}
+        hasActiveFilters={hasActiveFilters}
+      />
     </div>
   );
 };
