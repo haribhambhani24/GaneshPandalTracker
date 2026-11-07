@@ -1,43 +1,87 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark';
 
-interface ThemeContextValue {
+export interface ThemeContextValue {
   theme: Theme;
   toggleTheme: () => void;
+  setTheme: (theme: Theme) => void;
   isDark: boolean;
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem('pandal_map_theme') as Theme;
-    if (saved === 'light' || saved === 'dark') {
-      return saved;
-    }
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
+  const [theme, setThemeState] = useState<Theme>(() => {
+    try {
+      const saved = localStorage.getItem('pandal_map_theme');
+      if (saved === 'light' || saved === 'dark') {
+        return saved;
+      }
+      if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+      }
+    } catch {
+      // Ignore storage errors
     }
     return 'light';
   });
 
-  useEffect(() => {
+  const applyTheme = (targetTheme: Theme) => {
     const root = document.documentElement;
-    if (theme === 'dark') {
+    if (targetTheme === 'dark') {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
-    localStorage.setItem('pandal_map_theme', theme);
+    root.setAttribute('data-theme', targetTheme);
+    root.style.colorScheme = targetTheme;
+
+    // Synchronize meta theme-color tag
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', targetTheme === 'dark' ? '#0c0a09' : '#ea580c');
+    }
+
+    try {
+      localStorage.setItem('pandal_map_theme', targetTheme);
+    } catch {
+      // Ignore storage errors
+    }
+  };
+
+  useEffect(() => {
+    applyTheme(theme);
   }, [theme]);
 
+  // Listen to system preference changes if user hasn't explicitly set preference in localStorage
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleSystemChange = (e: MediaQueryListEvent) => {
+      try {
+        const saved = localStorage.getItem('pandal_map_theme');
+        if (!saved) {
+          const newTheme = e.matches ? 'dark' : 'light';
+          setThemeState(newTheme);
+        }
+      } catch {}
+    };
+
+    mediaQuery.addEventListener('change', handleSystemChange);
+    return () => mediaQuery.removeEventListener('change', handleSystemChange);
+  }, []);
+
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+    setThemeState((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
+
+  const setTheme = (newTheme: Theme) => {
+    setThemeState(newTheme);
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, isDark: theme === 'dark' }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme, isDark: theme === 'dark' }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -50,4 +94,3 @@ export function useTheme(): ThemeContextValue {
   }
   return context;
 }
-

@@ -24,16 +24,15 @@ import {
 import { pandalService } from '../services/pandalService';
 import type { Pandal } from '../types/pandal';
 import { useI18n } from '../context/I18nContext';
-import { useTheme } from '../context/ThemeContext';
-import { useMyDarshan } from '../hooks/useMyDarshan';
 import { LanguageSwitcher } from '../components/Header/LanguageSwitcher';
+import { ThemeToggle } from '../components/Header/ThemeToggle';
+import { useMyDarshan } from '../hooks/useMyDarshan';
 import { getGoogleMapsDirectionsUrl } from '../utils/geoUtils';
 
 export const PandalDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t, formatNumber } = useI18n();
-  const { isDark, toggleTheme } = useTheme();
   const { isSaved, toggleSave, isVisited, toggleVisited } = useMyDarshan();
 
   const [pandal, setPandal] = useState<Pandal | null>(null);
@@ -211,13 +210,8 @@ export const PandalDetailPage: React.FC = () => {
             {copied ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Share2 className="w-4 h-4" />}
           </button>
 
-          {/* Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors cursor-pointer"
-          >
-            {isDark ? '☀️' : '🌙'}
-          </button>
+          {/* Standardized Theme Toggle */}
+          <ThemeToggle variant="nav" />
 
           {/* Language Switcher */}
           <LanguageSwitcher />

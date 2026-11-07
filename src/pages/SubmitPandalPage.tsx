@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { LocationPickerMap } from '../components/Map/LocationPickerMap';
 import { LanguageSwitcher } from '../components/Header/LanguageSwitcher';
+import { ThemeToggle } from '../components/Header/ThemeToggle';
 import { useI18n } from '../context/I18nContext';
 import { pandalService } from '../services/pandalService';
 import type { CrowdLevel, PandalSubmission } from '../types/pandal';
@@ -191,7 +192,7 @@ export const SubmitPandalPage: React.FC = () => {
   return (
     <div className="w-full min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 pb-36 overflow-y-visible">
       {/* Top Header */}
-      <header className="sticky top-0 z-50 bg-gradient-to-r from-orange-600 via-amber-600 to-red-700 text-white shadow-md">
+      <header className="sticky top-0 z-50 bg-gradient-to-r from-orange-600 via-amber-600 to-red-700 dark:from-orange-700 dark:via-amber-800 dark:to-red-800 text-white shadow-md">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link
             to="/"
@@ -204,7 +205,10 @@ export const SubmitPandalPage: React.FC = () => {
             <span className="text-xl">🕉️</span>
             <h1 className="font-extrabold text-base tracking-tight">{t.submitPandal}</h1>
           </div>
-          <LanguageSwitcher />
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <ThemeToggle variant="header" />
+          </div>
         </div>
       </header>
 
@@ -302,7 +306,7 @@ export const SubmitPandalPage: React.FC = () => {
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 text-sm bg-stone-50 dark:bg-stone-800/80 text-stone-900 dark:text-white outline-hidden focus:ring-2 focus:ring-orange-500"
                   >
                     {COMMON_AREAS.map((a) => (
-                      <option key={a} value={a}>
+                      <option key={a} value={a} className="bg-white dark:bg-stone-800 text-stone-900 dark:text-white">
                         {a === 'Other Area' ? (t.specifyAreaLabel || a) : a}
                       </option>
                     ))}

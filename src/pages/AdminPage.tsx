@@ -24,6 +24,7 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { pandalService } from '../services/pandalService';
 import { useI18n } from '../context/I18nContext';
 import { LanguageSwitcher } from '../components/Header/LanguageSwitcher';
+import { ThemeToggle } from '../components/Header/ThemeToggle';
 import type { CrowdLevel, Pandal, PandalStatus } from '../types/pandal';
 
 interface AdminSessionUser {
@@ -198,7 +199,7 @@ export const AdminPage: React.FC = () => {
 
   if (authChecking) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-stone-900 text-stone-100">
+      <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100">
         <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -207,7 +208,7 @@ export const AdminPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-stone-100 dark:bg-stone-950 text-stone-900 dark:text-stone-100 pb-20">
       {/* Top Navbar */}
-      <header className="sticky top-0 z-40 bg-gradient-to-r from-stone-900 via-orange-950 to-red-950 text-white border-b border-orange-900/50 shadow-md">
+      <header className="sticky top-0 z-40 bg-gradient-to-r from-orange-600 via-amber-600 to-red-700 dark:from-stone-900 dark:via-orange-950 dark:to-red-950 text-white border-b border-amber-500/20 dark:border-orange-900/50 shadow-md">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <Link
@@ -227,6 +228,7 @@ export const AdminPage: React.FC = () => {
 
           <div className="flex items-center gap-2 sm:gap-3">
             <LanguageSwitcher />
+            <ThemeToggle variant="header" />
 
             {session && (
               <>
@@ -598,7 +600,7 @@ export const AdminPage: React.FC = () => {
                   type="text"
                   value={editForm.name || ''}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800"
+                  className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                 />
               </div>
 
@@ -609,7 +611,7 @@ export const AdminPage: React.FC = () => {
                     type="text"
                     value={editForm.area || ''}
                     onChange={(e) => setEditForm({ ...editForm, area: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800"
+                    className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                   />
                 </div>
                 <div>
@@ -618,7 +620,7 @@ export const AdminPage: React.FC = () => {
                     type="text"
                     value={editForm.nearestStation || ''}
                     onChange={(e) => setEditForm({ ...editForm, nearestStation: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800"
+                    className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                   />
                 </div>
               </div>
@@ -629,7 +631,7 @@ export const AdminPage: React.FC = () => {
                   type="text"
                   value={editForm.address || ''}
                   onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800"
+                  className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                 />
               </div>
 
@@ -641,7 +643,7 @@ export const AdminPage: React.FC = () => {
                     step="0.000001"
                     value={editForm.lat ?? ''}
                     onChange={(e) => setEditForm({ ...editForm, lat: parseFloat(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800"
+                    className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                   />
                 </div>
                 <div>
@@ -651,7 +653,7 @@ export const AdminPage: React.FC = () => {
                     step="0.000001"
                     value={editForm.lng ?? ''}
                     onChange={(e) => setEditForm({ ...editForm, lng: parseFloat(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800"
+                    className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                   />
                 </div>
               </div>
@@ -663,7 +665,7 @@ export const AdminPage: React.FC = () => {
                     type="text"
                     value={editForm.darshanTimings || ''}
                     onChange={(e) => setEditForm({ ...editForm, darshanTimings: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800"
+                    className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                   />
                 </div>
                 <div>
@@ -671,11 +673,11 @@ export const AdminPage: React.FC = () => {
                   <select
                     value={editForm.crowdLevel || 'Medium'}
                     onChange={(e) => setEditForm({ ...editForm, crowdLevel: e.target.value as CrowdLevel })}
-                    className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800"
+                    className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                   >
-                    <option value="Low">{t.crowdLow}</option>
-                    <option value="Medium">{t.crowdMedium}</option>
-                    <option value="High">{t.crowdHigh}</option>
+                    <option value="Low" className="bg-white dark:bg-stone-800 text-stone-900 dark:text-white">{t.crowdLow}</option>
+                    <option value="Medium" className="bg-white dark:bg-stone-800 text-stone-900 dark:text-white">{t.crowdMedium}</option>
+                    <option value="High" className="bg-white dark:bg-stone-800 text-stone-900 dark:text-white">{t.crowdHigh}</option>
                   </select>
                 </div>
               </div>

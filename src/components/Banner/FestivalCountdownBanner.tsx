@@ -56,16 +56,16 @@ export const FestivalCountdownBanner: React.FC = () => {
       <button
         onClick={toggleCollapse}
         id="festival-banner-minimized"
-        className="w-full bg-gradient-to-r from-red-900 via-orange-800 to-amber-900 text-amber-200 px-3 py-1 text-xs font-semibold flex items-center justify-between border-b border-amber-500/30 hover:brightness-110 transition-all cursor-pointer shadow-xs"
+        className="w-full bg-gradient-to-r from-orange-600 via-amber-600 to-red-600 dark:from-stone-900 dark:via-orange-950 dark:to-stone-900 text-white dark:text-amber-200 px-3 py-1.5 text-xs font-semibold flex items-center justify-between border-b border-amber-300/30 dark:border-amber-900/40 hover:brightness-105 transition-all cursor-pointer shadow-xs"
       >
         <div className="flex items-center gap-1.5 truncate">
-          <span className="text-amber-400">🕉️</span>
+          <span className="text-amber-200">🕉️</span>
           <span className="truncate">{t.festivalBannerTitle} ({t.festivalDates})</span>
-          <span className="text-[11px] text-amber-300 font-bold ml-1">
+          <span className="text-[11px] text-amber-100 dark:text-amber-300 font-bold ml-1">
             • {formatNumber(timeLeft.days)} {t.countdownDays} {t.startsIn}
           </span>
         </div>
-        <div className="flex items-center gap-1 text-[11px] text-amber-300 font-medium shrink-0 ml-2">
+        <div className="flex items-center gap-1 text-[11px] text-amber-100 dark:text-amber-300 font-medium shrink-0 ml-2">
           <span>{t.showCountdown}</span>
           <ChevronDown className="w-3.5 h-3.5" />
         </div>
@@ -76,25 +76,25 @@ export const FestivalCountdownBanner: React.FC = () => {
   return (
     <div
       id="festival-banner-expanded"
-      className="relative w-full bg-gradient-to-r from-red-950 via-orange-900 to-amber-950 text-white px-3 sm:px-4 py-2 border-b border-amber-500/40 shadow-inner z-[980]"
+      className="relative w-full bg-gradient-to-r from-orange-600 via-amber-600 to-red-600 dark:from-stone-900 dark:via-orange-950 dark:to-stone-900 text-white px-3 sm:px-4 py-2 border-b border-amber-300/30 dark:border-amber-900/40 shadow-inner z-[980]"
     >
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
         {/* Banner Title & Dates */}
         <div className="flex items-center gap-2 text-center sm:text-left">
-          <div className="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 shrink-0 shadow-xs">
+          <div className="w-8 h-8 rounded-full bg-white/20 dark:bg-amber-500/20 border border-white/30 dark:border-amber-400/40 flex items-center justify-center text-white dark:text-amber-300 shrink-0 shadow-xs">
             🕉️
           </div>
           <div>
             <div className="flex items-center justify-center sm:justify-start gap-1.5">
-              <span className="text-xs sm:text-sm font-bold tracking-tight text-amber-300 drop-shadow">
+              <span className="text-xs sm:text-sm font-bold tracking-tight text-white dark:text-amber-300 drop-shadow">
                 {t.festivalBannerTitle}
               </span>
-              <span className="text-[10px] bg-red-800/80 text-amber-200 border border-amber-400/30 px-1.5 py-0.2 rounded font-semibold">
+              <span className="text-[10px] bg-red-800/80 text-amber-100 dark:text-amber-200 border border-amber-400/30 px-1.5 py-0.2 rounded font-semibold">
                 {t.mumbaiUtsav}
               </span>
             </div>
-            <p className="text-[11px] text-stone-300 flex items-center justify-center sm:justify-start gap-1 font-medium">
-              <Calendar className="w-3 h-3 text-amber-400 inline" />
+            <p className="text-[11px] text-amber-100 dark:text-stone-300 flex items-center justify-center sm:justify-start gap-1 font-medium">
+              <Calendar className="w-3 h-3 text-amber-200 dark:text-amber-400 inline" />
               {t.festivalDates}
             </p>
           </div>
@@ -102,49 +102,49 @@ export const FestivalCountdownBanner: React.FC = () => {
 
         {/* Live Countdown Clock */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <span className="hidden md:inline-block text-[11px] font-semibold text-amber-200 uppercase tracking-wider">
+          <span className="hidden md:inline-block text-[11px] font-semibold text-amber-100 dark:text-amber-200 uppercase tracking-wider">
             {t.startsIn}:
           </span>
           <div className="flex items-center gap-1 sm:gap-1.5 font-mono text-center">
             {/* Days */}
-            <div className="bg-black/40 backdrop-blur-xs border border-amber-500/30 rounded-lg px-2 py-1 min-w-[42px] sm:min-w-[48px]">
-              <div className="text-xs sm:text-sm font-extrabold text-amber-300 leading-none">
+            <div className="bg-white/20 dark:bg-black/40 backdrop-blur-xs border border-white/30 dark:border-amber-500/30 rounded-lg px-2 py-1 min-w-[42px] sm:min-w-[48px]">
+              <div className="text-xs sm:text-sm font-extrabold text-white dark:text-amber-300 leading-none">
                 {formatNumber(timeLeft.days)}
               </div>
-              <div className="text-[9px] uppercase font-sans text-stone-300 mt-0.5">
+              <div className="text-[9px] uppercase font-sans text-amber-100 dark:text-stone-300 mt-0.5">
                 {t.countdownDays}
               </div>
             </div>
-            <span className="text-amber-400 font-bold text-xs">:</span>
+            <span className="text-amber-200 dark:text-amber-400 font-bold text-xs">:</span>
 
             {/* Hours */}
-            <div className="bg-black/40 backdrop-blur-xs border border-amber-500/30 rounded-lg px-2 py-1 min-w-[38px] sm:min-w-[44px]">
-              <div className="text-xs sm:text-sm font-extrabold text-amber-300 leading-none">
+            <div className="bg-white/20 dark:bg-black/40 backdrop-blur-xs border border-white/30 dark:border-amber-500/30 rounded-lg px-2 py-1 min-w-[38px] sm:min-w-[44px]">
+              <div className="text-xs sm:text-sm font-extrabold text-white dark:text-amber-300 leading-none">
                 {String(timeLeft.hours).padStart(2, '0')}
               </div>
-              <div className="text-[9px] uppercase font-sans text-stone-300 mt-0.5">
+              <div className="text-[9px] uppercase font-sans text-amber-100 dark:text-stone-300 mt-0.5">
                 {t.countdownHours}
               </div>
             </div>
-            <span className="text-amber-400 font-bold text-xs">:</span>
+            <span className="text-amber-200 dark:text-amber-400 font-bold text-xs">:</span>
 
             {/* Minutes */}
-            <div className="bg-black/40 backdrop-blur-xs border border-amber-500/30 rounded-lg px-2 py-1 min-w-[38px] sm:min-w-[44px]">
-              <div className="text-xs sm:text-sm font-extrabold text-amber-300 leading-none">
+            <div className="bg-white/20 dark:bg-black/40 backdrop-blur-xs border border-white/30 dark:border-amber-500/30 rounded-lg px-2 py-1 min-w-[38px] sm:min-w-[44px]">
+              <div className="text-xs sm:text-sm font-extrabold text-white dark:text-amber-300 leading-none">
                 {String(timeLeft.minutes).padStart(2, '0')}
               </div>
-              <div className="text-[9px] uppercase font-sans text-stone-300 mt-0.5">
+              <div className="text-[9px] uppercase font-sans text-amber-100 dark:text-stone-300 mt-0.5">
                 {t.countdownMins}
               </div>
             </div>
-            <span className="text-amber-400 font-bold text-xs">:</span>
+            <span className="text-amber-200 dark:text-amber-400 font-bold text-xs">:</span>
 
             {/* Seconds */}
-            <div className="bg-black/40 backdrop-blur-xs border border-amber-500/30 rounded-lg px-2 py-1 min-w-[38px] sm:min-w-[44px]">
-              <div className="text-xs sm:text-sm font-extrabold text-amber-300 leading-none animate-pulse">
+            <div className="bg-white/20 dark:bg-black/40 backdrop-blur-xs border border-white/30 dark:border-amber-500/30 rounded-lg px-2 py-1 min-w-[38px] sm:min-w-[44px]">
+              <div className="text-xs sm:text-sm font-extrabold text-white dark:text-amber-300 leading-none animate-pulse">
                 {String(timeLeft.seconds).padStart(2, '0')}
               </div>
-              <div className="text-[9px] uppercase font-sans text-stone-300 mt-0.5">
+              <div className="text-[9px] uppercase font-sans text-amber-100 dark:text-stone-300 mt-0.5">
                 {t.countdownSecs}
               </div>
             </div>
@@ -154,7 +154,7 @@ export const FestivalCountdownBanner: React.FC = () => {
           <button
             onClick={toggleCollapse}
             title={t.minimizeBanner}
-            className="p-1 rounded-md text-amber-300 hover:bg-white/10 active:scale-95 transition-colors ml-1"
+            className="p-1 rounded-md text-amber-100 dark:text-amber-300 hover:bg-white/10 active:scale-95 transition-colors ml-1 cursor-pointer"
           >
             <ChevronUp className="w-4 h-4" />
           </button>

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { List, Map, Moon, Plus, Shield, Sun } from 'lucide-react';
+import { List, Map, Plus, Shield } from 'lucide-react';
 import { useI18n } from '../../context/I18nContext';
-import { useTheme } from '../../context/ThemeContext';
 import { SearchBarWithSuggestions } from '../Search/SearchBarWithSuggestions';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { ThemeToggle } from './ThemeToggle';
 import type { Pandal } from '../../types/pandal';
 
 interface NavbarProps {
@@ -31,10 +31,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   distancesMap,
 }) => {
   const { t, formatNumber } = useI18n();
-  const { isDark, toggleTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-[1000] w-full bg-gradient-to-r from-orange-600 via-amber-600 to-red-700 text-white shadow-lg shadow-orange-950/20">
+    <header className="sticky top-0 z-[1000] w-full bg-gradient-to-r from-orange-600 via-amber-600 to-red-700 dark:from-orange-700 dark:via-amber-800 dark:to-red-800 text-white shadow-lg shadow-orange-950/20">
       {/* Top Brand & Controls Row */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 flex items-center justify-between gap-2">
         {/* Brand & Emblem */}
@@ -62,15 +61,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Reusable Global Language Switcher */}
           <LanguageSwitcher />
 
-          {/* Light/Dark Mode Toggle */}
-          <button
-            onClick={toggleTheme}
-            id="theme-toggle-btn"
-            title={isDark ? t.lightMode : t.darkMode}
-            className="p-1.5 sm:p-2 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-amber-100 hover:text-white border border-white/20 transition-all cursor-pointer"
-          >
-            {isDark ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4" />}
-          </button>
+          {/* Standardized Theme Toggle */}
+          <ThemeToggle variant="header" />
 
           {/* Submit Pandal CTA */}
           <Link

@@ -97,7 +97,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
               className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shadow-xs cursor-pointer ${
                 myDarshanFilterOnly
                   ? 'bg-amber-500 text-white ring-2 ring-amber-300'
-                  : 'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:bg-stone-100'
+                  : 'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-700'
               }`}
             >
               <Star className={`w-3.5 h-3.5 ${myDarshanFilterOnly ? 'fill-white text-white' : 'fill-amber-400 text-amber-500'}`} />
