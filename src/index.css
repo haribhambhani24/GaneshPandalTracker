@@ -26,6 +26,46 @@
   }
 }
 
+/* Text Selection Rules:
+   Keep text selection disabled ONLY on buttons, map controls, and icons.
+   Ensure pandal names, addresses, timings, and descriptions are fully selectable & copyable. */
+button,
+button *,
+[role="button"],
+[role="button"] *,
+.leaflet-control,
+.leaflet-control *,
+.leaflet-bar,
+.leaflet-bar *,
+.leaflet-marker-icon,
+svg.lucide,
+.select-none {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+address,
+time,
+input,
+textarea,
+article,
+section,
+main,
+.selectable-text,
+.select-text {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
+}
+
 /* Custom Ganesha Marker & Cluster resets */
 .custom-ganesha-marker-wrapper {
   background: transparent !important;

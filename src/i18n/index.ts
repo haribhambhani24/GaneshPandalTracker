@@ -36,6 +36,8 @@ export interface Translations {
   close: string;
   share: string;
   copied: string;
+  copyAddress: string;
+  addressCopied: string;
   backToMap: string;
   festivalBannerTitle: string;
   festivalDates: string;
@@ -227,6 +229,8 @@ export const translations: Record<Language, Translations> = {
     close: 'Close',
     share: 'Share',
     copied: 'Link Copied!',
+    copyAddress: 'Copy Address',
+    addressCopied: 'Copied!',
     backToMap: 'Back to Map',
     festivalBannerTitle: 'Ganesh Chaturthi 2027',
     festivalDates: 'September 4 – September 14, 2027',
@@ -410,6 +414,8 @@ export const translations: Record<Language, Translations> = {
     close: 'बंद करें',
     share: 'साझा करें',
     copied: 'लिंक कॉपी हो गया!',
+    copyAddress: 'पता कॉपी करें',
+    addressCopied: 'कॉपी हो गया!',
     backToMap: 'नक्शे पर वापस जाएं',
     festivalBannerTitle: 'गणेश चतुर्थी 2027',
     festivalDates: '4 सितंबर – 14 सितंबर 2027',
@@ -593,6 +599,8 @@ export const translations: Record<Language, Translations> = {
     close: 'बंद करा',
     share: 'शेअर करा',
     copied: 'लिंक कॉपी झाली!',
+    copyAddress: 'पत्ता कॉपी करा',
+    addressCopied: 'कॉपी झाले!',
     backToMap: 'नकाशावर परत जा',
     festivalBannerTitle: 'गणेशोत्सव २०२७',
     festivalDates: '४ सप्टेंबर – १४ सप्टेंबर २०२७',

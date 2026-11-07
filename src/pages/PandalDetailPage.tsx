@@ -8,6 +8,7 @@ import {
   Check,
   CheckCircle,
   Clock,
+  Copy,
   ExternalLink,
   Flame,
   Image as ImageIcon,
@@ -39,6 +40,7 @@ export const PandalDetailPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [activePhotoIdx, setActivePhotoIdx] = useState<number>(0);
   const [copied, setCopied] = useState<boolean>(false);
+  const [addressCopied, setAddressCopied] = useState<boolean>(false);
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
 
   useEffect(() => {
@@ -107,6 +109,31 @@ export const PandalDetailPage: React.FC = () => {
       navigator.clipboard.writeText(window.location.href);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handleCopyAddress = async () => {
+    if (!pandal?.address) return;
+    try {
+      await navigator.clipboard.writeText(pandal.address);
+      setAddressCopied(true);
+      setTimeout(() => setAddressCopied(false), 2500);
+    } catch {
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = pandal.address;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        setAddressCopied(true);
+        setTimeout(() => setAddressCopied(false), 2500);
+      } catch (err) {
+        console.warn('Failed to copy address:', err);
+      }
     }
   };
 
@@ -239,7 +266,7 @@ export const PandalDetailPage: React.FC = () => {
 
             {/* Pandal Title on Image */}
             <div className="absolute bottom-4 left-4 right-16 text-white">
-              <h1 className="text-xl sm:text-3xl font-extrabold tracking-tight drop-shadow-md text-amber-100">
+              <h1 className="text-xl sm:text-3xl font-extrabold tracking-tight drop-shadow-md text-amber-100 select-text">
                 {pandal.name}
               </h1>
             </div>
@@ -354,7 +381,7 @@ export const PandalDetailPage: React.FC = () => {
               <Clock className="w-4 h-4" />
               <span>{t.darshanTimings}</span>
             </div>
-            <p className="text-sm font-semibold text-stone-800 dark:text-stone-200 leading-snug">
+            <p className="text-sm font-semibold text-stone-800 dark:text-stone-200 leading-snug select-text">
               {pandal.darshanTimings}
             </p>
           </div>
@@ -365,7 +392,7 @@ export const PandalDetailPage: React.FC = () => {
               <Flame className="w-4 h-4" />
               <span>{t.aartiTimings}</span>
             </div>
-            <p className="text-sm font-semibold text-stone-800 dark:text-stone-200 leading-snug">
+            <p className="text-sm font-semibold text-stone-800 dark:text-stone-200 leading-snug select-text">
               {pandal.aartiTimings}
             </p>
           </div>
@@ -382,25 +409,53 @@ export const PandalDetailPage: React.FC = () => {
               <p className="text-xs uppercase font-bold text-stone-500 dark:text-stone-400 tracking-wider">
                 {t.nearestStation}
               </p>
-              <p className="text-sm sm:text-base font-semibold text-stone-900 dark:text-stone-100 mt-0.5">
+              <p className="text-sm sm:text-base font-semibold text-stone-900 dark:text-stone-100 mt-0.5 select-text">
                 {pandal.nearestStation}
               </p>
             </div>
           </div>
 
-          {/* Full Address */}
-          <div className="flex items-start gap-3 pt-3 border-t border-stone-100 dark:border-stone-800">
-            <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 shrink-0">
-              <MapPin className="w-5 h-5" />
+          {/* Full Address with Copy Button */}
+          <div className="flex items-start justify-between gap-3 pt-3 border-t border-stone-100 dark:border-stone-800">
+            <div className="flex items-start gap-3 flex-1 min-w-0">
+              <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 shrink-0 mt-0.5">
+                <MapPin className="w-5 h-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs uppercase font-bold text-stone-500 dark:text-stone-400 tracking-wider">
+                  {t.address}
+                </p>
+                <p className="text-xs sm:text-sm text-stone-700 dark:text-stone-300 mt-0.5 leading-relaxed select-text font-normal">
+                  {pandal.address}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs uppercase font-bold text-stone-500 dark:text-stone-400 tracking-wider">
-                {t.address}
-              </p>
-              <p className="text-xs sm:text-sm text-stone-700 dark:text-stone-300 mt-0.5 leading-relaxed">
-                {pandal.address}
-              </p>
-            </div>
+
+            {/* Small Copy Address button */}
+            <button
+              id="copy-address-button"
+              onClick={handleCopyAddress}
+              type="button"
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition-all cursor-pointer border shadow-xs ${
+                addressCopied
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/80 dark:text-emerald-300 dark:border-emerald-700'
+                  : 'bg-stone-100 hover:bg-stone-200 text-stone-700 border-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 dark:text-stone-200 dark:border-stone-700'
+              }`}
+              title={addressCopied ? t.addressCopied : t.copyAddress}
+              aria-label={addressCopied ? t.addressCopied : t.copyAddress}
+            >
+              {addressCopied ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <span className="font-bold text-emerald-700 dark:text-emerald-300">{t.addressCopied}</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5 text-stone-500 dark:text-stone-400" />
+                  <span>{t.copyAddress}</span>
+                </>
+              )}
+            </button>
           </div>
 
           {/* Visarjan Date */}
@@ -412,7 +467,7 @@ export const PandalDetailPage: React.FC = () => {
               <p className="text-xs uppercase font-bold text-stone-500 dark:text-stone-400 tracking-wider">
                 {t.visarjanDate}
               </p>
-              <p className="text-xs sm:text-sm font-semibold text-stone-800 dark:text-stone-200 mt-0.5">
+              <p className="text-xs sm:text-sm font-semibold text-stone-800 dark:text-stone-200 mt-0.5 select-text">
                 {pandal.visarjanDate}
               </p>
             </div>
@@ -428,7 +483,7 @@ export const PandalDetailPage: React.FC = () => {
                 {t.historyAndStory}
               </h2>
             </div>
-            <p className="text-xs sm:text-sm leading-relaxed text-stone-700 dark:text-stone-300 font-medium">
+            <p className="text-xs sm:text-sm leading-relaxed text-stone-700 dark:text-stone-300 font-medium select-text">
               {pandal.history}
             </p>
           </section>
@@ -442,7 +497,7 @@ export const PandalDetailPage: React.FC = () => {
               {t.aboutPandal}
             </h2>
           </div>
-          <p className="text-xs sm:text-sm leading-relaxed text-stone-700 dark:text-stone-300">
+          <p className="text-xs sm:text-sm leading-relaxed text-stone-700 dark:text-stone-300 select-text">
             {pandal.description}
           </p>
         </section>

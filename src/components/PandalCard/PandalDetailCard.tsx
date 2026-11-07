@@ -8,6 +8,7 @@ import {
   Check,
   CheckCircle,
   Clock,
+  Copy,
   ExternalLink,
   Flame,
   Leaf,
@@ -37,6 +38,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
   const { t, formatNumber } = useI18n();
   const { isSaved, toggleSave, isVisited, toggleVisited } = useMyDarshan();
   const [copied, setCopied] = useState(false);
+  const [addressCopied, setAddressCopied] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   const saved = isSaved(pandal.id);
@@ -65,6 +67,31 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
       navigator.clipboard.writeText(`${pandal.name} - ${shareUrl}`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handleCopyAddress = async () => {
+    if (!pandal?.address) return;
+    try {
+      await navigator.clipboard.writeText(pandal.address);
+      setAddressCopied(true);
+      setTimeout(() => setAddressCopied(false), 2500);
+    } catch {
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = pandal.address;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        setAddressCopied(true);
+        setTimeout(() => setAddressCopied(false), 2500);
+      } catch (err) {
+        console.warn('Failed to copy address:', err);
+      }
     }
   };
 
@@ -165,7 +192,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
         {/* Bottom Image Info */}
         <div className="absolute bottom-3 left-3 right-3 text-white">
           <div className="flex items-center gap-2">
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight drop-shadow-md text-amber-100 truncate">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight drop-shadow-md text-amber-100 truncate select-text">
               {pandal.name}
             </h2>
             {visited && (
@@ -228,22 +255,49 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
               <p className="text-xs uppercase font-bold text-red-700 dark:text-red-400 tracking-wider">
                 {t.nearestStation}
               </p>
-              <p className="text-sm font-semibold text-stone-900 dark:text-stone-100">
+              <p className="text-sm font-semibold text-stone-900 dark:text-stone-100 select-text">
                 {pandal.nearestStation}
               </p>
             </div>
           </div>
 
-          <div className="flex items-start gap-2.5 pt-2 border-t border-amber-200/40 dark:border-stone-700/40">
-            <MapPin className="w-4 h-4 text-orange-600 dark:text-orange-400 shrink-0 mt-0.5" />
-            <div>
-              <p className="text-xs uppercase font-bold text-stone-500 dark:text-stone-400 tracking-wider">
-                {t.address}
-              </p>
-              <p className="text-xs leading-relaxed text-stone-700 dark:text-stone-300">
-                {pandal.address}
-              </p>
+          <div className="flex items-start justify-between gap-2.5 pt-2 border-t border-amber-200/40 dark:border-stone-700/40">
+            <div className="flex items-start gap-2.5 flex-1 min-w-0">
+              <MapPin className="w-4 h-4 text-orange-600 dark:text-orange-400 shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs uppercase font-bold text-stone-500 dark:text-stone-400 tracking-wider">
+                  {t.address}
+                </p>
+                <p className="text-xs leading-relaxed text-stone-700 dark:text-stone-300 select-text">
+                  {pandal.address}
+                </p>
+              </div>
             </div>
+
+            <button
+              id="card-copy-address-btn"
+              onClick={handleCopyAddress}
+              type="button"
+              className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-semibold shrink-0 transition-all cursor-pointer border ${
+                addressCopied
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/80 dark:text-emerald-300 dark:border-emerald-700'
+                  : 'bg-white hover:bg-stone-50 text-stone-700 border-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 dark:text-stone-200 dark:border-stone-700'
+              }`}
+              title={addressCopied ? t.addressCopied : t.copyAddress}
+              aria-label={addressCopied ? t.addressCopied : t.copyAddress}
+            >
+              {addressCopied ? (
+                <>
+                  <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                  <span className="font-bold text-emerald-700 dark:text-emerald-300">{t.addressCopied}</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3 h-3 text-stone-500 dark:text-stone-400" />
+                  <span>{t.copyAddress}</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
 
@@ -278,7 +332,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
               <Clock className="w-4 h-4" />
               <span className="text-xs font-bold uppercase tracking-wider">{t.darshanTimings}</span>
             </div>
-            <p className="text-xs font-medium text-stone-800 dark:text-stone-200 leading-snug">
+            <p className="text-xs font-medium text-stone-800 dark:text-stone-200 leading-snug select-text">
               {pandal.darshanTimings}
             </p>
           </div>
@@ -289,7 +343,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
               <Flame className="w-4 h-4" />
               <span className="text-xs font-bold uppercase tracking-wider">{t.aartiTimings}</span>
             </div>
-            <p className="text-xs font-medium text-stone-800 dark:text-stone-200 leading-snug">
+            <p className="text-xs font-medium text-stone-800 dark:text-stone-200 leading-snug select-text">
               {pandal.aartiTimings}
             </p>
           </div>
@@ -302,7 +356,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
             <p className="text-xs uppercase font-bold text-stone-600 dark:text-stone-400 tracking-wider">
               {t.visarjanDate}
             </p>
-            <p className="text-xs text-stone-800 dark:text-stone-200 font-medium">
+            <p className="text-xs text-stone-800 dark:text-stone-200 font-medium select-text">
               {pandal.visarjanDate}
             </p>
           </div>
