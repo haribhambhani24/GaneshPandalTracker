@@ -34,7 +34,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
   userDistanceKm,
 }) => {
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { t, formatNumber } = useI18n();
   const { isSaved, toggleSave, isVisited, toggleVisited } = useMyDarshan();
   const [copied, setCopied] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -170,14 +170,14 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
             </h2>
             {visited && (
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white shadow">
-                Visited ✓
+                {t.visitedBadge}
               </span>
             )}
           </div>
           {userDistanceKm !== null && userDistanceKm !== undefined && (
             <p className="text-xs text-amber-300 font-semibold mt-0.5 flex items-center gap-1">
               <Navigation className="w-3 h-3 rotate-45" />
-              {t.approxDistance} {userDistanceKm.toFixed(1)} km {t.distanceAway}
+              {t.approxDistance} {formatNumber(Number(userDistanceKm.toFixed(1)))} km {t.distanceAway}
             </p>
           )}
         </div>
@@ -252,20 +252,20 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
           <div className="p-3.5 rounded-2xl bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/40 dark:to-orange-950/30 border border-red-200 dark:border-red-900/50 space-y-2">
             <div className="flex items-center gap-1.5 text-red-700 dark:text-red-400 font-bold text-xs uppercase tracking-wider">
               <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
-              <span>Devotee Queue Advisory (Two Separate Lines)</span>
+              <span>{t.queueAdvisoryTitle}</span>
             </div>
             <div className="grid grid-cols-2 gap-2 text-[11px]">
               <div className="p-2 rounded-xl bg-white/80 dark:bg-stone-800/80 border border-red-200/50 dark:border-stone-700">
-                <span className="font-bold text-stone-900 dark:text-stone-100 block">👀 Mukh Darshan</span>
-                <span className="text-stone-600 dark:text-stone-400">View from stage. Faster line (typically 2 to 4 hours).</span>
+                <span className="font-bold text-stone-900 dark:text-stone-100 block">{t.mukhDarshan}</span>
+                <span className="text-stone-600 dark:text-stone-400">{t.mukhDarshanDesc}</span>
               </div>
               <div className="p-2 rounded-xl bg-white/80 dark:bg-stone-800/80 border border-red-200/50 dark:border-stone-700">
-                <span className="font-bold text-stone-900 dark:text-stone-100 block">🙏 Charan Sparsh</span>
-                <span className="text-stone-600 dark:text-stone-400">Touch idol's feet. Can take 12 to 20+ hours on peak days.</span>
+                <span className="font-bold text-stone-900 dark:text-stone-100 block">{t.navasDarshan}</span>
+                <span className="text-stone-600 dark:text-stone-400">{t.navasDarshanDesc}</span>
               </div>
             </div>
             <p className="text-[10px] text-stone-500 dark:text-stone-400 italic">
-              Tip: Best queue times are early morning between 4:00 AM and 7:00 AM.
+              {t.queueInsiderTip}
             </p>
           </div>
         )}

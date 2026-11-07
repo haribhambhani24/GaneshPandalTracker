@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Hand, MapPin, Navigation } from 'lucide-react';
+import { useI18n } from '../../context/I18nContext';
 import { MUMBAI_CENTER } from '../../utils/geoUtils';
 
 interface LocationPickerMapProps {
@@ -15,6 +16,7 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
   lng,
   onChange,
 }) => {
+  const { t } = useI18n();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
@@ -53,7 +55,7 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
           </div>
           <div class="w-0 h-0 border-l-[7px] border-l-transparent border-r-[7px] border-r-transparent border-t-[10px] border-t-red-600 -mt-1 filter drop-shadow"></div>
           <span class="mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-black/75 text-white whitespace-nowrap shadow backdrop-blur-xs">
-            Drag to Set
+            ${t.dragToSet}
           </span>
         </div>
       `,
@@ -172,7 +174,7 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
       <div className="flex items-center justify-between text-xs text-stone-600 dark:text-stone-400">
         <span className="flex items-center gap-1 font-medium">
           <MapPin className="w-3.5 h-3.5 text-orange-600" />
-          Tap map or drag pin to position:
+          {t.tapMapOrDragPin}
         </span>
         <button
           type="button"
@@ -181,7 +183,7 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
           className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-orange-100 dark:bg-stone-800 text-orange-700 dark:text-orange-300 font-semibold text-[11px] hover:bg-orange-200 transition-colors cursor-pointer"
         >
           <Navigation className={`w-3 h-3 ${detecting ? 'animate-spin' : ''}`} />
-          <span>{detecting ? 'Detecting...' : 'Use My GPS'}</span>
+          <span>{detecting ? t.detectingLocation : t.useMyGps}</span>
         </button>
       </div>
 
@@ -197,13 +199,13 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
         {/* Mobile touch hint overlay */}
         <div className="absolute top-2 right-2 z-[400] bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full text-[10px] text-stone-200 border border-white/20 shadow pointer-events-none flex items-center gap-1">
           <Hand className="w-3 h-3 text-amber-300" />
-          <span>Two fingers to pan • Tap to pin</span>
+          <span>{t.twoFingersToPan}</span>
         </div>
 
         {/* Click to zoom indicator on desktop */}
         {!isMapActive && (
           <div className="hidden sm:block absolute bottom-2 right-2 z-[400] bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-md text-[10px] text-stone-300 border border-white/15 pointer-events-none">
-            Click map to enable wheel zoom
+            {t.clickMapToEnableZoom}
           </div>
         )}
       </div>

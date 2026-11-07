@@ -34,10 +34,12 @@ export function calculateDistanceKm(
 /**
  * Formats distance for display.
  */
-export function formatDistance(distanceKm: number): string {
+export function formatDistance(distanceKm: number, locale = 'en-IN'): string {
   if (distanceKm < 1) {
-    return `${Math.round(distanceKm * 1000)} m away`;
+    const m = Math.round(distanceKm * 1000);
+    return `${m.toLocaleString(locale)} m`;
   }
-  return `${distanceKm.toFixed(1)} km away`;
+  const km = Number(distanceKm.toFixed(1));
+  return `${km.toLocaleString(locale)} km`;
 }
 

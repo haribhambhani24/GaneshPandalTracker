@@ -53,7 +53,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
   onToggleMyDarshanFilter,
   myDarshanCount = 0,
 }) => {
-  const { t } = useI18n();
+  const { t, formatNumber } = useI18n();
 
   return (
     <div className="w-full bg-amber-50/95 dark:bg-stone-900/95 backdrop-blur-md border-b border-amber-200/80 dark:border-stone-800 px-3 py-2 z-[970] shadow-xs">
@@ -71,7 +71,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
               }`}
             >
               <Compass className="w-3.5 h-3.5 text-amber-500" />
-              <span>{activeCircuit ? `Trail: ${activeCircuit.name.split(' ')[0]}` : 'Walking Trails'}</span>
+              <span>{activeCircuit ? `${t.trail}: ${activeCircuit.name.split(' ')[0]}` : t.circuits}</span>
             </button>
           )}
 
@@ -101,7 +101,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
               }`}
             >
               <Star className={`w-3.5 h-3.5 ${myDarshanFilterOnly ? 'fill-white text-white' : 'fill-amber-400 text-amber-500'}`} />
-              <span>My Darshan ({myDarshanCount})</span>
+              <span>{t.myDarshan} ({formatNumber(myDarshanCount)})</span>
             </button>
           )}
 
@@ -195,12 +195,12 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
             {activeCircuit && (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-orange-600 text-white font-semibold shadow-xs shrink-0">
                 <Compass className="w-3 h-3 text-amber-200" />
-                <span>Trail: {activeCircuit.name}</span>
+                <span>{t.trail}: {activeCircuit.name}</span>
                 {onClearCircuit && (
                   <button
                     onClick={onClearCircuit}
                     className="hover:text-amber-200 p-0.5 rounded-full ml-0.5"
-                    title="Exit trail"
+                    title={t.exitCircuit}
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -212,11 +212,11 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
             {myDarshanFilterOnly && onToggleMyDarshanFilter && (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500 text-white font-semibold shrink-0">
                 <Star className="w-3 h-3 fill-white" />
-                <span>My Darshan</span>
+                <span>{t.myDarshan}</span>
                 <button
                   onClick={onToggleMyDarshanFilter}
                   className="hover:text-amber-200 p-0.5 rounded-full ml-0.5"
-                  title="Remove My Darshan filter"
+                  title={t.clearAllFilters}
                 >
                   <X className="w-3 h-3" />
                 </button>

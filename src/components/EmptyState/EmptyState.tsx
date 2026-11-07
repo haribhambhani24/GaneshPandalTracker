@@ -25,10 +25,10 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onClearFilters, searchQu
       <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 mt-2 max-w-xs leading-relaxed">
         {searchQuery ? (
           <>
-            No pandals match <span className="font-semibold text-orange-600 dark:text-orange-400">"{searchQuery}"</span> or your current filter settings.
+            {t.noPandalsFound} <span className="font-semibold text-orange-600 dark:text-orange-400">"{searchQuery}"</span>
           </>
         ) : (
-          'No pandals match your active filter combination. Try loosening your criteria or resetting filters.'
+          t.emptyStateHint
         )}
       </p>
 
@@ -47,13 +47,13 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onClearFilters, searchQu
           className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-amber-50 dark:bg-stone-800 hover:bg-amber-100 dark:hover:bg-stone-700 text-amber-900 dark:text-amber-200 font-semibold text-xs sm:text-sm border border-amber-300/70 dark:border-amber-800/60 transition-all"
         >
           <Plus className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-          <span>Submit Pandal</span>
+          <span>{t.submitPandal}</span>
         </Link>
       </div>
 
       <div className="flex items-center gap-1.5 mt-4 text-[11px] text-amber-700/80 dark:text-amber-400/80">
         <Sparkles className="w-3.5 h-3.5" />
-        <span>Know a pandal we missed? Help devotees by adding it!</span>
+        <span>{t.knowMissedPandal}</span>
       </div>
     </div>
   );

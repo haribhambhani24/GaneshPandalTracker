@@ -31,7 +31,7 @@ export const CircuitsModal: React.FC<CircuitsModalProps> = ({
   onSelectCircuit,
   onClearCircuit,
 }) => {
-  const { t } = useI18n();
+  const { t, formatNumber } = useI18n();
 
   if (!isOpen) return null;
 
@@ -89,7 +89,7 @@ export const CircuitsModal: React.FC<CircuitsModalProps> = ({
                       </h3>
                       {isActive && (
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-600 text-white animate-pulse">
-                          Active Route
+                          {t.activeCircuit}
                         </span>
                       )}
                     </div>
@@ -102,11 +102,11 @@ export const CircuitsModal: React.FC<CircuitsModalProps> = ({
                   <div className="flex items-center gap-2 text-xs font-bold shrink-0">
                     <span className="px-2.5 py-1 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 flex items-center gap-1 shadow-xs">
                       <Footprints className="w-3.5 h-3.5 text-orange-600" />
-                      {circuit.totalDistanceKm} km
+                      {formatNumber(circuit.totalDistanceKm)} km
                     </span>
                     <span className="px-2.5 py-1 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 flex items-center gap-1 shadow-xs">
                       <Zap className="w-3.5 h-3.5 text-amber-500" />
-                      ~{circuit.estimatedWalkingMins} mins
+                      ~{formatNumber(circuit.estimatedWalkingMins)} mins
                     </span>
                   </div>
                 </div>
@@ -114,7 +114,7 @@ export const CircuitsModal: React.FC<CircuitsModalProps> = ({
                 {/* Stops Timeline */}
                 <div className="py-3 space-y-2">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
-                    Route Sequence ({circuitPandals.length} Stops):
+                    {t.routeSequence} ({formatNumber(circuitPandals.length)} {t.stop}):
                   </span>
                   <div className="flex flex-wrap items-center gap-2">
                     {circuitPandals.map((p, idx) => (
@@ -123,7 +123,7 @@ export const CircuitsModal: React.FC<CircuitsModalProps> = ({
                         className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-xs font-semibold shadow-xs"
                       >
                         <span className="w-4 h-4 rounded-full bg-gradient-to-r from-red-600 to-orange-500 text-white text-[10px] font-black flex items-center justify-center shrink-0">
-                          {idx + 1}
+                          {formatNumber(idx + 1)}
                         </span>
                         <span className="text-stone-800 dark:text-stone-200 truncate max-w-[140px] sm:max-w-[180px]">
                           {p.name}
@@ -137,11 +137,11 @@ export const CircuitsModal: React.FC<CircuitsModalProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-stone-600 dark:text-stone-400 py-1">
                   <div className="flex items-center gap-1.5">
                     <Train className="w-3.5 h-3.5 text-red-500 shrink-0" />
-                    <span><strong>Entry:</strong> {circuit.entryStation}</span>
+                    <span><strong>{t.entry}:</strong> {circuit.entryStation}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Train className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    <span><strong>Exit:</strong> {circuit.exitStation}</span>
+                    <span><strong>{t.exit}:</strong> {circuit.exitStation}</span>
                   </div>
                 </div>
 
@@ -159,7 +159,7 @@ export const CircuitsModal: React.FC<CircuitsModalProps> = ({
                       onClick={onClearCircuit}
                       className="px-4 py-2 rounded-xl bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300 hover:bg-red-200 font-bold text-xs transition-colors cursor-pointer"
                     >
-                      Exit This Route
+                      {t.exitCircuit}
                     </button>
                   ) : (
                     <button
@@ -167,7 +167,7 @@ export const CircuitsModal: React.FC<CircuitsModalProps> = ({
                       className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs shadow-md shadow-orange-600/20 active:scale-95 transition-all cursor-pointer"
                     >
                       <MapPin className="w-3.5 h-3.5" />
-                      <span>Start Walking Route</span>
+                      <span>{t.startCircuit}</span>
                     </button>
                   )}
                 </div>

@@ -81,6 +81,113 @@ export interface Translations {
   mukhDarshan: string;
   navasDarshan: string;
   queueAdvice: string;
+  queueAdvisoryTitle: string;
+  mukhDarshanDesc: string;
+  navasDarshanDesc: string;
+  queueInsiderTip: string;
+
+  // Submit Pandal Page
+  submitPandal: string;
+  submitPandalTitle: string;
+  addPandalHeading: string;
+  addPandalSubtitle: string;
+  pandalNameLabel: string;
+  pandalNamePlaceholder: string;
+  areaLabel: string;
+  specifyAreaLabel: string;
+  specifyAreaPlaceholder: string;
+  nearestStationPlaceholder: string;
+  addressPlaceholder: string;
+  pandalLocationOnMap: string;
+  tapMapOrDragPin: string;
+  useMyGps: string;
+  detectingLocation: string;
+  twoFingersToPan: string;
+  clickMapToEnableZoom: string;
+  darshanTimingsPlaceholder: string;
+  aartiTimingsPlaceholder: string;
+  visarjanDatePlaceholder: string;
+  visarjanDateLabel: string;
+  clayShaduIdol: string;
+  typicalRush: string;
+  pandalPhotoLabel: string;
+  uploadFileInstead: string;
+  provideImageLinkInstead: string;
+  clickToUploadPhoto: string;
+  imageSizeLimit: string;
+  historyFeaturesOptional: string;
+  historyFeaturesPlaceholder: string;
+  submitForVerification: string;
+  submittingForReview: string;
+  submissionVerificationNote: string;
+  submissionSuccessTitle: string;
+  submissionSuccessMsg: string;
+  submissionQueuedMsg: string;
+  returnToPandalMap: string;
+  submitAnotherPandal: string;
+
+  // Form Validation Errors
+  errNameRequired: string;
+  errAreaRequired: string;
+  errAddressRequired: string;
+  errStationRequired: string;
+  errDarshanTimingsRequired: string;
+  errAartiTimingsRequired: string;
+  errPhotoRequired: string;
+  errPhotoUrlInvalid: string;
+  errImageTooLarge: string;
+  errImageFormat: string;
+
+  // Admin Portal
+  adminPortalTitle: string;
+  adminAuthHeading: string;
+  adminAuthSubtitle: string;
+  adminEmailLabel: string;
+  adminPasswordLabel: string;
+  logInAsAdmin: string;
+  logout: string;
+  pendingSubmissions: string;
+  approvedLivePandals: string;
+  rejected: string;
+  refresh: string;
+  noPendingPandals: string;
+  noApprovedPandals: string;
+  noRejectedPandals: string;
+  verifyGps: string;
+  approve: string;
+  edit: string;
+  reject: string;
+  delete: string;
+  editPandalDetails: string;
+  cancel: string;
+  saveChanges: string;
+  statusPending: string;
+  statusApproved: string;
+  statusRejected: string;
+
+  // Pandal Detail Page & Empty States
+  pandalNotFoundTitle: string;
+  pandalNotFoundMsg: string;
+  loadingPandalDetails: string;
+  visitedCheck: string;
+  mumbaiUtsav: string;
+  emptyStateHint: string;
+  knowMissedPandal: string;
+  noSavedDarshanTitle: string;
+  noSavedDarshanMsg: string;
+  adjustFiltersMsg: string;
+  trail: string;
+  routeSequence: string;
+  entry: string;
+  exit: string;
+  matches: string;
+  details: string;
+  zoomIn: string;
+  zoomOut: string;
+  showCountdown: string;
+  minimizeBanner: string;
+  mumbai: string;
+  dragToSet: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -162,7 +269,111 @@ export const translations: Record<Language, Translations> = {
     mukhDarshan: 'Mukh Line (Quick View: 2 - 4 hrs)',
     navasDarshan: 'Navas Line (Touch Feet: 12 - 20 hrs)',
     queueAdvice: 'Traveller Advice: If you only have 1 day in Mumbai, always choose the Mukh Darshan line so you can visit 4-5 major pandals instead of spending the whole day in 1 queue.',
+    queueAdvisoryTitle: 'Devotee Queue Advisory: Two Distinct Lines',
+    mukhDarshanDesc: 'Devotees walk across the main viewing stage 20 feet from the idol. Significantly faster queue (typically 2 to 4 hours). Recommended for travellers with limited time.',
+    navasDarshanDesc: "Line for pilgrims fulfilling special vows by touching Bappa's sacred feet. Can take 12 to 24+ hours on peak days and weekends.",
+    queueInsiderTip: '💡 Insider Tip: The lightest queues occur between 4:00 AM and 7:00 AM. Avoid peak evening hours between 6:00 PM and 11:00 PM.',
+
+    submitPandal: 'Submit Pandal',
+    submitPandalTitle: 'Submit a Ganesh Pandal',
+    addPandalHeading: 'Add Ganesh Pandal Details',
+    addPandalSubtitle: 'Help out-of-town pilgrims discover authentic pandals during Ganesh Chaturthi.',
+    pandalNameLabel: 'Pandal / Mandal Name',
+    pandalNamePlaceholder: 'e.g. Balgopal Mitra Mandal, Khetwadicha Lambodara',
+    areaLabel: 'Area / Locality',
+    specifyAreaLabel: 'Specify Area',
+    specifyAreaPlaceholder: 'e.g. Borivali East, Ghatkopar',
+    nearestStationPlaceholder: 'e.g. Charni Road (Western) or CSMT',
+    addressPlaceholder: 'Street, Landmark, Chawl / Building name, Pin Code',
+    pandalLocationOnMap: 'Pandal Exact Location on Map',
+    tapMapOrDragPin: 'Tap map or drag pin to position:',
+    useMyGps: 'Use My GPS',
+    detectingLocation: 'Detecting...',
+    twoFingersToPan: 'Two fingers to pan • Tap to pin',
+    clickMapToEnableZoom: 'Click map to enable wheel zoom',
+    darshanTimingsPlaceholder: 'e.g. 6:00 AM - 11:30 PM',
+    aartiTimingsPlaceholder: 'e.g. 7:30 AM (Kakad), 8:00 PM (Maha Aarti)',
+    visarjanDatePlaceholder: 'e.g. Anant Chaturdashi (Day 10 - Girgaon Chowpatty)',
+    visarjanDateLabel: 'Visarjan Day / Procession Details',
+    clayShaduIdol: 'Clay / Shadu Mati',
+    typicalRush: 'Typical Rush',
+    pandalPhotoLabel: 'Pandal / Idol Photo',
+    uploadFileInstead: 'Upload file instead',
+    provideImageLinkInstead: 'Provide image link instead',
+    clickToUploadPhoto: 'Click to upload pandal photo',
+    imageSizeLimit: 'JPEG, PNG or WebP under 2 MB',
+    historyFeaturesOptional: 'History, Heritage or Unique Features (Optional)',
+    historyFeaturesPlaceholder: 'Share a short story, idol height, temple replicas, or community highlights...',
+    submitForVerification: '🙏 Submit Pandal for Verification',
+    submittingForReview: 'Submitting Pandal for Review...',
+    submissionVerificationNote: 'All community submissions are verified by pandal committee admins prior to public listing.',
+    submissionSuccessTitle: '🙏 Ganpati Bappa Morya!',
+    submissionSuccessMsg: 'Pandal submission received for',
+    submissionQueuedMsg: 'Your submission has been queued as Pending Review. Once verified by our community committee moderators in the admin panel, your pandal will appear live on the interactive map for all devotees.',
+    returnToPandalMap: 'Return to Pandal Map',
+    submitAnotherPandal: 'Submit Another Pandal',
+
+    errNameRequired: 'Pandal name must be at least 3 characters.',
+    errAreaRequired: 'Please specify the area/locality in Mumbai.',
+    errAddressRequired: 'Please provide a clear street address.',
+    errStationRequired: 'Please specify the closest railway or metro station.',
+    errDarshanTimingsRequired: 'Darshan timings are required.',
+    errAartiTimingsRequired: 'Aarti timings are required.',
+    errPhotoRequired: 'Please upload a photo of the pandal or idol.',
+    errPhotoUrlInvalid: 'Please enter a valid photo URL starting with http:// or https://',
+    errImageTooLarge: 'Image size must be under 2 MB to upload.',
+    errImageFormat: 'Please select a valid image file (JPEG, PNG, WebP).',
+
+    adminPortalTitle: 'Pandal Map Admin',
+    adminAuthHeading: 'Admin Authentication',
+    adminAuthSubtitle: 'Sign in with your Supabase admin credentials to moderate pandal submissions.',
+    adminEmailLabel: 'Admin Email',
+    adminPasswordLabel: 'Password',
+    logInAsAdmin: 'Log In as Admin',
+    logout: 'Logout',
+    pendingSubmissions: 'Pending Submissions',
+    approvedLivePandals: 'Approved Live Pandals',
+    rejected: 'Rejected',
+    refresh: 'Refresh',
+    noPendingPandals: 'All community submissions have been reviewed! New submissions will appear here.',
+    noApprovedPandals: 'No approved pandals.',
+    noRejectedPandals: 'No rejected pandals.',
+    verifyGps: 'Verify GPS',
+    approve: 'Approve',
+    edit: 'Edit',
+    reject: 'Reject',
+    delete: 'Delete',
+    editPandalDetails: 'Edit Pandal Details',
+    cancel: 'Cancel',
+    saveChanges: 'Save Changes',
+    statusPending: 'Pending',
+    statusApproved: 'Approved',
+    statusRejected: 'Rejected',
+
+    pandalNotFoundTitle: 'Pandal Not Found',
+    pandalNotFoundMsg: 'The pandal you are looking for could not be found.',
+    loadingPandalDetails: 'Loading pandal details...',
+    visitedCheck: 'Visited ✓',
+    mumbaiUtsav: 'Mumbai Utsav',
+    emptyStateHint: 'No pandals match your active filter combination. Try loosening your criteria or resetting filters.',
+    knowMissedPandal: 'Know a pandal we missed? Help devotees by adding it!',
+    noSavedDarshanTitle: 'No pandals saved in My Darshan yet',
+    noSavedDarshanMsg: 'Tap the bookmark icon on any pandal card to save it for your festival visit.',
+    adjustFiltersMsg: 'Try adjusting or clearing your search and filters.',
+    trail: 'Trail',
+    routeSequence: 'Route Sequence',
+    entry: 'Entry',
+    exit: 'Exit',
+    matches: 'matches',
+    details: 'Details',
+    zoomIn: 'Zoom In',
+    zoomOut: 'Zoom Out',
+    showCountdown: 'Show Countdown',
+    minimizeBanner: 'Minimize Banner',
+    mumbai: 'Mumbai',
+    dragToSet: 'Drag to Set',
   },
+
   hi: {
     appName: 'पंडाल मैप',
     tagline: 'मुंबई गणेशोत्सव पंडाल दर्शिका',
@@ -241,7 +452,111 @@ export const translations: Record<Language, Translations> = {
     mukhDarshan: 'मुख दर्शन कतार (शीघ्र: 2 - 4 घंटे)',
     navasDarshan: 'नवस / चरणस्पर्श कतार (12 - 20 घंटे)',
     queueAdvice: 'यात्री सुझाव: यदि आपके पास मुंबई में सीमित समय है, तो सदैव मुख दर्शन लाइन चुनें ताकि आप एक ही दिन में 4-5 प्रसिद्ध पंडालों के दर्शन कर सकें।',
+    queueAdvisoryTitle: 'श्रद्धालु कतार परामर्श: दो अलग कतारें',
+    mukhDarshanDesc: 'मूर्ति से लगभग 20 फीट की दूरी पर मंच से दर्शन। यह कतार बहुत तेज चलती है (लगभग 2 से 4 घंटे)। कम समय वाले यात्रियों के लिए अनुशंसित।',
+    navasDarshanDesc: 'बाप्पा के पावन चरणों को स्पर्श कर मन्नत मांगने वालों की कतार। प्रमुख दिनों पर इसमें 12 से 24+ घंटे लग सकते हैं।',
+    queueInsiderTip: '💡 अंदरूनी सुझाव: सबसे कम भीड़ सुबह 4:00 से 7:00 बजे के बीच होती है। शाम 6:00 से रात 11:00 बजे तक चरम भीड़ से बचें।',
+
+    submitPandal: 'पंडाल जोड़ें',
+    submitPandalTitle: 'गणेश पंडाल की जानकारी भेजें',
+    addPandalHeading: 'गणेश पंडाल का विवरण दर्ज करें',
+    addPandalSubtitle: 'गणेशोत्सव के दौरान बाहर से आने वाले श्रद्धालुओं को प्रामाणिक पंडाल खोजने में मदद करें।',
+    pandalNameLabel: 'पंडाल / मंडल का नाम',
+    pandalNamePlaceholder: 'उदा. बालगोपाल मित्र मंडल, खेतवाड़ीचा लंबोदर',
+    areaLabel: 'क्षेत्र / इलाका',
+    specifyAreaLabel: 'क्षेत्र बताएं',
+    specifyAreaPlaceholder: 'उदा. बोरीवली पूर्व, घाटकोपर',
+    nearestStationPlaceholder: 'उदा. चर्नी रोड (पश्चिम) अथवा सीएसएमटी',
+    addressPlaceholder: 'सड़क, लैंडमार्क, चॉल / भवन का नाम, पिन कोड',
+    pandalLocationOnMap: 'नक्शे पर पंडाल का सटीक स्थान',
+    tapMapOrDragPin: 'स्थान चुनने के लिए नक्शे पर टैप करें या पिन खींचें:',
+    useMyGps: 'मेरा जीपीएस उपयोग करें',
+    detectingLocation: 'स्थान पहचान रहे हैं...',
+    twoFingersToPan: 'नक्शा खिसकाने के लिए 2 उंगलियों का प्रयोग करें',
+    clickMapToEnableZoom: 'ज़ूम सक्षम करने के लिए नक्शे पर क्लिक करें',
+    darshanTimingsPlaceholder: 'उदा. सुबह 6:00 - रात 11:30',
+    aartiTimingsPlaceholder: 'उदा. सुबह 7:30 (काकड़), रात 8:00 (महाआरती)',
+    visarjanDatePlaceholder: 'उदा. अनंत चतुर्दशी (10वां दिन - गिरगांव चौपाटी)',
+    visarjanDateLabel: 'विसर्जन दिवस / शोभायात्रा विवरण',
+    clayShaduIdol: 'शाडू मिट्टी की मूर्ति',
+    typicalRush: 'अनुमानित भीड़',
+    pandalPhotoLabel: 'पंडाल / मूर्ति की तस्वीर',
+    uploadFileInstead: 'फाइल अपलोड करें',
+    provideImageLinkInstead: 'छवि लिंक दर्ज करें',
+    clickToUploadPhoto: 'पंडाल की तस्वीर अपलोड करने के लिए क्लिक करें',
+    imageSizeLimit: 'JPEG, PNG या WebP (2 MB से कम)',
+    historyFeaturesOptional: 'इतिहास, सांस्कृतिक विशेषता अथवा कहानी (वैकल्पिक)',
+    historyFeaturesPlaceholder: 'संक्षिप्त कहानी, मूर्ति की ऊंचाई, मंदिर प्रतिकृति आदि साझा करें...',
+    submitForVerification: '🙏 सत्यापन हेतु पंडाल भेजें',
+    submittingForReview: 'समीक्षा के लिए भेजा जा रहा है...',
+    submissionVerificationNote: 'सार्वजनिक रूप से प्रदर्शित करने से पहले सभी प्रविष्टियों का सत्यापन समिति द्वारा किया जाता है।',
+    submissionSuccessTitle: '🙏 गणपति बाप्पा मोरया!',
+    submissionSuccessMsg: 'पंडाल प्रविष्टि सफलतापूर्वक प्राप्त हुई:',
+    submissionQueuedMsg: 'आपकी प्रविष्टि समीक्षा हेतु सुरक्षित कर ली गई है। एडमिन पैनल द्वारा सत्यापन के पश्चात यह पंडाल लाइव नक्शे पर दिखाई देगा।',
+    returnToPandalMap: 'पंडाल नक्शे पर लौटें',
+    submitAnotherPandal: 'अन्य पंडाल जोड़ें',
+
+    errNameRequired: 'पंडाल का नाम कम से कम 3 अक्षरों का होना चाहिए।',
+    errAreaRequired: 'कृपया मुंबई का क्षेत्र निर्दिष्ट करें।',
+    errAddressRequired: 'कृपया पूरा सड़क पता दर्ज करें।',
+    errStationRequired: 'कृपया निकटतम रेलवे या मेट्रो स्टेशन बताएं।',
+    errDarshanTimingsRequired: 'दर्शन समय आवश्यक है।',
+    errAartiTimingsRequired: 'आरती समय आवश्यक है।',
+    errPhotoRequired: 'कृपया पंडाल अथवा मूर्ति की तस्वीर जोड़ें।',
+    errPhotoUrlInvalid: 'कृपया http:// या https:// से शुरू होने वाला मान्य लिंक दें।',
+    errImageTooLarge: 'तस्वीर का आकार 2 MB से कम होना चाहिए।',
+    errImageFormat: 'कृपया मान्य छवि फाइल (JPEG, PNG, WebP) चुनें।',
+
+    adminPortalTitle: 'पंडाल मैप एडमिन',
+    adminAuthHeading: 'एडमिन लॉगिन',
+    adminAuthSubtitle: 'पंडाल प्रविष्टियों की समीक्षा हेतु अपने सुपरबेस एडमिन विवरण से लॉगिन करें।',
+    adminEmailLabel: 'एडमिन ईमेल',
+    adminPasswordLabel: 'पासवर्ड',
+    logInAsAdmin: 'एडमिन लॉगिन करें',
+    logout: 'लॉगआउट',
+    pendingSubmissions: 'लंबित प्रविष्टियां',
+    approvedLivePandals: 'स्वीकृत लाइव पंडाल',
+    rejected: 'अस्वीकृत',
+    refresh: 'ताज़ा करें',
+    noPendingPandals: 'सभी प्रविष्टियों की समीक्षा हो चुकी है! नई प्रविष्टियां यहां दिखाई देंगी।',
+    noApprovedPandals: 'कोई स्वीकृत पंडाल नहीं है।',
+    noRejectedPandals: 'कोई अस्वीकृत पंडाल नहीं है।',
+    verifyGps: 'जीपीएस जांचें',
+    approve: 'स्वीकृत करें',
+    edit: 'संपादित करें',
+    reject: 'अस्वीकार करें',
+    delete: 'हटाएं',
+    editPandalDetails: 'पंडाल विवरण संपादित करें',
+    cancel: 'रद्द करें',
+    saveChanges: 'परिवर्तन सहेजें',
+    statusPending: 'लंबित',
+    statusApproved: 'स्वीकृत',
+    statusRejected: 'अस्वीकृत',
+
+    pandalNotFoundTitle: 'पंडाल नहीं मिला',
+    pandalNotFoundMsg: 'जिस पंडाल को आप खोज रहे हैं, वह उपलब्ध नहीं है।',
+    loadingPandalDetails: 'पंडाल विवरण लोड हो रहा है...',
+    visitedCheck: 'दर्शन संपन्न ✓',
+    mumbaiUtsav: 'मुंबई उत्सव',
+    emptyStateHint: 'आपके वर्तमान फ़िल्टर के अनुसार कोई पंडाल नहीं मिला। फ़िल्टर रीसेट करें।',
+    knowMissedPandal: 'क्या आप किसी छूटे हुए पंडाल को जानते हैं? श्रद्धालुओं की सहायता के लिए जोड़ें!',
+    noSavedDarshanTitle: 'मेरी दर्शन सूची में अभी कोई पंडाल नहीं है',
+    noSavedDarshanMsg: 'अपनी उत्सव यात्रा के लिए किसी भी पंडाल कार्ड पर बुकमार्क आइकन दबाएं।',
+    adjustFiltersMsg: 'अपनी खोज या फ़िल्टर बदलकर दोबारा प्रयास करें।',
+    trail: 'मार्ग',
+    routeSequence: 'मार्ग क्रम',
+    entry: 'प्रवेश',
+    exit: 'निकास',
+    matches: 'परिणाम',
+    details: 'विवरण',
+    zoomIn: 'ज़ूम इन',
+    zoomOut: 'ज़ूम आउट',
+    showCountdown: 'उलटी गिनती दिखाएं',
+    minimizeBanner: 'बैनर छोटा करें',
+    mumbai: 'मुंबई',
+    dragToSet: 'स्थान सेट करने के लिए खींचें',
   },
+
   mr: {
     appName: 'पंडाल मॅप',
     tagline: 'मुंबई गणेशोत्सव पंडाल वाटाड्या',
@@ -320,5 +635,108 @@ export const translations: Record<Language, Translations> = {
     mukhDarshan: 'मुखदर्शन रांग (जलद: २ - ४ तास)',
     navasDarshan: 'नवसाची / चरणस्पर्श रांग (१२ - २० तास)',
     queueAdvice: 'प्रवासी सल्ला: मुंबईत कमी वेळेत जास्तीत जास्त दर्शन घ्यायचे असल्यास नेहमी मुखदर्शनाची रांग निवडा.',
+    queueAdvisoryTitle: 'भाविक दर्शन रांग सल्ला: दोन स्वतंत्र रांगा',
+    mukhDarshanDesc: 'मूर्तीपासून २० फूट अंतरावरून मंचावरून चालत होणारे दर्शन. ही रांग अतिशय जलद चालते (सुमारे २ ते ४ तास). मर्यादित वेळ असलेल्या भाविकांसाठी उत्तम.',
+    navasDarshanDesc: 'बाप्पाच्या चरणांना स्पर्श करून नवस फेडणाऱ्या भाविकांची रांग. गर्दीच्या दिवशी या रांगेत १२ ते २४+ तास लागू शकतात.',
+    queueInsiderTip: '💡 महत्त्वाचा सल्ला: सर्वात कमी गर्दी पहाटे ४:०० ते सकाळी ७:०० दरम्यान असते. संध्याकाळी ६:०० ते रात्री ११:०० दरम्यान गर्दी टाळा.',
+
+    submitPandal: 'मंडळ जोडा',
+    submitPandalTitle: 'गणेश मंडळाची माहिती जोडा',
+    addPandalHeading: 'गणेश मंडळाचा तपशील नोंदवा',
+    addPandalSubtitle: 'गणेशोत्सवात परगावाहून येणाऱ्या भाविकांना अस्सल गणेश मंडळांची माहिती मिळण्यास मदत करा.',
+    pandalNameLabel: 'मंडळाचे / पंडालचे नाव',
+    pandalNamePlaceholder: 'उदा. बाळगोपाळ मित्र मंडळ, खेतवाडीचा लंबोदर',
+    areaLabel: 'विभाग / परिसर',
+    specifyAreaLabel: 'विभाग नमूद करा',
+    specifyAreaPlaceholder: 'उदा. बोरिवली पूर्व, घाटकोपर',
+    nearestStationPlaceholder: 'उदा. चर्नी रोड (पश्चिम) किंवा सीएसएमटी',
+    addressPlaceholder: 'रस्ता, लँडमार्क, चाळ / इमारतीचे नाव, पिन कोड',
+    pandalLocationOnMap: 'नकाशावर मंडळाचे अचूक स्थान',
+    tapMapOrDragPin: 'स्थान निश्चित करण्यासाठी नकाशावर टॅप करा किंवा पिन सरकवा:',
+    useMyGps: 'माझे GPS वापरा',
+    detectingLocation: 'स्थान शोधत आहे...',
+    twoFingersToPan: 'नकाशा सरकवण्यासाठी २ बोटे वापरा',
+    clickMapToEnableZoom: 'झूम सक्षम करण्यासाठी नकाशावर क्लिक करा',
+    darshanTimingsPlaceholder: 'उदा. सकाळी ६:०० - रात्री ११:३०',
+    aartiTimingsPlaceholder: 'उदा. सकाळी ७:३० (काकड), रात्री ८:०० (महाआरती)',
+    visarjanDatePlaceholder: 'उदा. अनंत चतुर्दशी (१० वा दिवस - गिरगाव चौपाटी)',
+    visarjanDateLabel: 'विसर्जन दिवस / मिरवणूक तपशील',
+    clayShaduIdol: 'शाडू मातीची मूर्ती',
+    typicalRush: 'अपेक्षित गर्दी',
+    pandalPhotoLabel: 'मंडळाचे / मूर्तीचे छायाचित्र',
+    uploadFileInstead: 'फाईल अपलोड करा',
+    provideImageLinkInstead: 'फोटोची लिंक द्या',
+    clickToUploadPhoto: 'मंडळाचा फोटो अपलोड करण्यासाठी क्लिक करा',
+    imageSizeLimit: 'JPEG, PNG किंवा WebP (२ MB पेक्षा कमी)',
+    historyFeaturesOptional: 'इतिहास, परंपरा किंवा वैशिष्ट्ये (पर्यायी)',
+    historyFeaturesPlaceholder: 'थोडक्यात माहिती, मूर्तीची उंची, मंदिराची प्रतिकृती इत्यादी सामायिक करा...',
+    submitForVerification: '🙏 पडताळणीसाठी मंडळ पाठवा',
+    submittingForReview: 'माहिती पाठवली जात आहे...',
+    submissionVerificationNote: 'नकाशावर प्रसिद्ध करण्यापूर्वी सर्व नोंदींची प्रशासक समितीद्वारे खात्री केली जाते.',
+    submissionSuccessTitle: '🙏 गणपती बाप्पा मोरया!',
+    submissionSuccessMsg: 'खालील मंडळाची माहिती यशस्वीपणे प्राप्त झाली:',
+    submissionQueuedMsg: 'आपली नोंदणी पडताळणीसाठी जतन करण्यात आली आहे. ॲडमिन पॅनलद्वारे पडताळणी झाल्यानंतर हे मंडळ थेट नकाशावर दिसेल.',
+    returnToPandalMap: 'नकाशावर परत जा',
+    submitAnotherPandal: 'आणखी मंडळ जोडा',
+
+    errNameRequired: 'मंडळाचे नाव किमान ३ अक्षरांचे असणे आवश्यक आहे.',
+    errAreaRequired: 'कृपया मुंबईतील विभाग निवडा.',
+    errAddressRequired: 'कृपया संपूर्ण पत्ता प्रविष्ट करा.',
+    errStationRequired: 'कृपया जवळचे रेल्वे किंवा मेट्रो स्टेशन नमूद करा.',
+    errDarshanTimingsRequired: 'दर्शन वेळ आवश्यक आहे.',
+    errAartiTimingsRequired: 'आरती वेळ आवश्यक आहे.',
+    errPhotoRequired: 'कृपया मंडळाचे किंवा मूर्तीचे छायाचित्र जोडा.',
+    errPhotoUrlInvalid: 'कृपया http:// किंवा https:// ने सुरू होणारी वैध लिंक द्या.',
+    errImageTooLarge: 'फोटोचा आकार २ MB पेक्षा कमी असावा.',
+    errImageFormat: 'कृपया वैध फोटो फाईल (JPEG, PNG, WebP) निवडा.',
+
+    adminPortalTitle: 'पंडाल मॅप ॲडमिन',
+    adminAuthHeading: 'प्रशासक लॉगिन',
+    adminAuthSubtitle: 'मंडळांच्या नोंदी तपासण्यासाठी आपल्या सुपरबेस प्रशासक खात्याने लॉगिन करा.',
+    adminEmailLabel: 'प्रशासक ईमेल',
+    adminPasswordLabel: 'पासवर्ड',
+    logInAsAdmin: 'ॲडमिन लॉगिन करा',
+    logout: 'लॉगआउट',
+    pendingSubmissions: 'प्रलंबित नोंदी',
+    approvedLivePandals: 'मंजूर थेट मंडळे',
+    rejected: 'नाकारलेल्या नोंदी',
+    refresh: 'ताजे करा',
+    noPendingPandals: 'सर्व नोंदींची पडताळणी पूर्ण झाली आहे! नवीन नोंदी येथे दिसतील.',
+    noApprovedPandals: 'मंजूर मंडळे नाहीत.',
+    noRejectedPandals: 'नाकारलेली मंडळे नाहीत.',
+    verifyGps: 'GPS तपासा',
+    approve: 'मंजूर करा',
+    edit: 'संपादित करा',
+    reject: 'नाकारा',
+    delete: 'हटवा',
+    editPandalDetails: 'मंडळाचा तपशील बदला',
+    cancel: 'रद्द करा',
+    saveChanges: 'बदल जतन करा',
+    statusPending: 'प्रलंबित',
+    statusApproved: 'मंजूर',
+    statusRejected: 'नाकारले',
+
+    pandalNotFoundTitle: 'मंडळ आढळले नाही',
+    pandalNotFoundMsg: 'आपण शोधत असलेले मंडळ उपलब्ध नाही.',
+    loadingPandalDetails: 'मंडळाची माहिती लोड होत आहे...',
+    visitedCheck: 'दर्शन संपन्न ✓',
+    mumbaiUtsav: 'मुंबई उत्सव',
+    emptyStateHint: 'आपल्या निकषांनुसार कोणतेही मंडळ सापडले नाही. कृपया फिल्टर्स बदला.',
+    knowMissedPandal: 'येथे नसलेल्या मंडळाची माहिती आहे का? भाविकांच्या मदतीसाठी जोडा!',
+    noSavedDarshanTitle: 'माझे दर्शन यादीत अद्याप कोणताही मंडळ जतन केलेला नाही',
+    noSavedDarshanMsg: 'आपल्या उत्सवाच्या भेटीसाठी कोणत्याही मंडळ कार्डावरील बुकमार्क चिन्ह दाबा.',
+    adjustFiltersMsg: 'आपला शोध किंवा फिल्टर्स बदलून पुन्हा प्रयत्न करा.',
+    trail: 'मार्ग',
+    routeSequence: 'मार्ग क्रम',
+    entry: 'प्रवेश',
+    exit: 'बाहेर पडण्याचा मार्ग',
+    matches: 'निकाल',
+    details: 'तपशील',
+    zoomIn: 'झूम इन',
+    zoomOut: 'झूम आउट',
+    showCountdown: 'उलटी गणना दाखवा',
+    minimizeBanner: 'बॅनर लहान करा',
+    mumbai: 'मुंबई',
+    dragToSet: 'स्थान निश्चित करण्यासाठी ओढा',
   },
 };

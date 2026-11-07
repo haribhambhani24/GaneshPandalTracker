@@ -25,12 +25,13 @@ import type { Pandal } from '../types/pandal';
 import { useI18n } from '../context/I18nContext';
 import { useTheme } from '../context/ThemeContext';
 import { useMyDarshan } from '../hooks/useMyDarshan';
+import { LanguageSwitcher } from '../components/Header/LanguageSwitcher';
 import { getGoogleMapsDirectionsUrl } from '../utils/geoUtils';
 
 export const PandalDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { t, formatNumber } = useI18n();
   const { isDark, toggleTheme } = useTheme();
   const { isSaved, toggleSave, isVisited, toggleVisited } = useMyDarshan();
 
@@ -62,7 +63,7 @@ export const PandalDetailPage: React.FC = () => {
       <div className="min-h-screen flex flex-col items-center justify-center bg-stone-50 dark:bg-stone-950 text-stone-800 dark:text-stone-200">
         <div className="w-12 h-12 rounded-full border-4 border-orange-500 border-t-transparent animate-spin mb-4" />
         <p className="text-sm font-semibold text-stone-600 dark:text-stone-400">
-          Loading pandal details...
+          {t.loadingPandalDetails}
         </p>
       </div>
     );
@@ -72,8 +73,8 @@ export const PandalDetailPage: React.FC = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-stone-50 dark:bg-stone-950 p-6 text-center text-stone-800 dark:text-stone-200">
         <div className="text-5xl mb-4">🕉️</div>
-        <h2 className="text-xl font-bold mb-2">Pandal Not Found</h2>
-        <p className="text-sm text-stone-500 mb-6">The pandal you are looking for could not be found.</p>
+        <h2 className="text-xl font-bold mb-2">{t.pandalNotFoundTitle}</h2>
+        <p className="text-sm text-stone-500 mb-6">{t.pandalNotFoundMsg}</p>
         <button
           onClick={() => navigate('/')}
           className="px-5 py-2.5 rounded-xl bg-orange-600 text-white font-semibold text-sm shadow-md cursor-pointer hover:bg-orange-700"
@@ -151,7 +152,7 @@ export const PandalDetailPage: React.FC = () => {
           {/* Bookmark Button */}
           <button
             onClick={() => toggleSave(pandal.id)}
-            title={saved ? 'Saved in My Darshan' : 'Save to My Darshan'}
+            title={saved ? t.saveToDarshan : t.myDarshan}
             className={`p-2 rounded-xl transition-all cursor-pointer ${
               saved
                 ? 'bg-amber-500 text-white shadow-xs'
@@ -164,7 +165,7 @@ export const PandalDetailPage: React.FC = () => {
           {/* Mark Visited Button */}
           <button
             onClick={() => toggleVisited(pandal.id)}
-            title={visited ? 'Visited' : 'Mark as Visited'}
+            title={visited ? t.visitedBadge : t.markVisited}
             className={`p-2 rounded-xl transition-all cursor-pointer ${
               visited
                 ? 'bg-emerald-600 text-white shadow-xs'
@@ -190,6 +191,9 @@ export const PandalDetailPage: React.FC = () => {
           >
             {isDark ? '☀️' : '🌙'}
           </button>
+
+          {/* Language Switcher */}
+          <LanguageSwitcher />
         </div>
       </nav>
 
@@ -221,7 +225,7 @@ export const PandalDetailPage: React.FC = () => {
               </span>
               {visited && (
                 <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-600 text-white shadow">
-                  Visited ✓
+                  {t.visitedBadge}
                 </span>
               )}
             </div>
@@ -229,7 +233,7 @@ export const PandalDetailPage: React.FC = () => {
             {/* Counter badge on bottom-right of photo */}
             {photos.length > 1 && (
               <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md text-white text-xs px-2.5 py-1 rounded-lg border border-white/20">
-                📷 {activePhotoIdx + 1} / {photos.length}
+                📷 {formatNumber(activePhotoIdx + 1)} / {formatNumber(photos.length)}
               </div>
             )}
 
@@ -316,28 +320,28 @@ export const PandalDetailPage: React.FC = () => {
           <section className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/40 dark:to-orange-950/30 rounded-3xl p-5 border border-red-200 dark:border-red-900/50 shadow-md space-y-3">
             <div className="flex items-center gap-2 text-red-700 dark:text-red-400 font-bold text-sm uppercase tracking-wider">
               <AlertTriangle className="w-5 h-5 text-red-600 shrink-0" />
-              <span>Devotee Queue Advisory: Two Distinct Lines</span>
+              <span>{t.queueAdvisoryTitle}</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div className="p-3.5 rounded-2xl bg-white/90 dark:bg-stone-800/90 border border-red-200/60 dark:border-stone-700 space-y-1">
                 <span className="font-extrabold text-stone-900 dark:text-stone-100 text-sm block">
-                  👀 Mukh Darshan (Viewing Only)
+                  {t.mukhDarshan}
                 </span>
                 <p className="text-stone-600 dark:text-stone-300 leading-relaxed">
-                  Devotees walk across the main viewing stage 20 feet from the idol. Significantly faster queue (typically 2 to 4 hours). Recommended for travellers with limited time.
+                  {t.mukhDarshanDesc}
                 </p>
               </div>
               <div className="p-3.5 rounded-2xl bg-white/90 dark:bg-stone-800/90 border border-red-200/60 dark:border-stone-700 space-y-1">
                 <span className="font-extrabold text-stone-900 dark:text-stone-100 text-sm block">
-                  🙏 Navas / Charan Sparsh (Feet Touching)
+                  {t.navasDarshan}
                 </span>
                 <p className="text-stone-600 dark:text-stone-300 leading-relaxed">
-                  Line for pilgrims fulfilling special vows by touching Bappa's sacred feet. Can take 12 to 24+ hours on peak days and weekends.
+                  {t.navasDarshanDesc}
                 </p>
               </div>
             </div>
             <p className="text-xs text-stone-600 dark:text-stone-400 italic">
-              💡 Insider Tip: The lightest queues occur between 4:00 AM and 7:00 AM. Avoid peak evening hours between 6:00 PM and 11:00 PM.
+              {t.queueInsiderTip}
             </p>
           </section>
         )}

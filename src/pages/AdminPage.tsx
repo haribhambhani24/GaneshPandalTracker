@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { pandalService } from '../services/pandalService';
+import { useI18n } from '../context/I18nContext';
+import { LanguageSwitcher } from '../components/Header/LanguageSwitcher';
 import type { CrowdLevel, Pandal, PandalStatus } from '../types/pandal';
 
 interface AdminSessionUser {
@@ -33,6 +35,8 @@ interface AdminSession {
 }
 
 export const AdminPage: React.FC = () => {
+  const { t, formatStatus, formatCrowdLevel, formatNumber } = useI18n();
+
   // Auth states
   const [session, setSession] = useState<AdminSession | null>(null);
   const [authChecking, setAuthChecking] = useState<boolean>(true);
@@ -209,32 +213,36 @@ export const AdminPage: React.FC = () => {
             <Link
               to="/"
               className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-stone-300 hover:text-white transition-colors"
-              title="Return to Public Map"
+              title={t.backToMap}
             >
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <div className="flex items-center gap-1.5">
               <Shield className="w-5 h-5 text-amber-400" />
               <h1 className="font-extrabold text-base tracking-tight text-white">
-                Pandal Map Admin
+                {t.adminPortalTitle}
               </h1>
             </div>
           </div>
 
-          {session && (
-            <div className="flex items-center gap-3">
-              <span className="hidden sm:inline-block text-xs font-mono text-stone-300 bg-stone-800/80 px-2.5 py-1 rounded-md border border-stone-700">
-                {session?.user?.email || 'admin'}
-              </span>
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600/80 hover:bg-red-600 text-white font-bold text-xs shadow transition-colors cursor-pointer"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span>Logout</span>
-              </button>
-            </div>
-          )}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <LanguageSwitcher />
+
+            {session && (
+              <>
+                <span className="hidden sm:inline-block text-xs font-mono text-stone-300 bg-stone-800/80 px-2.5 py-1 rounded-md border border-stone-700">
+                  {session?.user?.email || 'admin'}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600/80 hover:bg-red-600 text-white font-bold text-xs shadow transition-colors cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>{t.logout}</span>
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </header>
 
@@ -249,10 +257,10 @@ export const AdminPage: React.FC = () => {
                 <Lock className="w-8 h-8" />
               </div>
               <h2 className="text-xl font-black text-stone-900 dark:text-white tracking-tight">
-                Admin Authentication
+                {t.adminAuthHeading}
               </h2>
               <p className="text-xs text-stone-500 dark:text-stone-400">
-                Sign in with your Supabase admin credentials to moderate pandal submissions.
+                {t.adminAuthSubtitle}
               </p>
             </div>
 
@@ -271,7 +279,7 @@ export const AdminPage: React.FC = () => {
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1">
-                  Admin Email
+                  {t.adminEmailLabel}
                 </label>
                 <input
                   type="email"
@@ -285,7 +293,7 @@ export const AdminPage: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1">
-                  Password
+                  {t.adminPasswordLabel}
                 </label>
                 <input
                   type="password"
@@ -307,7 +315,7 @@ export const AdminPage: React.FC = () => {
                 ) : (
                   <>
                     <KeyRound className="w-4 h-4" />
-                    <span>Log In as Admin</span>
+                    <span>{t.logInAsAdmin}</span>
                   </>
                 )}
               </button>
@@ -330,9 +338,9 @@ export const AdminPage: React.FC = () => {
                       : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200'
                   }`}
                 >
-                  <span>Pending Submissions</span>
+                  <span>{t.pendingSubmissions}</span>
                   <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-black/20 text-white">
-                    {pendingList.length}
+                    {formatNumber(pendingList.length)}
                   </span>
                 </button>
 
@@ -345,9 +353,9 @@ export const AdminPage: React.FC = () => {
                       : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200'
                   }`}
                 >
-                  <span>Approved Live Pandals</span>
+                  <span>{t.approvedLivePandals}</span>
                   <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-black/20 text-white">
-                    {approvedList.length}
+                    {formatNumber(approvedList.length)}
                   </span>
                 </button>
 
@@ -360,9 +368,9 @@ export const AdminPage: React.FC = () => {
                       : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200'
                   }`}
                 >
-                  <span>Rejected</span>
+                  <span>{t.rejected}</span>
                   <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-black/20 text-white">
-                    {rejectedList.length}
+                    {formatNumber(rejectedList.length)}
                   </span>
                 </button>
               </div>
@@ -373,7 +381,7 @@ export const AdminPage: React.FC = () => {
                 className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 transition-colors cursor-pointer shrink-0"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${loadingData ? 'animate-spin' : ''}`} />
-                <span>Refresh</span>
+                <span>{t.refresh}</span>
               </button>
             </div>
 
@@ -382,13 +390,12 @@ export const AdminPage: React.FC = () => {
               <div className="bg-white dark:bg-stone-900 rounded-3xl p-12 text-center border border-stone-200 dark:border-stone-800 shadow-sm space-y-2">
                 <div className="text-3xl">🕉️</div>
                 <h3 className="font-bold text-sm text-stone-800 dark:text-stone-200">
-                  No {activeTab} pandals
-                </h3>
-                <p className="text-xs text-stone-500 dark:text-stone-400 max-w-sm mx-auto">
                   {activeTab === 'pending'
-                    ? 'All community submissions have been reviewed! New submissions will appear here.'
-                    : `No pandals currently marked as ${activeTab}.`}
-                </p>
+                    ? t.noPendingPandals
+                    : activeTab === 'approved'
+                    ? t.noApprovedPandals
+                    : t.noRejectedPandals}
+                </h3>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -421,7 +428,7 @@ export const AdminPage: React.FC = () => {
                                 : 'bg-red-600 text-white'
                             }`}
                           >
-                            {pandal.status}
+                            {formatStatus(pandal.status)}
                           </span>
 
                           {/* External link to Google Maps */}
@@ -430,10 +437,10 @@ export const AdminPage: React.FC = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-black/60 text-white backdrop-blur-md flex items-center gap-1 border border-white/20 hover:bg-black"
-                            title="Verify in Google Maps"
+                            title={t.verifyGps}
                           >
                             <MapPin className="w-3 h-3 text-amber-400" />
-                            <span>Verify GPS</span>
+                            <span>{t.verifyGps}</span>
                             <ExternalLink className="w-2.5 h-2.5" />
                           </a>
 
@@ -467,11 +474,11 @@ export const AdminPage: React.FC = () => {
                           <div className="flex flex-wrap items-center gap-1.5 pt-1">
                             {pandal.ecoFriendly && (
                               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300/40">
-                                <Leaf className="w-2.5 h-2.5" /> Eco
+                                <Leaf className="w-2.5 h-2.5" /> {t.ecoFriendly}
                               </span>
                             )}
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300">
-                              <Users className="w-2.5 h-2.5" /> {pandal.crowdLevel} Rush
+                              <Users className="w-2.5 h-2.5" /> {formatCrowdLevel(pandal.crowdLevel)}
                             </span>
                             <span className="font-mono text-[10px] text-stone-500">
                               [{pandal.lat.toFixed(4)}, {pandal.lng.toFixed(4)}]
@@ -496,7 +503,7 @@ export const AdminPage: React.FC = () => {
                               className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs cursor-pointer disabled:opacity-50"
                             >
                               <Check className="w-3.5 h-3.5" />
-                              <span>Approve</span>
+                              <span>{t.approve}</span>
                             </button>
                           )}
 
@@ -521,7 +528,7 @@ export const AdminPage: React.FC = () => {
                             className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 text-stone-800 dark:text-stone-200 font-semibold text-xs cursor-pointer"
                           >
                             <Edit2 className="w-3 h-3" />
-                            <span>Edit</span>
+                            <span>{t.edit}</span>
                           </button>
 
                           {pandal.status !== 'rejected' && (
@@ -531,7 +538,7 @@ export const AdminPage: React.FC = () => {
                               className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300 hover:bg-red-200 font-semibold text-xs cursor-pointer disabled:opacity-50"
                             >
                               <XCircle className="w-3 h-3" />
-                              <span>Reject</span>
+                              <span>{t.reject}</span>
                             </button>
                           )}
                         </div>
@@ -541,7 +548,7 @@ export const AdminPage: React.FC = () => {
                             <Link
                               to={`/pandal/${pandal.id}`}
                               className="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300 hover:bg-orange-200"
-                              title="Preview on Public Site"
+                              title={t.viewFullDetails}
                             >
                               <Eye className="w-3.5 h-3.5" />
                             </Link>
@@ -551,7 +558,7 @@ export const AdminPage: React.FC = () => {
                             onClick={() => handleDelete(pandal.id, pandal.name)}
                             disabled={isProcessing}
                             className="p-1.5 rounded-lg bg-stone-200 dark:bg-stone-700 text-stone-600 hover:text-red-600 transition-colors"
-                            title="Delete entry"
+                            title={t.delete}
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -574,7 +581,7 @@ export const AdminPage: React.FC = () => {
           <div className="bg-white dark:bg-stone-900 w-full max-w-lg rounded-3xl p-6 border border-stone-200 dark:border-stone-800 shadow-2xl space-y-4 my-8">
             <div className="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-3">
               <h3 className="font-extrabold text-base text-stone-900 dark:text-white">
-                Edit Pandal Details
+                {t.editPandalDetails}
               </h3>
               <button
                 onClick={() => setEditingPandal(null)}
@@ -586,7 +593,7 @@ export const AdminPage: React.FC = () => {
 
             <form onSubmit={handleSaveEdit} className="space-y-3 text-xs">
               <div>
-                <label className="block font-bold mb-1">Name</label>
+                <label className="block font-bold mb-1">{t.pandalNameLabel}</label>
                 <input
                   type="text"
                   value={editForm.name || ''}
@@ -597,7 +604,7 @@ export const AdminPage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block font-bold mb-1">Area</label>
+                  <label className="block font-bold mb-1">{t.areaLabel}</label>
                   <input
                     type="text"
                     value={editForm.area || ''}
@@ -606,7 +613,7 @@ export const AdminPage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-bold mb-1">Nearest Station</label>
+                  <label className="block font-bold mb-1">{t.nearestStation}</label>
                   <input
                     type="text"
                     value={editForm.nearestStation || ''}
@@ -617,7 +624,7 @@ export const AdminPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-bold mb-1">Address</label>
+                <label className="block font-bold mb-1">{t.address}</label>
                 <input
                   type="text"
                   value={editForm.address || ''}
@@ -651,7 +658,7 @@ export const AdminPage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block font-bold mb-1">Darshan Timings</label>
+                  <label className="block font-bold mb-1">{t.darshanTimings}</label>
                   <input
                     type="text"
                     value={editForm.darshanTimings || ''}
@@ -660,15 +667,15 @@ export const AdminPage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-bold mb-1">Crowd Level</label>
+                  <label className="block font-bold mb-1">{t.crowdLevel}</label>
                   <select
                     value={editForm.crowdLevel || 'Medium'}
                     onChange={(e) => setEditForm({ ...editForm, crowdLevel: e.target.value as CrowdLevel })}
                     className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800"
                   >
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
+                    <option value="Low">{t.crowdLow}</option>
+                    <option value="Medium">{t.crowdMedium}</option>
+                    <option value="High">{t.crowdHigh}</option>
                   </select>
                 </div>
               </div>
@@ -680,7 +687,7 @@ export const AdminPage: React.FC = () => {
                     checked={editForm.ecoFriendly || false}
                     onChange={(e) => setEditForm({ ...editForm, ecoFriendly: e.target.checked })}
                   />
-                  <span>Eco-Friendly (Clay)</span>
+                  <span>{t.ecoFriendly}</span>
                 </label>
                 <label className="flex items-center gap-1.5 cursor-pointer">
                   <input
@@ -688,7 +695,7 @@ export const AdminPage: React.FC = () => {
                     checked={editForm.is24Hours || false}
                     onChange={(e) => setEditForm({ ...editForm, is24Hours: e.target.checked })}
                   />
-                  <span>24 Hours</span>
+                  <span>{t.twentyFourHours}</span>
                 </label>
               </div>
 
@@ -698,14 +705,14 @@ export const AdminPage: React.FC = () => {
                   onClick={() => setEditingPandal(null)}
                   className="px-4 py-2 rounded-xl bg-stone-100 dark:bg-stone-800 font-semibold"
                 >
-                  Cancel
+                  {t.cancel}
                 </button>
                 <button
                   type="submit"
                   disabled={editSaving}
                   className="px-5 py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold"
                 >
-                  {editSaving ? 'Saving...' : 'Save Changes'}
+                  {editSaving ? '...' : t.saveChanges}
                 </button>
               </div>
             </form>

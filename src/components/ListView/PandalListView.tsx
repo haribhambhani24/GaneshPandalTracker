@@ -24,7 +24,7 @@ export const PandalListView: React.FC<PandalListViewProps> = ({
   searchQuery,
 }) => {
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   if (pandals.length === 0) {
     return (
@@ -75,13 +75,13 @@ export const PandalListView: React.FC<PandalListViewProps> = ({
                 {distanceKm !== undefined && (
                   <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-orange-600 text-white flex items-center gap-1 shadow-md">
                     <Navigation className="w-2.5 h-2.5 rotate-45" />
-                    {formatDistance(distanceKm)}
+                    {formatDistance(distanceKm, locale)}
                   </span>
                 )}
                 {pandal.ecoFriendly && (
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white flex items-center gap-1 shadow-md">
                     <Leaf className="w-2.5 h-2.5" />
-                    Eco
+                    {t.ecoFriendly}
                   </span>
                 )}
               </div>
@@ -141,7 +141,7 @@ export const PandalListView: React.FC<PandalListViewProps> = ({
                     }}
                     className="inline-flex items-center gap-1 text-xs font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700"
                   >
-                    <span>Details</span>
+                    <span>{t.details}</span>
                     <ArrowRight className="w-3 h-3" />
                   </button>
 

@@ -13,11 +13,13 @@ import { ActiveCircuitBanner } from '../components/Circuits/ActiveCircuitBanner'
 import { usePandals } from '../hooks/usePandals';
 import { useUserLocation } from '../hooks/useUserLocation';
 import { useMyDarshan } from '../hooks/useMyDarshan';
+import { useI18n } from '../context/I18nContext';
 import { circuitService } from '../services/circuitService';
 import type { Pandal } from '../types/pandal';
 import type { Circuit } from '../types/circuit';
 
 export const MapPage: React.FC = () => {
+  const { t } = useI18n();
   const {
     location: userLocation,
     loading: locating,
@@ -278,13 +280,13 @@ export const MapPage: React.FC = () => {
                   <div className="text-2xl">🕉️</div>
                   <h4 className="font-bold text-sm text-stone-900 dark:text-stone-100">
                     {myDarshanFilterOnly
-                      ? 'No pandals saved in My Darshan yet'
-                      : 'No pandals match your filters'}
+                      ? t.noSavedDarshanTitle
+                      : t.noPandalsFound}
                   </h4>
                   <p className="text-xs text-stone-600 dark:text-stone-400">
                     {myDarshanFilterOnly
-                      ? 'Tap the bookmark icon on any pandal card to save it for your festival visit.'
-                      : 'Try adjusting or clearing your search and filters.'}
+                      ? t.noSavedDarshanMsg
+                      : t.adjustFiltersMsg}
                   </p>
                   <button
                     onClick={() => {
@@ -294,7 +296,7 @@ export const MapPage: React.FC = () => {
                     }}
                     className="mt-2 px-4 py-1.5 rounded-lg bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold shadow cursor-pointer transition-colors"
                   >
-                    Clear All Filters
+                    {t.clearAllFilters}
                   </button>
                 </div>
               </div>

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { List, Map, Moon, Plus, Shield, Sun } from 'lucide-react';
-import type { Language } from '../../i18n';
 import { useI18n } from '../../context/I18nContext';
 import { useTheme } from '../../context/ThemeContext';
 import { SearchBarWithSuggestions } from '../Search/SearchBarWithSuggestions';
+import { LanguageSwitcher } from './LanguageSwitcher';
 import type { Pandal } from '../../types/pandal';
 
 interface NavbarProps {
@@ -30,7 +30,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   filteredCount,
   distancesMap,
 }) => {
-  const { language, setLanguage, t } = useI18n();
+  const { t, formatNumber } = useI18n();
   const { isDark, toggleTheme } = useTheme();
 
   return (
@@ -48,7 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {t.appName}
               </h1>
               <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-300 text-red-900 uppercase">
-                Mumbai • {totalPandals}
+                {t.mumbai} • {formatNumber(totalPandals)}
               </span>
             </div>
             <p className="text-[11px] sm:text-xs text-amber-100 font-medium opacity-90 truncate max-w-[170px] sm:max-w-none">
@@ -59,23 +59,8 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Actions: Lang Switcher, Theme Toggle, Map/List Toggle */}
         <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Language Switcher */}
-          <div className="flex bg-black/25 rounded-lg p-0.5 border border-white/20 text-xs font-semibold">
-            {(['en', 'hi', 'mr'] as Language[]).map((lang) => (
-              <button
-                key={lang}
-                onClick={() => setLanguage(lang)}
-                className={`px-1.5 sm:px-2 py-1 rounded-md uppercase transition-colors cursor-pointer ${
-                  language === lang
-                    ? 'bg-amber-400 text-red-950 shadow-xs'
-                    : 'text-amber-100 hover:text-white'
-                }`}
-                title={lang === 'en' ? 'English' : lang === 'hi' ? 'हिंदी' : 'मराठी'}
-              >
-                {lang}
-              </button>
-            ))}
-          </div>
+          {/* Reusable Global Language Switcher */}
+          <LanguageSwitcher />
 
           {/* Light/Dark Mode Toggle */}
           <button
@@ -91,17 +76,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           <Link
             to="/submit"
             className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-red-950 font-bold text-xs shadow-xs active:scale-95 transition-all"
-            title="Submit a Pandal"
+            title={t.submitPandal}
           >
             <Plus className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">Submit</span>
+            <span className="hidden md:inline">{t.submitPandal}</span>
           </Link>
 
           {/* Admin Link */}
           <Link
             to="/admin"
             className="p-1.5 sm:p-2 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-amber-100 hover:text-white border border-white/20 transition-all"
-            title="Admin Moderation Portal"
+            title={t.adminPortalTitle}
           >
             <Shield className="w-4 h-4 text-amber-300" />
           </Link>
@@ -124,7 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </>
             )}
             <span className="ml-0.5 px-1.5 py-0.2 rounded-full bg-amber-400 text-red-950 text-[10px]">
-              {filteredCount}
+              {formatNumber(filteredCount)}
             </span>
           </button>
         </div>

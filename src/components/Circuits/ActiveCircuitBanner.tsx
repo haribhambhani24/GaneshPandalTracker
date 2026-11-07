@@ -1,6 +1,7 @@
 import React from 'react';
 import { Compass, X } from 'lucide-react';
 import type { Circuit } from '../../types/circuit';
+import { useI18n } from '../../context/I18nContext';
 
 interface ActiveCircuitBannerProps {
   circuit: Circuit;
@@ -13,6 +14,8 @@ export const ActiveCircuitBanner: React.FC<ActiveCircuitBannerProps> = ({
   onClear,
   onOpenDetails,
 }) => {
+  const { t, formatNumber } = useI18n();
+
   return (
     <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[450] w-[92%] max-w-lg animate-in slide-in-from-top-4 duration-300">
       <div className="bg-white/95 dark:bg-stone-900/95 backdrop-blur-md rounded-2xl p-3 border border-orange-400/80 dark:border-orange-800 shadow-xl flex items-center justify-between gap-2.5">
@@ -26,9 +29,9 @@ export const ActiveCircuitBanner: React.FC<ActiveCircuitBannerProps> = ({
           <div className="overflow-hidden">
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 dark:text-orange-400">
-                Active Walking Trail
+                {t.activeCircuit}
               </span>
-              <span className="text-[10px] text-stone-500">• {circuit.totalDistanceKm} km</span>
+              <span className="text-[10px] text-stone-500">• {formatNumber(circuit.totalDistanceKm)} km</span>
             </div>
             <h4 className="font-extrabold text-xs sm:text-sm text-stone-900 dark:text-white truncate">
               {circuit.name}
@@ -41,12 +44,12 @@ export const ActiveCircuitBanner: React.FC<ActiveCircuitBannerProps> = ({
             onClick={onOpenDetails}
             className="px-2.5 py-1.5 rounded-lg bg-orange-100 dark:bg-stone-800 text-orange-700 dark:text-orange-300 font-bold text-[11px] hover:bg-orange-200 transition-colors cursor-pointer"
           >
-            Stops
+            {t.stop}
           </button>
           <button
             onClick={onClear}
             className="p-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-500 hover:text-red-600 transition-colors cursor-pointer"
-            title="Exit walking route"
+            title={t.exitCircuit}
           >
             <X className="w-4 h-4" />
           </button>

@@ -37,3 +37,4 @@ Desktop.ini
 verify-*.cjs
 debug-*.cjs
 test-*.cjs
+scratch/

@@ -30,7 +30,7 @@ function calculateTimeRemaining(): TimeRemaining {
 }
 
 export const FestivalCountdownBanner: React.FC = () => {
-  const { t } = useI18n();
+  const { t, formatNumber } = useI18n();
   const [timeLeft, setTimeLeft] = useState<TimeRemaining>(calculateTimeRemaining());
   const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
     return localStorage.getItem('pandal_map_banner_collapsed') === 'true';
@@ -62,11 +62,11 @@ export const FestivalCountdownBanner: React.FC = () => {
           <span className="text-amber-400">🕉️</span>
           <span className="truncate">{t.festivalBannerTitle} ({t.festivalDates})</span>
           <span className="text-[11px] text-amber-300 font-bold ml-1">
-            • {timeLeft.days} {t.countdownDays} {t.startsIn}
+            • {formatNumber(timeLeft.days)} {t.countdownDays} {t.startsIn}
           </span>
         </div>
         <div className="flex items-center gap-1 text-[11px] text-amber-300 font-medium shrink-0 ml-2">
-          <span>Show Countdown</span>
+          <span>{t.showCountdown}</span>
           <ChevronDown className="w-3.5 h-3.5" />
         </div>
       </button>
@@ -90,7 +90,7 @@ export const FestivalCountdownBanner: React.FC = () => {
                 {t.festivalBannerTitle}
               </span>
               <span className="text-[10px] bg-red-800/80 text-amber-200 border border-amber-400/30 px-1.5 py-0.2 rounded font-semibold">
-                Mumbai Utsav
+                {t.mumbaiUtsav}
               </span>
             </div>
             <p className="text-[11px] text-stone-300 flex items-center justify-center sm:justify-start gap-1 font-medium">
@@ -109,7 +109,7 @@ export const FestivalCountdownBanner: React.FC = () => {
             {/* Days */}
             <div className="bg-black/40 backdrop-blur-xs border border-amber-500/30 rounded-lg px-2 py-1 min-w-[42px] sm:min-w-[48px]">
               <div className="text-xs sm:text-sm font-extrabold text-amber-300 leading-none">
-                {timeLeft.days}
+                {formatNumber(timeLeft.days)}
               </div>
               <div className="text-[9px] uppercase font-sans text-stone-300 mt-0.5">
                 {t.countdownDays}
@@ -153,7 +153,7 @@ export const FestivalCountdownBanner: React.FC = () => {
           {/* Minimize toggle */}
           <button
             onClick={toggleCollapse}
-            title="Minimize Banner"
+            title={t.minimizeBanner}
             className="p-1 rounded-md text-amber-300 hover:bg-white/10 active:scale-95 transition-colors ml-1"
           >
             <ChevronUp className="w-4 h-4" />

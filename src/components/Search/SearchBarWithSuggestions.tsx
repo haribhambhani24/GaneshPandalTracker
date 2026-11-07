@@ -19,7 +19,7 @@ export const SearchBarWithSuggestions: React.FC<SearchBarWithSuggestionsProps> =
   onSelectSuggestion,
   distancesMap,
 }) => {
-  const { t } = useI18n();
+  const { t, locale, formatNumber, formatCrowdLevel } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -125,7 +125,7 @@ export const SearchBarWithSuggestions: React.FC<SearchBarWithSuggestionsProps> =
           <div className="px-3.5 py-1.5 bg-amber-50/80 dark:bg-stone-900/60 text-[11px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-400 flex items-center justify-between">
             <span>{t.searchSuggestionsTitle}</span>
             <span className="text-[10px] text-stone-500 font-normal">
-              {suggestions.length} matches
+              {formatNumber(suggestions.length)} {t.matches}
             </span>
           </div>
 
@@ -173,14 +173,14 @@ export const SearchBarWithSuggestions: React.FC<SearchBarWithSuggestionsProps> =
                     {distanceKm !== undefined && (
                       <span className="text-[11px] font-semibold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/60 px-2 py-0.5 rounded-full border border-orange-200 dark:border-orange-800 flex items-center gap-1">
                         <Navigation className="w-2.5 h-2.5 rotate-45" />
-                        {formatDistance(distanceKm)}
+                        {formatDistance(distanceKm, locale)}
                       </span>
                     )}
 
                     {pandal.ecoFriendly && (
                       <span className="hidden sm:inline-flex items-center gap-0.5 text-[10px] bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 px-1.5 py-0.5 rounded-full">
                         <Leaf className="w-2.5 h-2.5" />
-                        Eco
+                        {t.ecoFriendly}
                       </span>
                     )}
 
@@ -192,7 +192,7 @@ export const SearchBarWithSuggestions: React.FC<SearchBarWithSuggestionsProps> =
                           ? 'bg-amber-500 ring-2 ring-amber-300'
                           : 'bg-emerald-500 ring-2 ring-emerald-300'
                       }`}
-                      title={`${pandal.crowdLevel} Rush`}
+                      title={formatCrowdLevel(pandal.crowdLevel)}
                     />
                   </div>
                 </li>

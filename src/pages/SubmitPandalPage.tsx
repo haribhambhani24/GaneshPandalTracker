@@ -12,6 +12,8 @@ import {
   Upload,
 } from 'lucide-react';
 import { LocationPickerMap } from '../components/Map/LocationPickerMap';
+import { LanguageSwitcher } from '../components/Header/LanguageSwitcher';
+import { useI18n } from '../context/I18nContext';
 import { pandalService } from '../services/pandalService';
 import type { CrowdLevel, PandalSubmission } from '../types/pandal';
 import { MUMBAI_CENTER } from '../utils/geoUtils';
@@ -36,6 +38,7 @@ const COMMON_AREAS = [
 
 export const SubmitPandalPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t, formatCrowdLevel } = useI18n();
 
   // Form states
   const [name, setName] = useState('');
@@ -73,12 +76,12 @@ export const SubmitPandalPage: React.FC = () => {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      setErrorMsg('Please select a valid image file (JPEG, PNG, WebP).');
+      setErrorMsg(t.errImageFormat);
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      setErrorMsg('Image size must be under 2 MB to upload.');
+      setErrorMsg(t.errImageTooLarge);
       return;
     }
 
@@ -93,36 +96,36 @@ export const SubmitPandalPage: React.FC = () => {
     const errs: Record<string, string> = {};
 
     if (!name.trim() || name.trim().length < 3) {
-      errs.name = 'Pandal name must be at least 3 characters.';
+      errs.name = t.errNameRequired;
     }
 
     const effectiveArea = area === 'Other Area' ? customArea.trim() : area.trim();
     if (!effectiveArea) {
-      errs.area = 'Please specify the area/locality in Mumbai.';
+      errs.area = t.errAreaRequired;
     }
 
     if (!address.trim() || address.trim().length < 5) {
-      errs.address = 'Please provide a clear street address.';
+      errs.address = t.errAddressRequired;
     }
 
     if (!nearestStation.trim() || nearestStation.trim().length < 2) {
-      errs.nearestStation = 'Please specify the closest railway or metro station.';
+      errs.nearestStation = t.errStationRequired;
     }
 
     if (!darshanTimings.trim()) {
-      errs.darshanTimings = 'Darshan timings are required.';
+      errs.darshanTimings = t.errDarshanTimingsRequired;
     }
 
     if (!aartiTimings.trim()) {
-      errs.aartiTimings = 'Aarti timings are required.';
+      errs.aartiTimings = t.errAartiTimingsRequired;
     }
 
     if (!useUrlInstead && !photoFile && !photoPreview) {
-      errs.photo = 'Please upload a photo of the pandal or idol.';
+      errs.photo = t.errPhotoRequired;
     }
 
     if (useUrlInstead && (!photoUrlInput.trim() || !photoUrlInput.startsWith('http'))) {
-      errs.photo = 'Please enter a valid photo URL starting with http:// or https://';
+      errs.photo = t.errPhotoUrlInvalid;
     }
 
     setErrors(errs);
@@ -195,13 +198,13 @@ export const SubmitPandalPage: React.FC = () => {
             className="flex items-center gap-2 text-amber-100 hover:text-white font-semibold text-sm transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Back to Map</span>
+            <span>{t.backToMap}</span>
           </Link>
           <div className="flex items-center gap-2">
             <span className="text-xl">🕉️</span>
-            <h1 className="font-extrabold text-base tracking-tight">Submit a Pandal</h1>
+            <h1 className="font-extrabold text-base tracking-tight">{t.submitPandal}</h1>
           </div>
-          <div className="w-16" /> {/* Spacer */}
+          <LanguageSwitcher />
         </div>
       </header>
 
@@ -215,15 +218,15 @@ export const SubmitPandalPage: React.FC = () => {
 
             <div className="space-y-2">
               <h2 className="text-2xl font-black text-stone-900 dark:text-white tracking-tight">
-                🙏 Ganpati Bappa Morya!
+                {t.submissionSuccessTitle}
               </h2>
               <p className="text-sm font-semibold text-orange-600 dark:text-orange-400">
-                Pandal submission received for "{name}"
+                {t.submissionSuccessMsg.replace('{name}', name)}
               </p>
             </div>
 
             <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-300 max-w-md mx-auto leading-relaxed">
-              Your submission has been queued as <span className="font-bold text-amber-600">Pending Review</span>. Once verified by our community committee moderators in the admin panel, your pandal will appear live on the interactive map for all devotees.
+              {t.submissionQueuedMsg}
             </p>
 
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -231,7 +234,7 @@ export const SubmitPandalPage: React.FC = () => {
                 onClick={() => navigate('/')}
                 className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 text-white font-bold text-sm shadow-md hover:from-orange-500 hover:to-amber-500 transition-all cursor-pointer"
               >
-                Return to Pandal Map
+                {t.returnToPandalMap}
               </button>
               <button
                 onClick={() => {
@@ -243,7 +246,7 @@ export const SubmitPandalPage: React.FC = () => {
                 }}
                 className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 font-semibold text-sm hover:bg-stone-200 transition-colors"
               >
-                Submit Another Pandal
+                {t.submitAnotherPandal}
               </button>
             </div>
           </div>
@@ -252,11 +255,11 @@ export const SubmitPandalPage: React.FC = () => {
           <div className="bg-white dark:bg-stone-900 rounded-3xl p-5 sm:p-8 border border-stone-200 dark:border-stone-800 shadow-xl space-y-6">
             <div className="border-b border-stone-100 dark:border-stone-800 pb-4">
               <h2 className="text-xl font-black text-stone-900 dark:text-white tracking-tight flex items-center gap-2">
-                <span>Add Ganesh Pandal Details</span>
+                <span>{t.addPandalHeading}</span>
                 <Sparkles className="w-5 h-5 text-amber-500" />
               </h2>
               <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
-                Help out-of-town pilgrims discover authentic pandals during Ganesh Chaturthi.
+                {t.addPandalSubtitle}
               </p>
             </div>
 
@@ -271,14 +274,14 @@ export const SubmitPandalPage: React.FC = () => {
               {/* Name */}
               <div>
                 <label htmlFor="pandal-name" className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1">
-                  Pandal / Mandal Name <span className="text-red-500">*</span>
+                  {t.pandalNameLabel} <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="pandal-name"
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Balgopal Mitra Mandal, Khetwadicha Lambodara"
+                  placeholder={t.pandalNamePlaceholder}
                   className={`w-full px-3.5 py-2.5 rounded-xl border text-sm bg-stone-50 dark:bg-stone-800/80 text-stone-900 dark:text-white outline-hidden transition-all focus:ring-2 focus:ring-orange-500 ${
                     errors.name ? 'border-red-500 ring-1 ring-red-500' : 'border-stone-300 dark:border-stone-700'
                   }`}
@@ -290,7 +293,7 @@ export const SubmitPandalPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label htmlFor="pandal-area" className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1">
-                    Area / Locality <span className="text-red-500">*</span>
+                    {t.areaLabel} <span className="text-red-500">*</span>
                   </label>
                   <select
                     id="pandal-area"
@@ -300,7 +303,7 @@ export const SubmitPandalPage: React.FC = () => {
                   >
                     {COMMON_AREAS.map((a) => (
                       <option key={a} value={a}>
-                        {a}
+                        {a === 'Other Area' ? (t.specifyAreaLabel || a) : a}
                       </option>
                     ))}
                   </select>
@@ -309,21 +312,21 @@ export const SubmitPandalPage: React.FC = () => {
                 {area === 'Other Area' ? (
                   <div>
                     <label htmlFor="custom-area" className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1">
-                      Specify Area <span className="text-red-500">*</span>
+                      {t.specifyAreaLabel} <span className="text-red-500">*</span>
                     </label>
                     <input
                       id="custom-area"
                       type="text"
                       value={customArea}
                       onChange={(e) => setCustomArea(e.target.value)}
-                      placeholder="e.g. Borivali East, Ghatkopar"
+                      placeholder={t.specifyAreaPlaceholder}
                       className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 text-sm bg-stone-50 dark:bg-stone-800/80 text-stone-900 dark:text-white outline-hidden focus:ring-2 focus:ring-orange-500"
                     />
                   </div>
                 ) : (
                   <div>
                     <label htmlFor="nearest-station" className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1">
-                      Nearest Station <span className="text-red-500">*</span>
+                      {t.nearestStation} <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <Train className="absolute left-3 top-3 w-4 h-4 text-stone-400" />
@@ -332,7 +335,7 @@ export const SubmitPandalPage: React.FC = () => {
                         type="text"
                         value={nearestStation}
                         onChange={(e) => setNearestStation(e.target.value)}
-                        placeholder="e.g. Charni Road (Western) or CSMT"
+                        placeholder={t.nearestStationPlaceholder}
                         className={`w-full pl-9 pr-3.5 py-2.5 rounded-xl border text-sm bg-stone-50 dark:bg-stone-800/80 text-stone-900 dark:text-white outline-hidden focus:ring-2 focus:ring-orange-500 ${
                           errors.nearestStation ? 'border-red-500 ring-1 ring-red-500' : 'border-stone-300 dark:border-stone-700'
                         }`}
@@ -345,25 +348,26 @@ export const SubmitPandalPage: React.FC = () => {
               {/* Full Address */}
               <div>
                 <label htmlFor="pandal-address" className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1">
-                  Full Street Address <span className="text-red-500">*</span>
+                  {t.address} <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="pandal-address"
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Street, Landmark, Chawl / Building name, Pin Code"
+                  placeholder={t.addressPlaceholder}
                   className={`w-full px-3.5 py-2.5 rounded-xl border text-sm bg-stone-50 dark:bg-stone-800/80 text-stone-900 dark:text-white outline-hidden focus:ring-2 focus:ring-orange-500 ${
                     errors.address ? 'border-red-500 ring-1 ring-red-500' : 'border-stone-300 dark:border-stone-700'
                   }`}
                 />
+                {errors.address && <p className="text-[11px] text-red-500 mt-1 font-medium">{errors.address}</p>}
                 {errors.address && <p className="text-[11px] text-red-500 mt-1 font-medium">{errors.address}</p>}
               </div>
 
               {/* Interactive Map Pin Dropper */}
               <div className="pt-2">
                 <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1">
-                  Pandal Exact Location on Map <span className="text-red-500">*</span>
+                  {t.pandalLocationOnMap} <span className="text-red-500">*</span>
                 </label>
                 <LocationPickerMap
                   lat={lat}
@@ -379,7 +383,7 @@ export const SubmitPandalPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <div>
                   <label htmlFor="darshan-timings" className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1">
-                    Darshan Timings <span className="text-red-500">*</span>
+                    {t.darshanTimings} <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <Clock className="absolute left-3 top-3 w-4 h-4 text-stone-400" />
@@ -389,7 +393,7 @@ export const SubmitPandalPage: React.FC = () => {
                       value={darshanTimings}
                       onChange={(e) => setDarshanTimings(e.target.value)}
                       disabled={is24Hours}
-                      placeholder="e.g. 6:00 AM - 11:30 PM"
+                      placeholder={t.darshanTimingsPlaceholder}
                       className="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 text-sm bg-stone-50 dark:bg-stone-800/80 text-stone-900 dark:text-white outline-hidden focus:ring-2 focus:ring-orange-500 disabled:opacity-50"
                     />
                   </div>
@@ -397,14 +401,14 @@ export const SubmitPandalPage: React.FC = () => {
 
                 <div>
                   <label htmlFor="aarti-timings" className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1">
-                    Aarti Timings <span className="text-red-500">*</span>
+                    {t.aartiTimings} <span className="text-red-500">*</span>
                   </label>
                   <input
                     id="aarti-timings"
                     type="text"
                     value={aartiTimings}
                     onChange={(e) => setAartiTimings(e.target.value)}
-                    placeholder="e.g. 7:30 AM (Kakad), 8:00 PM (Maha Aarti)"
+                    placeholder={t.aartiTimingsPlaceholder}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 text-sm bg-stone-50 dark:bg-stone-800/80 text-stone-900 dark:text-white outline-hidden focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
@@ -413,14 +417,14 @@ export const SubmitPandalPage: React.FC = () => {
               {/* Visarjan Date */}
               <div>
                 <label htmlFor="visarjan-date" className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1">
-                  Visarjan Day / Procession Details
+                  {t.visarjanDateLabel}
                 </label>
                 <input
                   id="visarjan-date"
                   type="text"
                   value={visarjanDate}
                   onChange={(e) => setVisarjanDate(e.target.value)}
-                  placeholder="e.g. Anant Chaturdashi (Day 10 - Girgaon Chowpatty)"
+                  placeholder={t.visarjanDatePlaceholder}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 text-sm bg-stone-50 dark:bg-stone-800/80 text-stone-900 dark:text-white outline-hidden focus:ring-2 focus:ring-orange-500"
                 />
               </div>
@@ -435,7 +439,7 @@ export const SubmitPandalPage: React.FC = () => {
                     onChange={(e) => setIs24Hours(e.target.checked)}
                     className="w-4 h-4 text-orange-600 rounded-sm focus:ring-orange-500"
                   />
-                  <span className="text-xs font-semibold text-stone-800 dark:text-stone-200">24-Hour Darshan</span>
+                  <span className="text-xs font-semibold text-stone-800 dark:text-stone-200">{t.twentyFourHours}</span>
                 </label>
 
                 {/* Eco-Friendly Toggle */}
@@ -448,13 +452,13 @@ export const SubmitPandalPage: React.FC = () => {
                   />
                   <div className="flex items-center gap-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
                     <Leaf className="w-3.5 h-3.5" />
-                    <span>Clay / Shadu Mati</span>
+                    <span>{t.clayShaduIdol}</span>
                   </div>
                 </label>
 
                 {/* Crowd Level */}
                 <div className="flex flex-col justify-center px-3 py-1.5 rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-800/40">
-                  <span className="text-[11px] font-bold text-stone-600 dark:text-stone-400">Typical Rush</span>
+                  <span className="text-[11px] font-bold text-stone-600 dark:text-stone-400">{t.typicalRush}</span>
                   <div className="flex items-center gap-1.5 mt-1">
                     {(['Low', 'Medium', 'High'] as CrowdLevel[]).map((lvl) => (
                       <button
@@ -467,7 +471,7 @@ export const SubmitPandalPage: React.FC = () => {
                             : 'bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300'
                         }`}
                       >
-                        {lvl}
+                        {formatCrowdLevel(lvl)}
                       </button>
                     ))}
                   </div>
@@ -479,14 +483,14 @@ export const SubmitPandalPage: React.FC = () => {
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-bold text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
                     <ImageIcon className="w-4 h-4 text-orange-600" />
-                    <span>Pandal / Idol Photo <span className="text-red-500">*</span></span>
+                    <span>{t.pandalPhotoLabel} <span className="text-red-500">*</span></span>
                   </label>
                   <button
                     type="button"
                     onClick={() => setUseUrlInstead(!useUrlInstead)}
                     className="text-[11px] text-orange-600 dark:text-orange-400 font-semibold underline cursor-pointer"
                   >
-                    {useUrlInstead ? 'Upload file instead' : 'Provide image link instead'}
+                    {useUrlInstead ? t.uploadFileInstead : t.provideImageLinkInstead}
                   </button>
                 </div>
 
@@ -522,10 +526,10 @@ export const SubmitPandalPage: React.FC = () => {
                         </div>
                         <div>
                           <p className="text-xs font-bold text-stone-700 dark:text-stone-300">
-                            Click to upload pandal photo
+                            {t.clickToUploadPhoto}
                           </p>
                           <p className="text-[10px] text-stone-500 dark:text-stone-400">
-                            JPEG, PNG or WebP under 2 MB
+                            {t.imageSizeLimit}
                           </p>
                         </div>
                       </label>
@@ -545,14 +549,14 @@ export const SubmitPandalPage: React.FC = () => {
               {/* Description / Story */}
               <div>
                 <label htmlFor="pandal-desc" className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1">
-                  History, Heritage or Unique Features (Optional)
+                  {t.historyFeaturesOptional}
                 </label>
                 <textarea
                   id="pandal-desc"
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Share a short story, idol height, temple replicas, or community highlights..."
+                  placeholder={t.historyFeaturesPlaceholder}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 text-sm bg-stone-50 dark:bg-stone-800/80 text-stone-900 dark:text-white outline-hidden focus:ring-2 focus:ring-orange-500"
                 />
               </div>
@@ -568,16 +572,16 @@ export const SubmitPandalPage: React.FC = () => {
                   {submitting ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Submitting Pandal for Review...</span>
+                      <span>{t.submittingForReview}</span>
                     </>
                   ) : (
                     <>
-                      <span>🙏 Submit Pandal for Verification</span>
+                      <span>{t.submitForVerification}</span>
                     </>
                   )}
                 </button>
                 <p className="text-center text-[11px] text-stone-500 dark:text-stone-400 mt-2">
-                  All community submissions are verified by pandal committee admins prior to public listing.
+                  {t.submissionVerificationNote}
                 </p>
               </div>
             </form>
