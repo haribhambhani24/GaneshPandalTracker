@@ -205,10 +205,6 @@ export interface Translations {
   clearRecentSearches: string;
   noSearchResults: string;
   tryPopularArea: string;
-  sortByLabel: string;
-  sortByDistance: string;
-  sortByName: string;
-  sortByCrowd: string;
   resultsCount: string;
   openNow: string;
   closedNow: string;
@@ -463,10 +459,6 @@ export const translations: Record<Language, Translations> = {
     clearRecentSearches: "Clear",
     noSearchResults: "No pandals matching",
     tryPopularArea: "Try searching a popular area instead:",
-    sortByLabel: "Sort by",
-    sortByDistance: "Nearest",
-    sortByName: "Name (A-Z)",
-    sortByCrowd: "Lowest Crowd",
     resultsCount: "pandals",
     openNow: "Open now",
     closedNow: "Closed",
@@ -720,10 +712,6 @@ export const translations: Record<Language, Translations> = {
     clearRecentSearches: "हटाएं",
     noSearchResults: "इस खोज से कोई पंडाल मेल नहीं खाता",
     tryPopularArea: "इसके बजाय कोई लोकप्रिय क्षेत्र खोजें:",
-    sortByLabel: "क्रमबद्ध करें",
-    sortByDistance: "सबसे पास",
-    sortByName: "नाम (A-Z)",
-    sortByCrowd: "कम भीड़",
     resultsCount: "पंडाल",
     openNow: "अभी खुला है",
     closedNow: "बंद है",
@@ -977,10 +965,6 @@ export const translations: Record<Language, Translations> = {
     clearRecentSearches: "साफ करा",
     noSearchResults: "या शोधाशी कोणतेही मंडळ जुळत नाही",
     tryPopularArea: "त्याऐवजी लोकप्रिय परिसर निवडून पहा:",
-    sortByLabel: "क्रमवारी",
-    sortByDistance: "सर्वात जवळ",
-    sortByName: "नाव (A-Z)",
-    sortByCrowd: "कमी गर्दी",
     resultsCount: "मंडळे",
     openNow: "आता चालू आहे",
     closedNow: "बंद आहे",

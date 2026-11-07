@@ -54,8 +54,6 @@ export const MapPage: React.FC = () => {
     setTwentyFourHoursFilter,
     selectedArea,
     setSelectedArea,
-    sortBy,
-    setSortBy,
     sortByDistance,
     setSortByDistance,
     hasActiveFilters,
@@ -414,8 +412,6 @@ export const MapPage: React.FC = () => {
         myDarshanCount={savedCount}
         filteredCount={displayedPandals.length}
         totalCount={pandals.length}
-        sortBy={sortBy}
-        onSortByChange={setSortBy}
       />
 
       {/* First-Visit Lightweight Dismissible Hint */}

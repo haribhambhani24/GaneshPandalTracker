@@ -1,8 +1,7 @@
 import React from 'react';
-import { ArrowUpDown, Clock, Compass, Leaf, Locate, MapPin, Star, Users, X } from 'lucide-react';
+import { Clock, Compass, Leaf, Locate, MapPin, Star, Users, X } from 'lucide-react';
 import type { CrowdLevel } from '../../types/pandal';
 import type { Circuit } from '../../types/circuit';
-import type { SortOption } from '../../hooks/usePandals';
 import { useI18n } from '../../context/I18nContext';
 
 interface FilterChipsProps {
@@ -30,8 +29,6 @@ interface FilterChipsProps {
   myDarshanCount?: number;
   filteredCount?: number;
   totalCount?: number;
-  sortBy?: SortOption;
-  onSortByChange?: (sort: SortOption) => void;
 }
 
 // Shared control style specifications:
@@ -74,8 +71,6 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
   onToggleMyDarshanFilter,
   myDarshanCount = 0,
   filteredCount,
-  sortBy = 'default',
-  onSortByChange,
 }) => {
   const { t, formatNumber } = useI18n();
 
@@ -115,44 +110,6 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
             <Locate className={`w-4 h-4 shrink-0 ${locatingDistance ? 'animate-spin' : ''} ${sortByDistance ? 'text-white' : 'text-orange-600 dark:text-orange-400'}`} />
             <span>{locatingDistance ? t.nearMeLocating : sortByDistance ? t.nearMeActive : t.nearMe}</span>
           </button>
-
-          {/* Sort By Dropdown */}
-          {onSortByChange && (
-            <div className="shrink-0 relative">
-              <label htmlFor="sort-select" className="sr-only">
-                {t.sortByLabel}
-              </label>
-              <select
-                id="sort-select"
-                aria-label={t.sortByLabel}
-                value={sortBy}
-                onChange={(e) => onSortByChange(e.target.value as SortOption)}
-                className={`${baseSelectClass} ${
-                  sortBy !== 'default'
-                    ? 'bg-orange-600 text-white border-orange-600 shadow-xs hover:bg-orange-700'
-                    : inactiveClass
-                }`}
-              >
-                <option value="default" className="text-stone-900 bg-white dark:bg-stone-800 dark:text-white">
-                  {t.sortByLabel}: {t.allPandals}
-                </option>
-                <option value="distance" className="text-stone-900 bg-white dark:bg-stone-800 dark:text-white">
-                  {t.sortByLabel}: {t.sortByDistance}
-                </option>
-                <option value="name" className="text-stone-900 bg-white dark:bg-stone-800 dark:text-white">
-                  {t.sortByLabel}: {t.sortByName}
-                </option>
-                <option value="crowd" className="text-stone-900 bg-white dark:bg-stone-800 dark:text-white">
-                  {t.sortByLabel}: {t.sortByCrowd}
-                </option>
-              </select>
-              <ArrowUpDown
-                className={`w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none ${
-                  sortBy !== 'default' ? 'text-white' : 'text-stone-500 dark:text-stone-400'
-                }`}
-              />
-            </div>
-          )}
 
           {/* My Darshan Bookmark Pill */}
           {onToggleMyDarshanFilter && (
@@ -296,28 +253,6 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
                   onClick={onToggleMyDarshanFilter}
                   className="hover:text-amber-200 p-0.5 rounded-full ml-0.5"
                   title={t.clearAllFilters}
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </span>
-            )}
-
-            {/* Sort Chip (if not default) */}
-            {sortBy !== 'default' && onSortByChange && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-100 dark:bg-orange-950 text-orange-900 dark:text-orange-200 font-semibold border border-orange-300 dark:border-orange-800 shrink-0 text-xs">
-                <ArrowUpDown className="w-3.5 h-3.5 text-orange-600" />
-                <span>
-                  {sortBy === 'distance'
-                    ? t.sortByDistance
-                    : sortBy === 'name'
-                    ? t.sortByName
-                    : t.sortByCrowd}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => onSortByChange('default')}
-                  className="hover:text-red-600 p-0.5 rounded-full ml-0.5"
-                  title="Reset sorting"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
