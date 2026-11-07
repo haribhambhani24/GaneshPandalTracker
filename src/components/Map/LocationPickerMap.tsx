@@ -33,12 +33,32 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
     const map = L.map(mapContainerRef.current, {
       center: [initialLat, initialLng],
       zoom: 14,
-      zoomControl: true,
+      minZoom: 10,
+      maxZoom: 19,
+      zoomControl: false,
       attributionControl: false,
       scrollWheelZoom: false, // Disabled initially so page scrolls freely
       touchZoom: true,
+      doubleClickZoom: true,
       dragging: true,
     });
+
+    // Add customized zoom controls matching app theme
+    L.control
+      .zoom({
+        position: 'topleft',
+        zoomInTitle: t.zoomIn,
+        zoomOutTitle: t.zoomOut,
+        zoomInText: '+',
+        zoomOutText: '−',
+      })
+      .addTo(map);
+
+    // Apply translated aria-labels
+    const inBtn = mapContainerRef.current?.querySelector('.leaflet-control-zoom-in');
+    const outBtn = mapContainerRef.current?.querySelector('.leaflet-control-zoom-out');
+    if (inBtn) inBtn.setAttribute('aria-label', t.zoomIn);
+    if (outBtn) outBtn.setAttribute('aria-label', t.zoomOut);
 
     // Standard OpenStreetMap tiles (free, no API key required)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -116,13 +136,21 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
     container.addEventListener('touchstart', handleTouchStart, { passive: true });
     container.addEventListener('touchend', handleTouchEnd, { passive: true });
 
+    const handleResize = () => {
+      map.invalidateSize();
+    };
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+
     mapInstanceRef.current = map;
 
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 200);
+    setTimeout(() => map.invalidateSize(), 50);
+    setTimeout(() => map.invalidateSize(), 200);
+    setTimeout(() => map.invalidateSize(), 500);
 
     return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
       container.removeEventListener('mouseleave', handleMouseLeave);
       container.removeEventListener('touchstart', handleTouchStart);
       container.removeEventListener('touchend', handleTouchEnd);

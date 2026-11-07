@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useImperativeHandle, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -17,45 +17,88 @@ import { createClusterIcon, createGaneshaIcon } from './ganeshaMarker';
 
 import { MUMBAI_CENTER, DEFAULT_ZOOM } from '../../utils/geoUtils';
 
-interface LeafletMapProps {
+export interface LeafletMapRef {
+  zoomIn: () => void;
+  zoomOut: () => void;
+  getZoom: () => number;
+  invalidateSize: () => void;
+}
+
+export interface LeafletMapProps {
   pandals: Pandal[];
   selectedPandal: Pandal | null;
   onSelectPandal: (pandal: Pandal) => void;
   userLocation: UserLocation | null;
   center?: [number, number];
   zoom?: number;
+  onZoomChange?: (zoom: number) => void;
   zoomTarget?: { lat: number; lng: number; zoom: number; timestamp: number } | null;
   activeCircuit?: Circuit | null;
 }
 
-export const LeafletMap: React.FC<LeafletMapProps> = ({
-  pandals,
-  selectedPandal,
-  onSelectPandal,
-  userLocation,
-  center = MUMBAI_CENTER,
-  zoom = DEFAULT_ZOOM,
-  zoomTarget,
-  activeCircuit,
-}) => {
-  const mapContainerRef = useRef<HTMLDivElement | null>(null);
-  const mapInstanceRef = useRef<L.Map | null>(null);
-  const tileLayerRef = useRef<L.TileLayer | null>(null);
-  const clusterGroupRef = useRef<L.MarkerClusterGroup | L.FeatureGroup | null>(null);
-  const markersMapRef = useRef<Map<string, L.Marker>>(new Map());
-  const userMarkerRef = useRef<L.Marker | null>(null);
-  const circuitPolylineRef = useRef<L.Polyline | null>(null);
+export const LeafletMap = React.forwardRef<LeafletMapRef, LeafletMapProps>(
+  (
+    {
+      pandals,
+      selectedPandal,
+      onSelectPandal,
+      userLocation,
+      center = MUMBAI_CENTER,
+      zoom = DEFAULT_ZOOM,
+      onZoomChange,
+      zoomTarget,
+      activeCircuit,
+    },
+    ref
+  ) => {
+    const mapContainerRef = useRef<HTMLDivElement | null>(null);
+    const mapInstanceRef = useRef<L.Map | null>(null);
+    const tileLayerRef = useRef<L.TileLayer | null>(null);
+    const clusterGroupRef = useRef<L.MarkerClusterGroup | L.FeatureGroup | null>(null);
+    const markersMapRef = useRef<Map<string, L.Marker>>(new Map());
+    const userMarkerRef = useRef<L.Marker | null>(null);
+    const circuitPolylineRef = useRef<L.Polyline | null>(null);
 
-  // Initialize Map
-  useEffect(() => {
-    if (!mapContainerRef.current || mapInstanceRef.current) return;
+    // Expose imperative map controls to parent component
+    useImperativeHandle(
+      ref,
+      () => ({
+        zoomIn: () => {
+          mapInstanceRef.current?.zoomIn();
+        },
+        zoomOut: () => {
+          mapInstanceRef.current?.zoomOut();
+        },
+        getZoom: () => mapInstanceRef.current?.getZoom() ?? DEFAULT_ZOOM,
+        invalidateSize: () => {
+          mapInstanceRef.current?.invalidateSize();
+        },
+      }),
+      []
+    );
 
-    const map = L.map(mapContainerRef.current, {
-      center,
-      zoom,
-      zoomControl: false,
-      attributionControl: false,
-    });
+    // Initialize Map
+    useEffect(() => {
+      if (!mapContainerRef.current || mapInstanceRef.current) return;
+
+      const map = L.map(mapContainerRef.current, {
+        center,
+        zoom,
+        minZoom: 10,
+        maxZoom: 19,
+        zoomControl: false,
+        attributionControl: false,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
+        touchZoom: true,
+        dragging: true,
+      });
+
+      // Synchronize map zoom state with React state
+      map.on('zoomend', () => {
+        const currentZoom = map.getZoom();
+        onZoomChange?.(currentZoom);
+      });
 
     // Standard OpenStreetMap tiles (100% free, no API key required)
     const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -288,9 +331,20 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
     }
   }, [userLocation]);
 
+  // Keep map zoom in sync if updated from external controls
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map || zoom === undefined) return;
+    if (map.getZoom() !== zoom) {
+      map.setZoom(zoom);
+    }
+  }, [zoom]);
+
   return (
     <div className="relative w-full h-full">
       <div ref={mapContainerRef} className="w-full h-full z-0 outline-none" />
     </div>
   );
-};
+});
+
+LeafletMap.displayName = 'LeafletMap';

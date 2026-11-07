@@ -28,9 +28,9 @@ export const PandalBottomSheet: React.FC<PandalBottomSheetProps> = ({
 
   return (
     <>
-      {/* Backdrop (visible on mobile and subtle on desktop) */}
+      {/* Backdrop (visible on mobile, hidden on desktop so desktop map remains fully interactive) */}
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-xs z-[1001] transition-opacity duration-300 md:bg-black/20"
+        className="fixed inset-0 bg-black/30 backdrop-blur-[2px] z-[1001] transition-opacity duration-300 md:hidden"
         onClick={onClose}
         aria-hidden="true"
       />

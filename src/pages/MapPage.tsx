@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { LeafletMap } from '../components/Map/LeafletMap';
+import React, { useEffect, useRef, useState } from 'react';
+import { LeafletMap, type LeafletMapRef } from '../components/Map/LeafletMap';
 import { MUMBAI_CENTER } from '../utils/geoUtils';
 import { Navbar } from '../components/Header/Navbar';
 import { FestivalCountdownBanner } from '../components/Banner/FestivalCountdownBanner';
@@ -92,6 +92,28 @@ export const MapPage: React.FC = () => {
     } catch {}
     return 12;
   });
+
+  const mapRef = useRef<LeafletMapRef>(null);
+
+  const handleZoomIn = () => {
+    if (mapRef.current) {
+      mapRef.current.zoomIn();
+    } else {
+      setMapZoom((z) => Math.min(z + 1, 19));
+    }
+  };
+
+  const handleZoomOut = () => {
+    if (mapRef.current) {
+      mapRef.current.zoomOut();
+    } else {
+      setMapZoom((z) => Math.max(z - 1, 10));
+    }
+  };
+
+  const handleZoomChange = (newZoom: number) => {
+    setMapZoom(newZoom);
+  };
 
   useEffect(() => {
     try {
@@ -505,12 +527,14 @@ export const MapPage: React.FC = () => {
         ) : (
           <>
             <LeafletMap
+              ref={mapRef}
               pandals={pandals}
               selectedPandal={selectedPandal}
               onSelectPandal={handleSelectPandal}
               userLocation={userLocation}
               center={mapCenter}
               zoom={mapZoom}
+              onZoomChange={handleZoomChange}
               zoomTarget={zoomTarget}
               activeCircuit={activeCircuit}
             />
@@ -561,13 +585,16 @@ export const MapPage: React.FC = () => {
               </div>
             )}
 
-            {/* Floating Map Controls (Thumb-friendly) */}
+            {/* Floating Map Controls (Thumb-friendly & responsive to bottom sheet) */}
             <MapControls
-              onZoomIn={() => setMapZoom((z) => Math.min(z + 1, 18))}
-              onZoomOut={() => setMapZoom((z) => Math.max(z - 1, 10))}
+              onZoomIn={handleZoomIn}
+              onZoomOut={handleZoomOut}
+              canZoomIn={mapZoom < 19}
+              canZoomOut={mapZoom > 10}
               onLocateMe={handleToggleNearMe}
               onResetCenter={handleResetCenter}
               locating={locating}
+              isSheetOpen={!!selectedPandal}
             />
 
             {/* Bottom Sheet for Mobile & Side Card for Desktop */}
