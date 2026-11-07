@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { MapPin, Navigation } from 'lucide-react';
+import { Hand, MapPin, Navigation } from 'lucide-react';
 import { MUMBAI_CENTER } from '../../utils/geoUtils';
 
 interface LocationPickerMapProps {
@@ -19,6 +19,7 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
   const [detecting, setDetecting] = useState<boolean>(false);
+  const [isMapActive, setIsMapActive] = useState<boolean>(false);
 
   // Initialize interactive Leaflet map
   useEffect(() => {
@@ -32,6 +33,9 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
       zoom: 14,
       zoomControl: true,
       attributionControl: false,
+      scrollWheelZoom: false, // Disabled initially so page scrolls freely
+      touchZoom: true,
+      dragging: true,
     });
 
     // Standard OpenStreetMap tiles (free, no API key required)
@@ -78,7 +82,37 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
       const formattedLng = Number(clickLng.toFixed(6));
       marker.setLatLng([formattedLat, formattedLng]);
       onChange(formattedLat, formattedLng);
+      // Enable scroll wheel zoom on click
+      map.scrollWheelZoom.enable();
+      setIsMapActive(true);
     });
+
+    // Disable scrollWheelZoom on mouse leave so page scrolling resumes
+    const container = mapContainerRef.current;
+    const handleMouseLeave = () => {
+      map.scrollWheelZoom.disable();
+      setIsMapActive(false);
+    };
+    container.addEventListener('mouseleave', handleMouseLeave);
+
+    // Two-finger touch gesture handling on mobile:
+    // If 1 finger touch, disable map dragging so page scrolls smoothly.
+    // If 2 fingers touch, enable map dragging so user can pan/pinch zoom.
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        map.dragging.disable();
+      } else if (e.touches.length >= 2) {
+        map.dragging.enable();
+      }
+    };
+
+    const handleTouchEnd = () => {
+      // Re-enable dragging for next potential interaction
+      map.dragging.enable();
+    };
+
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchend', handleTouchEnd, { passive: true });
 
     mapInstanceRef.current = map;
 
@@ -87,6 +121,9 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
     }, 200);
 
     return () => {
+      container.removeEventListener('mouseleave', handleMouseLeave);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchend', handleTouchEnd);
       map.remove();
       mapInstanceRef.current = null;
     };
@@ -148,16 +185,28 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
         </button>
       </div>
 
-      {/* Map Container */}
-      <div className="relative w-full h-56 sm:h-64 rounded-2xl overflow-hidden border border-amber-300/80 dark:border-amber-900 shadow-inner z-0">
+      {/* Map Container with fixed 300px height on mobile and touch-action pan-y */}
+      <div className="relative w-full h-[300px] sm:h-[340px] rounded-2xl overflow-hidden border border-amber-300/80 dark:border-amber-900 shadow-inner z-0 touch-pan-y">
         <div ref={mapContainerRef} className="w-full h-full" />
 
         {/* Selected Coordinates Overlay */}
-        <div className="absolute bottom-2 left-2 z-[400] bg-black/75 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-mono text-amber-200 border border-white/20 shadow">
+        <div className="absolute bottom-2 left-2 z-[400] bg-black/75 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-mono text-amber-200 border border-white/20 shadow pointer-events-none">
           {lat.toFixed(4)}, {lng.toFixed(4)}
         </div>
+
+        {/* Mobile touch hint overlay */}
+        <div className="absolute top-2 right-2 z-[400] bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full text-[10px] text-stone-200 border border-white/20 shadow pointer-events-none flex items-center gap-1">
+          <Hand className="w-3 h-3 text-amber-300" />
+          <span>Two fingers to pan • Tap to pin</span>
+        </div>
+
+        {/* Click to zoom indicator on desktop */}
+        {!isMapActive && (
+          <div className="hidden sm:block absolute bottom-2 right-2 z-[400] bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-md text-[10px] text-stone-300 border border-white/15 pointer-events-none">
+            Click map to enable wheel zoom
+          </div>
+        )}
       </div>
     </div>
   );
 };
-

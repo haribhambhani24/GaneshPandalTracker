@@ -186,7 +186,7 @@ export const SubmitPandalPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 pb-16">
+    <div className="w-full min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 pb-36 overflow-y-visible">
       {/* Top Header */}
       <header className="sticky top-0 z-50 bg-gradient-to-r from-orange-600 via-amber-600 to-red-700 text-white shadow-md">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -558,11 +558,12 @@ export const SubmitPandalPage: React.FC = () => {
               </div>
 
               {/* Submit CTA Button */}
-              <div className="pt-3">
+              <div className="pt-4 pb-6">
                 <button
+                  id="submit-pandal-btn"
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-orange-600 via-amber-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-black text-sm tracking-wide shadow-lg shadow-orange-600/25 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-orange-600 via-amber-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-black text-base tracking-wide shadow-xl shadow-orange-600/30 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {submitting ? (
                     <>
