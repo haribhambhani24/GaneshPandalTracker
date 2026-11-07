@@ -14,3 +14,4 @@ export interface VisarjanSite {
   trafficAdvisory: string;
   tideSafetyTip: string;
 }
+
