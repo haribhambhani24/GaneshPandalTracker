@@ -34,11 +34,12 @@ async function run() {
     await new Promise((r) => setTimeout(r, 500));
     await page.screenshot({ path: path.join(OUT_DIR, '02_search_focused_recent.png') });
 
-    // Type Marathi query "लालबाग"
+    // Type search query "Lalbaug"
     await page.evaluate(() => {
       const input = document.querySelector('input[type="text"]');
       if (input) {
-        input.value = 'लालबाग';
+        const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+        nativeSetter.call(input, 'Lalbaug');
         input.dispatchEvent(new Event('input', { bubbles: true }));
       }
     });
@@ -48,7 +49,7 @@ async function run() {
     // Select suggestion
     const suggestion = await page.$('#search-suggestions-dropdown li');
     if (suggestion) {
-      console.log('✓ Found suggestion for Devanagari search "लालबाग".');
+      console.log('✓ Found suggestion for search "Lalbaug".');
       await suggestion.click();
       await new Promise((r) => setTimeout(r, 1000));
       await page.screenshot({ path: path.join(OUT_DIR, '04_pandal_selected_bottom_sheet.png') });
