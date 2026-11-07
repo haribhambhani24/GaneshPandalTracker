@@ -1,0 +1,54 @@
+[
+  {
+    "id": "lalbaug-central-circuit",
+    "name": "Lalbaug Grand Walking Trail",
+    "tagline": "4 Iconic Pandals • 1.6 km Walk • ~35 mins walk",
+    "area": "Lalbaug / Chinchpokli",
+    "pandalIds": [
+      "chinchpoklicha-chintamani",
+      "mumbaicha-raja-ganesh-galli",
+      "lalbaugcha-raja",
+      "tejukaya-sarvajanik-mandal"
+    ],
+    "totalDistanceKm": 1.6,
+    "estimatedWalkingMins": 35,
+    "entryStation": "Chinchpokli (Central Railway)",
+    "exitStation": "Currey Road (Central Railway)",
+    "travelTip": "Start at Chinchpokli station by 6:00 AM. Visit Chinchpoklicha Chintamani and Ganesh Galli first before the giant Lalbaugcha Raja queue peaks.",
+    "themeColor": "#EA580C"
+  },
+  {
+    "id": "girgaon-heritage-circuit",
+    "name": "Girgaon Historical Heritage Trail",
+    "tagline": "3 Historic Pandals • 1.1 km Walk • ~25 mins walk",
+    "area": "Girgaon / Grant Road",
+    "pandalIds": [
+      "keshavji-naik-chawl",
+      "khetwadi-4th-lane",
+      "khetwadi-12th-lane"
+    ],
+    "totalDistanceKm": 1.1,
+    "estimatedWalkingMins": 25,
+    "entryStation": "Charni Road (Western Railway)",
+    "exitStation": "Grant Road (Western Railway)",
+    "travelTip": "Visit Mumbai's very first pandal (est. 1893 by Lokmanya Tilak) in Keshavji Naik Chawl, then stroll through the bustling chawl lanes to the 40-foot giant idol at Khetwadi 12th Lane.",
+    "themeColor": "#DC2626"
+  },
+  {
+    "id": "vedic-annadanam-circuit",
+    "name": "Vedic & Golden Ganpati Tour",
+    "tagline": "2 Sacred Mandals • Pure Gold Idols • Free Annadanam Prasadam",
+    "area": "Matunga / Sion / Wadala",
+    "pandalIds": [
+      "gsb-seva-mandal-kings-circle",
+      "gsb-wadala-ram-mandir"
+    ],
+    "totalDistanceKm": 2.2,
+    "estimatedWalkingMins": 28,
+    "entryStation": "King's Circle / GTB Nagar (Harbour)",
+    "exitStation": "Wadala Road (Harbour Line)",
+    "travelTip": "Plan your visit between 12:00 PM and 2:00 PM to receive sacred festive lunch prasadam (Annadanam) served on fresh banana leaves.",
+    "themeColor": "#D97706"
+  }
+]
+

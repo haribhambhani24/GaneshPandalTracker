@@ -1,0 +1,333 @@
+[
+  {
+    "id": "lalbaugcha-raja",
+    "name": "Lalbaugcha Raja",
+    "area": "Lalbaug",
+    "lat": 18.9912, // TODO: verify
+    "lng": 72.8354, // TODO: verify
+    "address": "Dr Baba Saheb Ambedkar Rd, Lal Baug, Parel, Mumbai, Maharashtra 400012",
+    "description": "Mumbai's most revered and iconic Ganesha ('Navasacha Ganpati' - fulfiller of wishes), founded in 1934. Millions of pilgrims queue for the special Navas (feet touching) and Mukh darshan lines.",
+    "history": "Founded in 1934 by local Koli fishermen and traders of the Peru Chawl market after their original marketplace was shut down. They vowed to establish a Ganpati pandal if a permanent market was granted. The wish was fulfilled, giving birth to the legend of the 'Navasacha Ganpati' (the one who fulfills all vows). The idol is sculpted in a majestic, lifelike posture by the Kambli family who have crafted it for generations.",
+    "photoUrl": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1567591414240-e175d275723b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1598887142487-3c854d51d2c7?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "darshanTimings": "24 Hours (Navas line may take 12-24 hrs; Mukh line 3-6 hrs)",
+    "aartiTimings": "12:30 PM (Madhyanha Aarti), 8:30 PM (Sandhya Aarti)",
+    "ecoFriendly": false,
+    "is24Hours": true,
+    "crowdLevel": "High",
+    "nearestStation": "Chinchpokli / Currey Road",
+    "visarjanDate": "Anant Chaturdashi (Day 10 - Grand Arabian Sea Immersion via Girgaon Chowpatty)"
+  },
+  {
+    "id": "gsb-seva-mandal-kings-circle",
+    "name": "GSB Seva Mandal (Gold Ganpati)",
+    "area": "King's Circle / Sion",
+    "lat": 19.0306, // TODO: verify
+    "lng": 72.8598, // TODO: verify
+    "address": "Guru Ganesh Prerana Mandap, Bhookailash Nagar, Sion East, Mumbai, Maharashtra 400022",
+    "description": "Famed as the richest Ganesha mandal in the world, adorned with over 60kg of pure gold ornaments and 250kg of pure silver. Celebrates purely with sacred clay (shadu mati) and traditional South Indian Vedic rituals.",
+    "history": "Established in 1954 by the Gowd Saraswat Brahmin (GSB) community from coastal Karnataka and Goa. The mandal is renowned for immense devotion, insured for hundreds of crores, yet strictly adhering to environmental Vedic values. The idol is 100% clay, dissolved inside an artificial tank after 5 days of elaborate pujas and continuous round-the-clock havans.",
+    "photoUrl": "https://images.unsplash.com/photo-1567591414240-e175d275723b?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1567591414240-e175d275723b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "darshanTimings": "6:00 AM - 11:00 PM (Festival days 1 to 5 only)",
+    "aartiTimings": "7:00 AM, 1:00 PM (Maha Puja), 8:30 PM (Maha Aarti)",
+    "ecoFriendly": true,
+    "is24Hours": false,
+    "crowdLevel": "High",
+    "nearestStation": "King's Circle (Harbour) / GTB Nagar",
+    "visarjanDate": "Gauri Visarjan (Day 5)"
+  },
+  {
+    "id": "mumbaicha-raja-ganesh-galli",
+    "name": "Mumbaicha Raja (Ganesh Galli)",
+    "area": "Lalbaug",
+    "lat": 18.9905, // TODO: verify
+    "lng": 72.8341, // TODO: verify
+    "address": "Lane No. 1, Ganesh Galli, Lalbaug, Parel, Mumbai, Maharashtra 400012",
+    "description": "Established in 1928, this pandal is celebrated for pioneering monumental themes, often recreating replica scale models of India's famous heritage temples like Sun Temple, Kedarnath, or Hampi.",
+    "history": "Lalbaug Sarvajanik Utsav Mandal, affectionately called 'Mumbaicha Raja', was set up in 1928 by mill workers to unite the working-class community during the independence struggle. It is the pioneer of grand pandal architecture in Mumbai, building 30-foot tall replicas of sacred shrines that attract lakhs of travellers alongside Lalbaugcha Raja.",
+    "photoUrl": "https://images.unsplash.com/photo-1598887142487-3c854d51d2c7?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1598887142487-3c854d51d2c7?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1609137144822-261557007e60?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1590073844006-33379778ae09?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "darshanTimings": "6:00 AM - 1:00 AM (Next Day)",
+    "aartiTimings": "8:30 AM (Morning), 8:30 PM (Evening)",
+    "ecoFriendly": false,
+    "is24Hours": false,
+    "crowdLevel": "High",
+    "nearestStation": "Currey Road / Chinchpokli",
+    "visarjanDate": "Anant Chaturdashi (Day 10)"
+  },
+  {
+    "id": "andhericha-raja",
+    "name": "Andhericha Raja (Azad Nagar)",
+    "area": "Andheri West",
+    "lat": 19.1245, // TODO: verify
+    "lng": 72.8336, // TODO: verify
+    "address": "Azad Nagar II, Veera Desai Road, Andheri West, Mumbai, Maharashtra 400053",
+    "description": "The crown jewel of Mumbai's Western Suburbs, founded in 1966. Known for royal palace set designs, celebrity attendees, and continuing darshan until Sankashti Chaturthi (5 days after Anant Chaturdashi). Traditional dress code strictly enforced.",
+    "history": "Founded in 1966 by the blue-collar workers of the Golden Tobacco Company, Excel Industries, and Tata Special Steels. What started in a humble shed has grown into suburban Mumbai's most prestigious pandal, renowned for its golden chariot and fulfilling vows. A strict dress code (no shorts or sleeveless tops) preserves its reverent atmosphere.",
+    "photoUrl": "https://images.unsplash.com/photo-1609137144822-261557007e60?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1609137144822-261557007e60?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1567591414240-e175d275723b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "darshanTimings": "5:00 AM - 3:00 AM (Next Day)",
+    "aartiTimings": "8:30 AM, 12:30 PM, 8:30 PM",
+    "ecoFriendly": false,
+    "is24Hours": false,
+    "crowdLevel": "High",
+    "nearestStation": "Azad Nagar Metro / Andheri Station",
+    "visarjanDate": "Sankashti Chaturthi (Day 15/16 - 21 hour immersion procession to Versova Beach)"
+  },
+  {
+    "id": "khetwadi-12th-lane",
+    "name": "Khetwadi 12th Lane (Khetwadicha Raja)",
+    "area": "Girgaon / Grant Road",
+    "lat": 18.9587, // TODO: verify
+    "lng": 72.8202, // TODO: verify
+    "address": "12th Khetwadi Lane, Grant Road East, Mumbai, Maharashtra 400004",
+    "description": "Famed across India for crafting some of the most colossal and majestic Ganesh idols, often reaching heights of 38-45 feet adorned with intricate traditional ornamentation and diamond crowns.",
+    "history": "In 2000, Khetwadi 12th Lane created history by sculpting a 40-foot Ganesh idol, the tallest idol ever made in Indian history at the time. Ever since, it has maintained its reputation for stunning scale, artistry, and authentic South Mumbai old-world festival charm.",
+    "photoUrl": "https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1598887142487-3c854d51d2c7?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "darshanTimings": "7:00 AM - 12:00 Midnight",
+    "aartiTimings": "8:00 AM, 1:00 PM, 9:00 PM",
+    "ecoFriendly": false,
+    "is24Hours": false,
+    "crowdLevel": "High",
+    "nearestStation": "Grant Road / Charni Road",
+    "visarjanDate": "Anant Chaturdashi (Day 10)"
+  },
+  {
+    "id": "keshavji-naik-chawl",
+    "name": "Keshavji Naik Chawl (Mumbai's 1st Pandal)",
+    "area": "Girgaon",
+    "lat": 18.9555, // TODO: verify
+    "lng": 72.8188, // TODO: verify
+    "address": "Keshavji Naik Chawl, Khadilkar Road, Girgaon, Mumbai, Maharashtra 400004",
+    "description": "The historic birthplace of Sarvajanik Ganeshotsav in Mumbai, founded in 1893 by freedom fighter Lokmanya Bal Gangadhar Tilak. True to its centenary heritage, it features a modest 2.2-foot eco-friendly clay idol, no commercial sponsors, and warm community devotion.",
+    "history": "In 1893, Lokmanya Bal Gangadhar Tilak transformed the private family worship of Ganesha into a public festival (Sarvajanik Ganeshotsav) to mobilize Indians against British colonial rule. Keshavji Naik Chawl in Girgaon was the very first location in Mumbai to answer this call. Over 130 years later, the chawl still crafts the idol from pure Shadu clay, without loud sound systems or sponsorship hoardings.",
+    "photoUrl": "https://images.unsplash.com/photo-1590073844006-33379778ae09?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1590073844006-33379778ae09?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1567591414240-e175d275723b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1609137144822-261557007e60?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "darshanTimings": "6:30 AM - 11:00 PM",
+    "aartiTimings": "8:00 AM, 12:30 PM, 8:00 PM",
+    "ecoFriendly": true,
+    "is24Hours": false,
+    "crowdLevel": "Medium",
+    "nearestStation": "Charni Road (Western Line)",
+    "visarjanDate": "Anant Chaturdashi (Day 10 - Eco Immersion at Girgaon Chowpatty)"
+  },
+  {
+    "id": "chinchpoklicha-chintamani",
+    "name": "Chinchpoklicha Chintamani",
+    "area": "Chinchpokli",
+    "lat": 18.9882, // TODO: verify
+    "lng": 72.8329, // TODO: verify
+    "address": "Dattaram Lad Marg, Chinchpokli East, Mumbai, Maharashtra 400012",
+    "description": "Founded in 1920 by Chinchpokli Sarvajanik Utsav Mandal. Revered for its breathtaking, serene royal posture and iconic throne designs. The Aagman and Visarjan processions feature world-famous Maharashtrian Dhol-Tasha Pathaks.",
+    "history": "Formed in 1920, Chinchpoklicha Chintamani is celebrating over a century of heritage. Known as the 'Wish Granter' of Central Mumbai, the mandal's Aagman Sohala (welcoming ceremony) draws over 200,000 spectators as traditional percussionists and folk dancers perform through the narrow historic streets.",
+    "photoUrl": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1598887142487-3c854d51d2c7?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "darshanTimings": "7:00 AM - 1:00 AM",
+    "aartiTimings": "9:00 AM, 9:00 PM (Maha Aarti)",
+    "ecoFriendly": false,
+    "is24Hours": false,
+    "crowdLevel": "High",
+    "nearestStation": "Chinchpokli (Central Line)",
+    "visarjanDate": "Anant Chaturdashi (Day 10)"
+  },
+  {
+    "id": "sahyadri-krida-mandal",
+    "name": "Sahyadri Krida Mandal (Tilak Nagar)",
+    "area": "Tilak Nagar / Chembur",
+    "lat": 19.0664, // TODO: verify
+    "lng": 72.8953, // TODO: verify
+    "address": "Sahyadri Ground, Tilak Nagar, Chembur, Mumbai, Maharashtra 400089",
+    "description": "Known as Eastern Mumbai's most magnificent pandal, famous for astounding replicas of global and national architectural wonders (e.g., temples of Varanasi, Taj Mahal, Ayodhya Ram Mandir) with synchronized light and laser spectacles.",
+    "history": "Founded in 1975, Sahyadri Krida Mandal began as a sports and youth welfare club. It has achieved national acclaim for architectural themes that advocate religious harmony, national integration, and classical Indian art.",
+    "photoUrl": "https://images.unsplash.com/photo-1567591414240-e175d275723b?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1567591414240-e175d275723b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "darshanTimings": "6:00 AM - 12:00 Midnight",
+    "aartiTimings": "8:00 AM, 8:00 PM",
+    "ecoFriendly": false,
+    "is24Hours": false,
+    "crowdLevel": "Medium",
+    "nearestStation": "Tilak Nagar (Harbour) / Kurla (Central)",
+    "visarjanDate": "Anant Chaturdashi (Day 10)"
+  },
+  {
+    "id": "fort-vibhag-sarvajanik",
+    "name": "Fortcha Icchapurti (Fort Vibhag)",
+    "area": "Fort / South Mumbai",
+    "lat": 18.9372, // TODO: verify
+    "lng": 72.8344, // TODO: verify
+    "address": "Mint Road, Near GPO & CSMT, Fort, Mumbai, Maharashtra 400001",
+    "description": "Located in the heritage precinct of South Mumbai right next to CSMT. Known for regal palace facades inspired by Rajasthani and South Indian fort architectures and elegant marigold floral art.",
+    "history": "Situated near the historic Bombay Castle and Old Mint, Fort Vibhag caters to downtown bankers, government servants, and visitors stepping off express trains at CSMT. Its theme sets mirror ancient royal durbars and palaces.",
+    "photoUrl": "https://images.unsplash.com/photo-1598887142487-3c854d51d2c7?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1598887142487-3c854d51d2c7?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "darshanTimings": "7:00 AM - 11:30 PM",
+    "aartiTimings": "8:30 AM, 8:30 PM",
+    "ecoFriendly": false,
+    "is24Hours": false,
+    "crowdLevel": "Medium",
+    "nearestStation": "CSMT (Chhatrapati Shivaji Maharaj Terminus)",
+    "visarjanDate": "Anant Chaturdashi (Day 10)"
+  },
+  {
+    "id": "tejukaya-sarvajanik-mandal",
+    "name": "Tejukayacha Raja",
+    "area": "Lalbaug",
+    "lat": 18.9928, // TODO: verify
+    "lng": 72.8368, // TODO: verify
+    "address": "Tejukaya Compound, Dr. Baba Saheb Ambedkar Rd, Lalbaug, Mumbai, Maharashtra 400012",
+    "description": "Pioneering the green Ganesha movement in the heart of Lalbaug, Tejukaya crafts Mumbai's largest 100% eco-friendly papier-mâché and clay idols. Awarded multiple civic accolades for environmental stewardship.",
+    "history": "Tejukaya Compound was historically home to construction workers who built Bombay's port and railway infrastructures. In recent years, Tejukaya made international headlines by refusing Plaster of Paris (PoP) and creating 22-foot tall idols exclusively from natural clay and paper pulp.",
+    "photoUrl": "https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1590073844006-33379778ae09?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "darshanTimings": "6:00 AM - 12:00 Midnight",
+    "aartiTimings": "8:00 AM, 1:00 PM, 8:30 PM",
+    "ecoFriendly": true,
+    "is24Hours": false,
+    "crowdLevel": "High",
+    "nearestStation": "Currey Road / Chinchpokli",
+    "visarjanDate": "Anant Chaturdashi (Day 10)"
+  },
+  {
+    "id": "khetwadi-4th-lane",
+    "name": "Khetwadi 4th Lane (Khetwadicha Lambodara)",
+    "area": "Girgaon / Grant Road",
+    "lat": 18.9569, // TODO: verify
+    "lng": 72.8214, // TODO: verify
+    "address": "4th Khetwadi Lane, Girgaon, Mumbai, Maharashtra 400004",
+    "description": "A historic neighborhood pandal nestled among traditional Mumbai chawls, famous for expressive clay sculpting, serene devotional mood, and warm volunteer hospitality towards out-of-town pilgrims.",
+    "history": "One of the earliest lanes in Khetwadi to celebrate Ganeshotsav. It is cherished by devotees for maintaining intimate, uncommercialized darshan where visitors can sit peacefully and soak in devotional bhajans.",
+    "photoUrl": "https://images.unsplash.com/photo-1590073844006-33379778ae09?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1590073844006-33379778ae09?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "darshanTimings": "7:00 AM - 11:30 PM",
+    "aartiTimings": "8:30 AM, 8:30 PM",
+    "ecoFriendly": true,
+    "is24Hours": false,
+    "crowdLevel": "Medium",
+    "nearestStation": "Charni Road / Grant Road",
+    "visarjanDate": "Anant Chaturdashi (Day 10)"
+  },
+  {
+    "id": "rangari-badak-chawl",
+    "name": "Rangari Badak Chawl Mandal",
+    "area": "Kalachowki / Byculla",
+    "lat": 18.9856, // TODO: verify
+    "lng": 72.8401, // TODO: verify
+    "address": "Rangari Badak Chawl, Dattaram Lad Marg, Kalachowki, Byculla, Mumbai 400033",
+    "description": "Over 80 years old, this pandal is celebrated for preserving timeless mill-worker culture, vibrant traditional folk songs, and authentic Maharashtrian street bhajans.",
+    "history": "Set up in the 1940s in a bustling cloth-dying (Rangari) precinct. It is famous for theatrical Marathi plays (Nataks) staged every evening during the 10 days of the festival.",
+    "photoUrl": "https://images.unsplash.com/photo-1609137144822-261557007e60?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1609137144822-261557007e60?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "darshanTimings": "7:00 AM - 11:00 PM",
+    "aartiTimings": "8:00 AM, 8:00 PM",
+    "ecoFriendly": false,
+    "is24Hours": false,
+    "crowdLevel": "Low",
+    "nearestStation": "Cotton Green (Harbour) / Chinchpokli",
+    "visarjanDate": "Anant Chaturdashi (Day 10)"
+  },
+  {
+    "id": "tulsiwadi-sarvajanik-mandal",
+    "name": "Tulsiwadi Cha Maharaja",
+    "area": "Tardeo",
+    "lat": 18.9723, // TODO: verify
+    "lng": 72.8165, // TODO: verify
+    "address": "Tulsiwadi, Tardeo Road, Opposite Heera Panna, Mumbai, Maharashtra 400034",
+    "description": "Established in 1939, Tulsiwadi is renowned for presenting socially relevant, educational themes alongside radiant idols sculpted with gold leaf and handcrafted silk shawls.",
+    "history": "Tulsiwadi Mandal is distinguished for focusing on social upliftment, donating festival offerings to rural education and cancer care facilities across Maharashtra.",
+    "photoUrl": "https://images.unsplash.com/photo-1567591414240-e175d275723b?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1567591414240-e175d275723b?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "darshanTimings": "7:00 AM - 12:00 Midnight",
+    "aartiTimings": "8:30 AM, 8:30 PM",
+    "ecoFriendly": false,
+    "is24Hours": false,
+    "crowdLevel": "Medium",
+    "nearestStation": "Mumbai Central / Grant Road",
+    "visarjanDate": "Anant Chaturdashi (Day 10)"
+  },
+  {
+    "id": "balgopal-mitra-mandal",
+    "name": "Vile Parlecha Raja (Balgopal Mitra Mandal)",
+    "area": "Vile Parle East",
+    "lat": 19.0984, // TODO: verify
+    "lng": 72.8489, // TODO: verify
+    "address": "Nehru Road, Near Vile Parle Station, Vile Parle East, Mumbai, Maharashtra 400057",
+    "description": "A beloved cultural epicenter in suburban Mumbai. Known for magnificent clay sculptures, massive Rangoli art exhibitions, and disciplined queue arrangements ideal for visiting families.",
+    "history": "Started in the 1980s by local college youth, Balgopal Mitra Mandal has evolved into one of the cleanest and best-organized family-friendly pandals in the airport corridor of Mumbai.",
+    "photoUrl": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "darshanTimings": "6:00 AM - 11:00 PM",
+    "aartiTimings": "7:30 AM, 12:30 PM, 8:00 PM",
+    "ecoFriendly": true,
+    "is24Hours": false,
+    "crowdLevel": "Low",
+    "nearestStation": "Vile Parle (Western / Harbour)",
+    "visarjanDate": "Anant Chaturdashi (Day 10 - Juhu Beach Immersion)"
+  },
+  {
+    "id": "gsb-wadala-ram-mandir",
+    "name": "GSB Ganeshotsav Samiti (Wadala Ram Mandir)",
+    "area": "Wadala",
+    "lat": 19.0195, // TODO: verify
+    "lng": 72.8574, // TODO: verify
+    "address": "Dwarkanath Bhavan, Katrak Road, Wadala East, Mumbai, Maharashtra 400031",
+    "description": "Celebrated for traditional Dakshina Kannada rituals, continuous Vedic chanting, and legendary Annadanam - offering thousands of visiting pilgrims free, delicious festive vegetarian meals on banana leaves daily.",
+    "history": "Dwarkanath Bhavan Ram Mandir in Wadala holds an unbroken 70-year tradition of sacred hospitality. Any pilgrim visiting is welcomed with open arms and served piping hot payasam, modak, and satvik festive meals.",
+    "photoUrl": "https://images.unsplash.com/photo-1598887142487-3c854d51d2c7?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1598887142487-3c854d51d2c7?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "darshanTimings": "6:00 AM - 10:30 PM (10 days)",
+    "aartiTimings": "7:30 AM (Kakad Aarti), 1:00 PM (Maha Puja), 8:00 PM (Rathotsav Aarti)",
+    "ecoFriendly": true,
+    "is24Hours": false,
+    "crowdLevel": "Medium",
+    "nearestStation": "Wadala Road (Harbour Line)",
+    "visarjanDate": "Anant Chaturdashi (Day 10)"
+  }
+]
