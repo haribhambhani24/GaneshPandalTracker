@@ -89,6 +89,7 @@ export const SearchBarWithSuggestions: React.FC<SearchBarWithSuggestionsProps> =
           ref={inputRef}
           type="text"
           value={query}
+          aria-label={t.searchPlaceholder}
           onChange={(e) => {
             onQueryChange(e.target.value);
             setIsOpen(true);
@@ -109,6 +110,7 @@ export const SearchBarWithSuggestions: React.FC<SearchBarWithSuggestionsProps> =
               inputRef.current?.focus();
             }}
             title={t.clearSearch}
+            aria-label={t.clearSearch}
             className="absolute right-3 p-1 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 rounded-full"
           >
             <X className="w-3.5 h-3.5" />

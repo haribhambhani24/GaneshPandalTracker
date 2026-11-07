@@ -1,12 +1,17 @@
-const CACHE_NAME = 'pandal-map-shell-v1';
-const DATA_CACHE_NAME = 'pandal-map-data-v1';
+const CACHE_NAME = 'ganesh-pandal-tracker-shell-v3';
+const DATA_CACHE_NAME = 'ganesh-pandal-tracker-data-v3';
 
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.webmanifest',
+  '/robots.txt',
   '/favicon.svg',
-  '/icons.svg',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/icon-maskable-192.png',
+  '/icon-maskable-512.png',
+  '/apple-touch-icon.png',
 ];
 
 // Install: Cache essential app shell

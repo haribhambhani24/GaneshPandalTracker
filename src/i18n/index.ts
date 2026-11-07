@@ -2,6 +2,7 @@ export type Language = 'en' | 'hi' | 'mr';
 
 export interface Translations {
   appName: string;
+  appNameShort: string;
   tagline: string;
   searchPlaceholder: string;
   searchSuggestionsTitle: string;
@@ -125,7 +126,7 @@ export interface Translations {
   submissionSuccessTitle: string;
   submissionSuccessMsg: string;
   submissionQueuedMsg: string;
-  returnToPandalMap: string;
+  returnToTracker: string;
   submitAnotherPandal: string;
 
   // Form Validation Errors
@@ -190,11 +191,14 @@ export interface Translations {
   minimizeBanner: string;
   mumbai: string;
   dragToSet: string;
+  changePhoto: string;
+  supabaseLocalFallbackNote: string;
 }
 
 export const translations: Record<Language, Translations> = {
   en: {
-    appName: 'Pandal Map',
+    appName: 'Ganesh Pandal Tracker',
+    appNameShort: 'Pandal Tracker',
     tagline: 'Mumbai Ganesh Chaturthi Pandal Guide',
     searchPlaceholder: 'Search pandals, areas, stations...',
     searchSuggestionsTitle: 'Suggested Pandals',
@@ -314,7 +318,7 @@ export const translations: Record<Language, Translations> = {
     submissionSuccessTitle: '🙏 Ganpati Bappa Morya!',
     submissionSuccessMsg: 'Pandal submission received for',
     submissionQueuedMsg: 'Your submission has been queued as Pending Review. Once verified by our community committee moderators in the admin panel, your pandal will appear live on the interactive map for all devotees.',
-    returnToPandalMap: 'Return to Pandal Map',
+    returnToTracker: 'Return to Ganesh Pandal Tracker',
     submitAnotherPandal: 'Submit Another Pandal',
 
     errNameRequired: 'Pandal name must be at least 3 characters.',
@@ -328,7 +332,7 @@ export const translations: Record<Language, Translations> = {
     errImageTooLarge: 'Image size must be under 2 MB to upload.',
     errImageFormat: 'Please select a valid image file (JPEG, PNG, WebP).',
 
-    adminPortalTitle: 'Pandal Map Admin',
+    adminPortalTitle: 'Ganesh Pandal Tracker Admin',
     adminAuthHeading: 'Admin Authentication',
     adminAuthSubtitle: 'Sign in with your Supabase admin credentials to moderate pandal submissions.',
     adminEmailLabel: 'Admin Email',
@@ -376,10 +380,13 @@ export const translations: Record<Language, Translations> = {
     minimizeBanner: 'Minimize Banner',
     mumbai: 'Mumbai',
     dragToSet: 'Drag to Set',
+    changePhoto: 'Change Photo',
+    supabaseLocalFallbackNote: 'Note: Supabase credentials operating with local fallback.',
   },
 
   hi: {
-    appName: 'पंडाल मैप',
+    appName: 'Ganesh Pandal Tracker',
+    appNameShort: 'Pandal Tracker',
     tagline: 'मुंबई गणेशोत्सव पंडाल दर्शिका',
     searchPlaceholder: 'पंडाल, क्षेत्र या स्टेशन खोजें...',
     searchSuggestionsTitle: 'सुझाए गए पंडाल',
@@ -499,7 +506,7 @@ export const translations: Record<Language, Translations> = {
     submissionSuccessTitle: '🙏 गणपति बाप्पा मोरया!',
     submissionSuccessMsg: 'पंडाल प्रविष्टि सफलतापूर्वक प्राप्त हुई:',
     submissionQueuedMsg: 'आपकी प्रविष्टि समीक्षा हेतु सुरक्षित कर ली गई है। एडमिन पैनल द्वारा सत्यापन के पश्चात यह पंडाल लाइव नक्शे पर दिखाई देगा।',
-    returnToPandalMap: 'पंडाल नक्शे पर लौटें',
+    returnToTracker: 'Ganesh Pandal Tracker पर लौटें',
     submitAnotherPandal: 'अन्य पंडाल जोड़ें',
 
     errNameRequired: 'पंडाल का नाम कम से कम 3 अक्षरों का होना चाहिए।',
@@ -513,7 +520,7 @@ export const translations: Record<Language, Translations> = {
     errImageTooLarge: 'तस्वीर का आकार 2 MB से कम होना चाहिए।',
     errImageFormat: 'कृपया मान्य छवि फाइल (JPEG, PNG, WebP) चुनें।',
 
-    adminPortalTitle: 'पंडाल मैप एडमिन',
+    adminPortalTitle: 'Ganesh Pandal Tracker Admin',
     adminAuthHeading: 'एडमिन लॉगिन',
     adminAuthSubtitle: 'पंडाल प्रविष्टियों की समीक्षा हेतु अपने सुपरबेस एडमिन विवरण से लॉगिन करें।',
     adminEmailLabel: 'एडमिन ईमेल',
@@ -561,10 +568,13 @@ export const translations: Record<Language, Translations> = {
     minimizeBanner: 'बैनर छोटा करें',
     mumbai: 'मुंबई',
     dragToSet: 'स्थान सेट करने के लिए खींचें',
+    changePhoto: 'फोटो बदलें',
+    supabaseLocalFallbackNote: 'नोट: Supabase क्रेडेंशियल्स स्थानीय फ़ॉलबैक के साथ काम कर रहे हैं।',
   },
 
   mr: {
-    appName: 'पंडाल मॅप',
+    appName: 'Ganesh Pandal Tracker',
+    appNameShort: 'Pandal Tracker',
     tagline: 'मुंबई गणेशोत्सव पंडाल वाटाड्या',
     searchPlaceholder: 'पंडाल, विभाग किंवा स्टेशन शोधा...',
     searchSuggestionsTitle: 'सुचवलेले पंडाल',
@@ -684,7 +694,7 @@ export const translations: Record<Language, Translations> = {
     submissionSuccessTitle: '🙏 गणपती बाप्पा मोरया!',
     submissionSuccessMsg: 'खालील मंडळाची माहिती यशस्वीपणे प्राप्त झाली:',
     submissionQueuedMsg: 'आपली नोंदणी पडताळणीसाठी जतन करण्यात आली आहे. ॲडमिन पॅनलद्वारे पडताळणी झाल्यानंतर हे मंडळ थेट नकाशावर दिसेल.',
-    returnToPandalMap: 'नकाशावर परत जा',
+    returnToTracker: 'Ganesh Pandal Tracker वर परत जा',
     submitAnotherPandal: 'आणखी मंडळ जोडा',
 
     errNameRequired: 'मंडळाचे नाव किमान ३ अक्षरांचे असणे आवश्यक आहे.',
@@ -698,7 +708,7 @@ export const translations: Record<Language, Translations> = {
     errImageTooLarge: 'फोटोचा आकार २ MB पेक्षा कमी असावा.',
     errImageFormat: 'कृपया वैध फोटो फाईल (JPEG, PNG, WebP) निवडा.',
 
-    adminPortalTitle: 'पंडाल मॅप ॲडमिन',
+    adminPortalTitle: 'Ganesh Pandal Tracker Admin',
     adminAuthHeading: 'प्रशासक लॉगिन',
     adminAuthSubtitle: 'मंडळांच्या नोंदी तपासण्यासाठी आपल्या सुपरबेस प्रशासक खात्याने लॉगिन करा.',
     adminEmailLabel: 'प्रशासक ईमेल',
@@ -746,5 +756,7 @@ export const translations: Record<Language, Translations> = {
     minimizeBanner: 'बॅनर लहान करा',
     mumbai: 'मुंबई',
     dragToSet: 'स्थान निश्चित करण्यासाठी ओढा',
+    changePhoto: 'फोटो बदला',
+    supabaseLocalFallbackNote: 'टीप: Supabase क्रेडेंशियल्स स्थानिक फॉलबॅकसह कार्यरत आहेत.',
   },
 };

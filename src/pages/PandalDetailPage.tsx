@@ -36,7 +36,7 @@ export const PandalDetailPage: React.FC = () => {
   const { isSaved, toggleSave, isVisited, toggleVisited } = useMyDarshan();
 
   const [pandal, setPandal] = useState<Pandal | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(Boolean(id));
   const [activePhotoIdx, setActivePhotoIdx] = useState<number>(0);
   const [copied, setCopied] = useState<boolean>(false);
   const [addressCopied, setAddressCopied] = useState<boolean>(false);
@@ -45,7 +45,6 @@ export const PandalDetailPage: React.FC = () => {
   useEffect(() => {
     let mounted = true;
     if (id) {
-      setLoading(true);
       pandalService.getPandalById(id).then((data) => {
         if (mounted) {
           setPandal(data || null);
@@ -61,7 +60,7 @@ export const PandalDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-stone-50 dark:bg-stone-950 text-stone-800 dark:text-stone-200">
+      <div className="min-h-[100vh] min-h-[100dvh] flex flex-col items-center justify-center bg-stone-50 dark:bg-stone-950 text-stone-800 dark:text-stone-200 p-4">
         <div className="w-12 h-12 rounded-full border-4 border-orange-500 border-t-transparent animate-spin mb-4" />
         <p className="text-sm font-semibold text-stone-600 dark:text-stone-400">
           {t.loadingPandalDetails}
@@ -72,13 +71,22 @@ export const PandalDetailPage: React.FC = () => {
 
   if (!pandal) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-stone-50 dark:bg-stone-950 p-6 text-center text-stone-800 dark:text-stone-200">
-        <div className="text-5xl mb-4">🕉️</div>
-        <h2 className="text-xl font-bold mb-2">{t.pandalNotFoundTitle}</h2>
-        <p className="text-sm text-stone-500 mb-6">{t.pandalNotFoundMsg}</p>
+      <div className="min-h-[100vh] min-h-[100dvh] pt-safe pb-safe flex flex-col items-center justify-center bg-stone-50 dark:bg-stone-950 p-6 text-center text-stone-800 dark:text-stone-200">
+        <div className="w-20 h-20 rounded-3xl bg-amber-100 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 flex items-center justify-center text-4xl shadow-inner mb-4">
+          🕉️
+        </div>
+        <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-900 mb-3">
+          404 - Not Found
+        </span>
+        <h2 className="text-xl sm:text-2xl font-black mb-2 text-stone-900 dark:text-white">
+          {t.pandalNotFoundTitle}
+        </h2>
+        <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mb-6 max-w-sm">
+          {t.pandalNotFoundMsg}
+        </p>
         <button
           onClick={() => navigate('/')}
-          className="px-5 py-2.5 rounded-xl bg-orange-600 text-white font-semibold text-sm shadow-md cursor-pointer hover:bg-orange-700"
+          className="px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 text-white font-bold text-sm shadow-md hover:from-orange-500 hover:to-amber-500 active:scale-95 transition-all cursor-pointer min-h-[44px]"
         >
           {t.backToMap}
         </button>
@@ -93,7 +101,7 @@ export const PandalDetailPage: React.FC = () => {
   const directionsUrl = getGoogleMapsDirectionsUrl(pandal.lat, pandal.lng, pandal.name);
 
   const handleShare = async () => {
-    const shareText = `Check out ${pandal.name} in ${pandal.area} on Pandal Map!`;
+    const shareText = `Check out ${pandal.name} in ${pandal.area} on Ganesh Pandal Tracker!`;
     if (navigator.share) {
       try {
         await navigator.share({
@@ -163,23 +171,24 @@ export const PandalDetailPage: React.FC = () => {
   const badge = crowdBadge();
 
   return (
-    <div className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 font-sans pb-16">
+    <div className="min-h-[100vh] min-h-[100dvh] bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 font-sans pb-safe">
       {/* Sticky Top Header */}
-      <nav className="sticky top-0 z-[1000] bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-b border-stone-200 dark:border-stone-800 px-3 sm:px-6 py-2.5 flex items-center justify-between gap-3 shadow-xs">
+      <nav className="sticky top-0 z-[1000] bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-b border-stone-200 dark:border-stone-800 px-3 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between gap-2 sm:gap-3 shadow-xs pt-safe">
         <button
           onClick={() => navigate('/')}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors cursor-pointer min-h-[36px]"
+          title={t.backToMap}
         >
           <ArrowLeft className="w-4 h-4 text-orange-600" />
-          <span>{t.backToMap}</span>
+          <span className="hidden min-[360px]:inline">{t.backToMap}</span>
         </button>
 
-        <div className="flex items-center gap-2">
-          {/* Bookmark Button */}
+        <div className="flex items-center gap-1 sm:gap-2">
+          {/* Bookmark Button (Desktop / Tablet, or when space permits) */}
           <button
             onClick={() => toggleSave(pandal.id)}
             title={saved ? t.saveToDarshan : t.myDarshan}
-            className={`p-2 rounded-xl transition-all cursor-pointer ${
+            className={`hidden sm:flex p-2 rounded-xl transition-all cursor-pointer ${
               saved
                 ? 'bg-amber-500 text-white shadow-xs'
                 : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 hover:bg-stone-200'
@@ -188,11 +197,11 @@ export const PandalDetailPage: React.FC = () => {
             <Bookmark className={`w-4 h-4 ${saved ? 'fill-white' : ''}`} />
           </button>
 
-          {/* Mark Visited Button */}
+          {/* Mark Visited Button (Desktop / Tablet) */}
           <button
             onClick={() => toggleVisited(pandal.id)}
             title={visited ? t.visitedBadge : t.markVisited}
-            className={`p-2 rounded-xl transition-all cursor-pointer ${
+            className={`hidden sm:flex p-2 rounded-xl transition-all cursor-pointer ${
               visited
                 ? 'bg-emerald-600 text-white shadow-xs'
                 : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 hover:bg-stone-200'
@@ -205,7 +214,7 @@ export const PandalDetailPage: React.FC = () => {
           <button
             onClick={handleShare}
             title={t.share}
-            className="p-2 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors cursor-pointer"
+            className="p-1.5 sm:p-2 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
           >
             {copied ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Share2 className="w-4 h-4" />}
           </button>
@@ -276,13 +285,14 @@ export const PandalDetailPage: React.FC = () => {
                     setActivePhotoIdx(idx);
                     setImageLoaded(false);
                   }}
+                  aria-label={`${pandal.name} photo ${idx + 1}`}
                   className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
                     activePhotoIdx === idx
                       ? 'border-orange-500 ring-2 ring-orange-400/50 scale-105'
                       : 'border-transparent opacity-70 hover:opacity-100'
                   }`}
                 >
-                  <img src={photo} alt="" className="w-full h-full object-cover" loading="lazy" />
+                  <img src={photo} alt={`${pandal.name} photo thumbnail ${idx + 1}`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                 </button>
               ))}
             </div>

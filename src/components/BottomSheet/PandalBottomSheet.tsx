@@ -38,7 +38,7 @@ export const PandalBottomSheet: React.FC<PandalBottomSheetProps> = ({
       {/* Mobile Bottom Sheet (Slide-up from bottom on < md) */}
       <div
         id="mobile-pandal-bottom-sheet"
-        className="fixed inset-x-0 bottom-0 z-[1002] max-h-[85vh] sm:max-h-[80vh] flex flex-col md:hidden animate-in slide-in-from-bottom duration-300"
+        className="fixed inset-x-0 bottom-0 z-[1002] max-h-[85vh] max-h-[85dvh] pb-safe overscroll-contain flex flex-col md:hidden animate-in slide-in-from-bottom duration-300"
       >
         {/* Pull Handle / Drag bar */}
         <div className="mx-auto w-12 h-1.5 bg-white/70 rounded-full mb-2 shadow-sm pointer-events-none" />

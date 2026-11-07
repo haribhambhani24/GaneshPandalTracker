@@ -3,19 +3,23 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { I18nProvider } from './context/I18nContext';
 import { ThemeProvider } from './context/ThemeContext';
 
-// Lazy-load routes for maximum performance on slow mobile networks
+// Lazy-load routes for maximum mobile performance and instant FCP app shell
 const MapPage = lazy(() => import('./pages/MapPage'));
 const PandalDetailPage = lazy(() => import('./pages/PandalDetailPage'));
 const SubmitPandalPage = lazy(() => import('./pages/SubmitPandalPage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 
 const PageLoadingFallback: React.FC = () => (
-  <div className="w-screen h-screen flex flex-col items-center justify-center bg-stone-50 dark:bg-stone-950 text-stone-800 dark:text-stone-200">
+  <main
+    role="main"
+    aria-label="Loading Ganesh Pandal Tracker"
+    className="w-full min-h-[100vh] min-h-[100dvh] flex flex-col items-center justify-center bg-stone-50 dark:bg-stone-950 text-stone-800 dark:text-stone-200"
+  >
     <div className="w-12 h-12 rounded-full border-4 border-orange-500 border-t-transparent animate-spin mb-3" />
     <span className="text-xs font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">
-      Loading Pandal Map...
+      Loading Ganesh Pandal Tracker...
     </span>
-  </div>
+  </main>
 );
 
 export function App() {

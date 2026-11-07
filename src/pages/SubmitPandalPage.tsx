@@ -190,22 +190,22 @@ export const SubmitPandalPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 pb-36 overflow-y-visible">
+    <div className="w-full min-h-[100vh] min-h-[100dvh] bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 pb-36 overflow-y-visible">
       {/* Top Header */}
-      <header className="sticky top-0 z-50 bg-gradient-to-r from-orange-600 via-amber-600 to-red-700 dark:from-orange-700 dark:via-amber-800 dark:to-red-800 text-white shadow-md">
-        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-gradient-to-r from-orange-600 via-amber-600 to-red-700 dark:from-orange-700 dark:via-amber-800 dark:to-red-800 text-white shadow-md pt-safe">
+        <div className="max-w-3xl mx-auto px-4 py-2.5 sm:py-3 flex items-center justify-between">
           <Link
             to="/"
-            className="flex items-center gap-2 text-amber-100 hover:text-white font-semibold text-sm transition-colors"
+            className="flex items-center gap-1.5 sm:gap-2 text-amber-100 hover:text-white font-semibold text-xs sm:text-sm transition-colors min-h-[36px]"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>{t.backToMap}</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🕉️</span>
-            <h1 className="font-extrabold text-base tracking-tight">{t.submitPandal}</h1>
+          <div className="flex items-center gap-1.5">
+            <span className="text-lg sm:text-xl">🕉️</span>
+            <h1 className="font-extrabold text-sm sm:text-base tracking-tight truncate max-w-[150px] sm:max-w-none">{t.submitPandal}</h1>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <LanguageSwitcher />
             <ThemeToggle variant="header" />
           </div>
@@ -238,7 +238,7 @@ export const SubmitPandalPage: React.FC = () => {
                 onClick={() => navigate('/')}
                 className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 text-white font-bold text-sm shadow-md hover:from-orange-500 hover:to-amber-500 transition-all cursor-pointer"
               >
-                {t.returnToPandalMap}
+                {t.returnToTracker}
               </button>
               <button
                 onClick={() => {
@@ -364,7 +364,6 @@ export const SubmitPandalPage: React.FC = () => {
                     errors.address ? 'border-red-500 ring-1 ring-red-500' : 'border-stone-300 dark:border-stone-700'
                   }`}
                 />
-                {errors.address && <p className="text-[11px] text-red-500 mt-1 font-medium">{errors.address}</p>}
                 {errors.address && <p className="text-[11px] text-red-500 mt-1 font-medium">{errors.address}</p>}
               </div>
 
@@ -515,12 +514,12 @@ export const SubmitPandalPage: React.FC = () => {
                   <div className="flex flex-col items-center justify-center border-2 border-dashed border-stone-300 dark:border-stone-700 rounded-2xl p-4 hover:border-orange-500 transition-colors bg-stone-50/50 dark:bg-stone-800/30">
                     {photoPreview ? (
                       <div className="relative w-full max-w-xs h-40 rounded-xl overflow-hidden shadow">
-                        <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                        <img src={photoPreview} alt={name || "Pandal photo preview"} className="w-full h-full object-cover" decoding="async" />
                         <label
                           htmlFor="photo-file"
                           className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 flex items-center justify-center text-white text-xs font-bold cursor-pointer transition-opacity"
                         >
-                          Change Photo
+                          {t.changePhoto || 'Change Photo'}
                         </label>
                       </div>
                     ) : (

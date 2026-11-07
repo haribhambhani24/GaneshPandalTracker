@@ -1,5 +1,5 @@
 -- ==============================================================================
--- PANDAL MAP - SUPABASE SCHEMA & SECURITY SETUP
+-- GANESH PANDAL TRACKER - SUPABASE SCHEMA & SECURITY SETUP
 -- ==============================================================================
 -- Run this complete script in the Supabase Dashboard SQL Editor.
 -- It sets up:

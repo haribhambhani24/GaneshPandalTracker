@@ -21,6 +21,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className = 
           type="button"
           onClick={() => setLanguage(lang)}
           aria-pressed={language === lang}
+          aria-label={lang === 'en' ? 'EN - English' : lang === 'hi' ? 'HI - हिंदी' : 'MR - मराठी'}
           className={`px-1.5 sm:px-2 py-1 rounded-md uppercase transition-colors cursor-pointer text-[11px] sm:text-xs font-bold ${
             language === lang
               ? 'bg-amber-400 text-red-950 shadow-xs'

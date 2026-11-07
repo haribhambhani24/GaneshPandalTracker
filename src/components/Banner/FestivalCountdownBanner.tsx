@@ -33,7 +33,10 @@ export const FestivalCountdownBanner: React.FC = () => {
   const { t, formatNumber } = useI18n();
   const [timeLeft, setTimeLeft] = useState<TimeRemaining>(calculateTimeRemaining());
   const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
-    return localStorage.getItem('pandal_map_banner_collapsed') === 'true';
+    return (
+      (localStorage.getItem('ganesh_pandal_tracker_banner_collapsed') ||
+        localStorage.getItem('pandal_map_banner_collapsed')) === 'true'
+    );
   });
 
   useEffect(() => {
@@ -46,7 +49,7 @@ export const FestivalCountdownBanner: React.FC = () => {
   const toggleCollapse = () => {
     setIsCollapsed((prev) => {
       const next = !prev;
-      localStorage.setItem('pandal_map_banner_collapsed', String(next));
+      localStorage.setItem('ganesh_pandal_tracker_banner_collapsed', String(next));
       return next;
     });
   };
@@ -56,6 +59,8 @@ export const FestivalCountdownBanner: React.FC = () => {
       <button
         onClick={toggleCollapse}
         id="festival-banner-minimized"
+        aria-label={t.showCountdown}
+        aria-expanded={false}
         className="w-full bg-gradient-to-r from-orange-600 via-amber-600 to-red-600 dark:from-stone-900 dark:via-orange-950 dark:to-stone-900 text-white dark:text-amber-200 px-3 py-1.5 text-xs font-semibold flex items-center justify-between border-b border-amber-300/30 dark:border-amber-900/40 hover:brightness-105 transition-all cursor-pointer shadow-xs"
       >
         <div className="flex items-center gap-1.5 truncate">
@@ -154,6 +159,8 @@ export const FestivalCountdownBanner: React.FC = () => {
           <button
             onClick={toggleCollapse}
             title={t.minimizeBanner}
+            aria-label={t.minimizeBanner}
+            aria-expanded={true}
             className="p-1 rounded-md text-amber-100 dark:text-amber-300 hover:bg-white/10 active:scale-95 transition-colors ml-1 cursor-pointer"
           >
             <ChevronUp className="w-4 h-4" />

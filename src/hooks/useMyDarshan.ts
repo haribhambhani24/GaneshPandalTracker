@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 
-const STORAGE_SAVED_KEY = 'pandal_map_saved';
-const STORAGE_VISITED_KEY = 'pandal_map_visited';
+const STORAGE_SAVED_KEY = 'ganesh_pandal_tracker_saved';
+const LEGACY_SAVED_KEY = 'pandal_map_saved';
+const STORAGE_VISITED_KEY = 'ganesh_pandal_tracker_visited';
+const LEGACY_VISITED_KEY = 'pandal_map_visited';
 
 export function useMyDarshan() {
   const [savedIds, setSavedIds] = useState<Set<string>>(() => {
     try {
-      const data = localStorage.getItem(STORAGE_SAVED_KEY);
+      const data = localStorage.getItem(STORAGE_SAVED_KEY) || localStorage.getItem(LEGACY_SAVED_KEY);
       return data ? new Set(JSON.parse(data)) : new Set<string>();
     } catch {
       return new Set<string>();
@@ -15,7 +17,7 @@ export function useMyDarshan() {
 
   const [visitedIds, setVisitedIds] = useState<Set<string>>(() => {
     try {
-      const data = localStorage.getItem(STORAGE_VISITED_KEY);
+      const data = localStorage.getItem(STORAGE_VISITED_KEY) || localStorage.getItem(LEGACY_VISITED_KEY);
       return data ? new Set(JSON.parse(data)) : new Set<string>();
     } catch {
       return new Set<string>();

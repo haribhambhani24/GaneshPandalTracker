@@ -99,14 +99,34 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
 
     mapInstanceRef.current = map;
 
+    const handleResize = () => {
+      map.invalidateSize();
+    };
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+
+    // Also observe container size changes (e.g. mobile bottom sheet open/close or layout reflow)
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined' && mapContainerRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        map.invalidateSize();
+      });
+      resizeObserver.observe(mapContainerRef.current);
+    }
+
     setTimeout(() => {
       map.invalidateSize();
     }, 250);
 
     return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+      resizeObserver?.disconnect();
       map.remove();
       mapInstanceRef.current = null;
     };
+    // Intentionally initialize Leaflet map instance once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Sync Pandals & Markers (with circuit stop numbers if circuit active)
@@ -142,6 +162,8 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
       cluster.addLayer(marker);
       markersMapRef.current.set(pandal.id, marker);
     });
+    // Marker selection icon updates are handled separately by the effect below to avoid recreating cluster layers
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pandals, onSelectPandal, activeCircuit]);
 
   // Update Selected Marker Icon & pan
@@ -173,6 +195,15 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({
         animate: true,
         duration: 0.5,
       });
+      // Invalidate size smoothly after bottom sheet opens
+      setTimeout(() => {
+        mapInstanceRef.current?.invalidateSize();
+      }, 350);
+    } else if (mapInstanceRef.current) {
+      // Invalidate size after bottom sheet closes
+      setTimeout(() => {
+        mapInstanceRef.current?.invalidateSize();
+      }, 350);
     }
   }, [selectedPandal, pandals, activeCircuit]);
 

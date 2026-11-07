@@ -129,6 +129,8 @@ export const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
       map.remove();
       mapInstanceRef.current = null;
     };
+    // Intentionally initialize map instance once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Sync external lat/lng changes

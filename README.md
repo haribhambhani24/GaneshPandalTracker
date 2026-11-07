@@ -1,4 +1,4 @@
-# 🕉️ Pandal Map | Mumbai Ganesh Chaturthi Guide
+# 🕉️ Ganesh Pandal Tracker | Mumbai Ganesh Chaturthi Guide
 
 A mobile-first, high-performance web and PWA application designed specifically for travellers, devotees, and tourists navigating Mumbai during **Ganesh Chaturthi**. Built with React 19, TypeScript, Tailwind CSS, Leaflet (OpenStreetMap), and Supabase.
 
@@ -109,11 +109,45 @@ VITE_SUPABASE_ANON_KEY=your-anon-public-key
    npm run build
    ```
 
+4. Preview production build locally:
+   ```bash
+   npm run preview
+   ```
+   Open `http://localhost:4173` to test the production bundle with Service Worker caching.
+
+---
+
+## 📱 How to Test on a Real Mobile Phone
+
+To test on your real phone over your local Wi-Fi:
+
+1. **Expose Vite on Local Network**:
+   ```bash
+   npm run dev -- --host
+   ```
+   or for production build:
+   ```bash
+   npm run preview -- --host
+   ```
+2. **Access from Your Phone**:
+   - Ensure your phone is connected to the same Wi-Fi network as your computer.
+   - Look at the terminal output under `Network:` (e.g., `http://192.168.1.15:5173`).
+   - Open Safari (iOS) or Chrome (Android) on your phone and type that URL.
+
+3. **Install as a PWA on Your Phone**:
+   - **iOS (Safari)**: Tap the **Share** button (box with upward arrow) -> scroll down and tap **Add to Home Screen** -> tap **Add**.
+   - **Android (Chrome)**: Tap the three-dot menu in the top-right -> tap **Add to Home screen** or **Install App**.
+   - Launch the app from your home screen to experience full-screen standalone mode with native safe-area inset handling!
+
+4. **Testing in Browser Device Emulation**:
+   - Press `F12` in Chrome/Edge, click the **Toggle Device Toolbar** icon (`Ctrl+Shift+M` / `Cmd+Shift+M`).
+   - Select popular viewports: iPhone SE (`375px`), iPhone 12/14/15 (`390px`), Pixel 7 (`412px`), and test both portrait and landscape.
+
 ---
 
 ## ☁️ Vercel Deployment Guide
 
-Deploying Pandal Map to Vercel is seamless:
+Deploying Ganesh Pandal Tracker to Vercel is seamless:
 
 1. **Push to GitHub**:
    Ensure all changes are pushed to your `main` branch.

@@ -57,6 +57,19 @@ export const AdminPage: React.FC = () => {
   const [editForm, setEditForm] = useState<Partial<Pandal>>({});
   const [editSaving, setEditSaving] = useState<boolean>(false);
 
+  // Fetch admin pandals
+  const fetchAdminPandals = React.useCallback(async () => {
+    setLoadingData(true);
+    try {
+      const data = await pandalService.getAdminPandals();
+      setPandals(data);
+    } catch (err) {
+      console.error('Failed to load admin pandals:', err);
+    } finally {
+      setLoadingData(false);
+    }
+  }, []);
+
   // 1. Check Auth Session on mount
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
@@ -79,20 +92,7 @@ export const AdminPage: React.FC = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
-
-  // 2. Fetch admin pandals
-  const fetchAdminPandals = async () => {
-    setLoadingData(true);
-    try {
-      const data = await pandalService.getAdminPandals();
-      setPandals(data);
-    } catch (err) {
-      console.error('Failed to load admin pandals:', err);
-    } finally {
-      setLoadingData(false);
-    }
-  };
+  }, [fetchAdminPandals]);
 
   // 3. Handle Admin Login
   const handleLogin = async (e: React.FormEvent) => {
@@ -206,10 +206,10 @@ export const AdminPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-stone-100 dark:bg-stone-950 text-stone-900 dark:text-stone-100 pb-20">
+    <div className="min-h-[100vh] min-h-[100dvh] bg-stone-100 dark:bg-stone-950 text-stone-900 dark:text-stone-100 pb-safe pb-20">
       {/* Top Navbar */}
-      <header className="sticky top-0 z-40 bg-gradient-to-r from-orange-600 via-amber-600 to-red-700 dark:from-stone-900 dark:via-orange-950 dark:to-red-950 text-white border-b border-amber-500/20 dark:border-orange-900/50 shadow-md">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-gradient-to-r from-orange-600 via-amber-600 to-red-700 dark:from-stone-900 dark:via-orange-950 dark:to-red-950 text-white border-b border-amber-500/20 dark:border-orange-900/50 shadow-md pt-safe">
+        <div className="max-w-6xl mx-auto px-4 py-2.5 sm:py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <Link
               to="/"
@@ -274,7 +274,7 @@ export const AdminPage: React.FC = () => {
 
             {!isSupabaseConfigured && (
               <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 text-amber-800 dark:text-amber-300 text-xs">
-                Note: Supabase credentials are currently operating with local fallback.
+                {t.supabaseLocalFallbackNote}
               </div>
             )}
 
@@ -417,6 +417,8 @@ export const AdminPage: React.FC = () => {
                             src={pandal.photoUrl}
                             alt={pandal.name}
                             className="w-full h-full object-cover"
+                            loading="lazy"
+                            decoding="async"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
@@ -595,8 +597,9 @@ export const AdminPage: React.FC = () => {
 
             <form onSubmit={handleSaveEdit} className="space-y-3 text-xs">
               <div>
-                <label className="block font-bold mb-1">{t.pandalNameLabel}</label>
+                <label htmlFor="edit-pandal-name" className="block font-bold mb-1">{t.pandalNameLabel}</label>
                 <input
+                  id="edit-pandal-name"
                   type="text"
                   value={editForm.name || ''}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
@@ -606,8 +609,9 @@ export const AdminPage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block font-bold mb-1">{t.areaLabel}</label>
+                  <label htmlFor="edit-area" className="block font-bold mb-1">{t.areaLabel}</label>
                   <input
+                    id="edit-area"
                     type="text"
                     value={editForm.area || ''}
                     onChange={(e) => setEditForm({ ...editForm, area: e.target.value })}
@@ -615,8 +619,9 @@ export const AdminPage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-bold mb-1">{t.nearestStation}</label>
+                  <label htmlFor="edit-nearest-station" className="block font-bold mb-1">{t.nearestStation}</label>
                   <input
+                    id="edit-nearest-station"
                     type="text"
                     value={editForm.nearestStation || ''}
                     onChange={(e) => setEditForm({ ...editForm, nearestStation: e.target.value })}
@@ -626,8 +631,9 @@ export const AdminPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-bold mb-1">{t.address}</label>
+                <label htmlFor="edit-address" className="block font-bold mb-1">{t.address}</label>
                 <input
+                  id="edit-address"
                   type="text"
                   value={editForm.address || ''}
                   onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
@@ -637,8 +643,9 @@ export const AdminPage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block font-bold mb-1">Latitude</label>
+                  <label htmlFor="edit-lat" className="block font-bold mb-1">Latitude</label>
                   <input
+                    id="edit-lat"
                     type="number"
                     step="0.000001"
                     value={editForm.lat ?? ''}
@@ -647,8 +654,9 @@ export const AdminPage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-bold mb-1">Longitude</label>
+                  <label htmlFor="edit-lng" className="block font-bold mb-1">Longitude</label>
                   <input
+                    id="edit-lng"
                     type="number"
                     step="0.000001"
                     value={editForm.lng ?? ''}
@@ -660,8 +668,9 @@ export const AdminPage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block font-bold mb-1">{t.darshanTimings}</label>
+                  <label htmlFor="edit-darshan-timings" className="block font-bold mb-1">{t.darshanTimings}</label>
                   <input
+                    id="edit-darshan-timings"
                     type="text"
                     value={editForm.darshanTimings || ''}
                     onChange={(e) => setEditForm({ ...editForm, darshanTimings: e.target.value })}
@@ -669,8 +678,10 @@ export const AdminPage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-bold mb-1">{t.crowdLevel}</label>
+                  <label htmlFor="edit-crowd-level" className="block font-bold mb-1">{t.crowdLevel}</label>
                   <select
+                    id="edit-crowd-level"
+                    aria-label={t.crowdLevel}
                     value={editForm.crowdLevel || 'Medium'}
                     onChange={(e) => setEditForm({ ...editForm, crowdLevel: e.target.value as CrowdLevel })}
                     className="w-full px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { List, Map, Plus, Shield } from 'lucide-react';
+import { List, Map, MoreVertical, Plus, Shield, X } from 'lucide-react';
 import { useI18n } from '../../context/I18nContext';
 import { SearchBarWithSuggestions } from '../Search/SearchBarWithSuggestions';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -31,84 +31,146 @@ export const Navbar: React.FC<NavbarProps> = ({
   distancesMap,
 }) => {
   const { t, formatNumber } = useI18n();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close mobile dropdown menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [menuOpen]);
 
   return (
-    <header className="sticky top-0 z-[1000] w-full bg-gradient-to-r from-orange-600 via-amber-600 to-red-700 dark:from-orange-700 dark:via-amber-800 dark:to-red-800 text-white shadow-lg shadow-orange-950/20">
-      {/* Top Brand & Controls Row */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 flex items-center justify-between gap-2">
+    <header className="sticky top-0 z-[1000] w-full bg-gradient-to-r from-orange-600 via-amber-600 to-red-700 dark:from-orange-700 dark:via-amber-800 dark:to-red-800 text-white shadow-lg shadow-orange-950/20 pt-safe">
+      {/* Top Brand & Controls Row: Strictly designed to fit on 1 row down to 320px width */}
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-1 sm:gap-2">
         {/* Brand & Emblem */}
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-lg sm:text-xl shadow-inner border border-amber-200 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0 shrink">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-base sm:text-xl shadow-inner border border-amber-200 shrink-0">
             🕉️
           </div>
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <h1 className="font-extrabold text-base sm:text-lg tracking-tight leading-none text-white drop-shadow">
-                {t.appName}
+              <h1 className="font-extrabold text-xs sm:text-base md:text-lg tracking-tight leading-tight text-white drop-shadow truncate">
+                <span className="hidden min-[360px]:inline">{t.appName}</span>
+                <span className="min-[360px]:hidden">{t.appNameShort}</span>
               </h1>
-              <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-300 text-red-900 uppercase">
+              <span className="hidden lg:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-300 text-red-950 uppercase shrink-0">
                 {t.mumbai} • {formatNumber(totalPandals)}
               </span>
             </div>
-            <p className="text-[11px] sm:text-xs text-amber-100 font-medium opacity-90 truncate max-w-[170px] sm:max-w-none">
+            <p className="hidden sm:block text-[11px] sm:text-xs text-amber-100 font-medium opacity-90 truncate max-w-[200px] md:max-w-none">
               {t.tagline}
             </p>
           </div>
         </div>
 
-        {/* Right Actions: Lang Switcher, Theme Toggle, Map/List Toggle */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        {/* Right Actions: Lang Switcher, Theme Toggle, View Toggle, plus Links */}
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
           {/* Reusable Global Language Switcher */}
           <LanguageSwitcher />
 
           {/* Standardized Theme Toggle */}
           <ThemeToggle variant="header" />
 
-          {/* Submit Pandal CTA */}
-          <Link
-            to="/submit"
-            className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-red-950 font-bold text-xs shadow-xs active:scale-95 transition-all"
-            title={t.submitPandal}
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">{t.submitPandal}</span>
-          </Link>
-
-          {/* Admin Link */}
-          <Link
-            to="/admin"
-            className="p-1.5 sm:p-2 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-amber-100 hover:text-white border border-white/20 transition-all"
-            title={t.adminPortalTitle}
-          >
-            <Shield className="w-4 h-4 text-amber-300" />
-          </Link>
-
           {/* Map vs List View Toggle */}
           <button
             onClick={onToggleView}
-            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-xs font-semibold border border-white/25 transition-all cursor-pointer"
-            title={isListView ? t.mapView : t.listView}
+            className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-xs font-semibold border border-white/25 transition-all cursor-pointer min-h-[36px]"
+            title={`${isListView ? t.mapView : t.listView} (${formatNumber(filteredCount)})`}
+            aria-label={`${isListView ? t.mapView : t.listView} ${formatNumber(filteredCount)}`}
           >
             {isListView ? (
               <>
-                <Map className="w-3.5 h-3.5 text-amber-300" />
+                <Map className="w-3.5 h-3.5 text-amber-300 shrink-0" />
                 <span className="hidden sm:inline">{t.mapView}</span>
               </>
             ) : (
               <>
-                <List className="w-3.5 h-3.5 text-amber-300" />
+                <List className="w-3.5 h-3.5 text-amber-300 shrink-0" />
                 <span className="hidden sm:inline">{t.listView}</span>
               </>
             )}
-            <span className="ml-0.5 px-1.5 py-0.2 rounded-full bg-amber-400 text-red-950 text-[10px]">
+            <span className="px-1.5 py-0.2 rounded-full bg-amber-400 text-red-950 text-[10px] font-bold">
               {formatNumber(filteredCount)}
             </span>
           </button>
+
+          {/* Desktop-only Direct Links */}
+          <Link
+            to="/submit"
+            className="hidden md:flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-red-950 font-bold text-xs shadow-xs active:scale-95 transition-all min-h-[36px]"
+            title={t.submitPandal}
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>{t.submitPandal}</span>
+          </Link>
+
+          <Link
+            to="/admin"
+            className="hidden md:flex p-2 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-amber-100 hover:text-white border border-white/20 transition-all min-h-[36px] items-center justify-center"
+            title={t.adminPortalTitle}
+            aria-label={t.adminPortalTitle}
+          >
+            <Shield className="w-4 h-4 text-amber-300" />
+          </Link>
+
+          {/* Mobile Secondary Menu Button (Collapses Submit & Admin on < md screens) */}
+          <div className="relative md:hidden" ref={menuRef}>
+            <button
+              onClick={() => setMenuOpen((prev) => !prev)}
+              className="p-1.5 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-amber-100 hover:text-white border border-white/20 transition-all min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer"
+              aria-label="More navigation options"
+              aria-expanded={menuOpen}
+            >
+              {menuOpen ? (
+                <X className="w-4 h-4 text-amber-300" />
+              ) : (
+                <MoreVertical className="w-4 h-4 text-amber-300" />
+              )}
+            </button>
+
+            {/* Mobile Dropdown Menu Popover */}
+            {menuOpen && (
+              <div className="absolute right-0 mt-2 w-48 rounded-2xl bg-white dark:bg-stone-900 border border-amber-300 dark:border-amber-800 shadow-2xl py-2 z-[1100] animate-in fade-in zoom-in-95 duration-150">
+                <Link
+                  to="/submit"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-stone-800 dark:text-stone-200 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors"
+                >
+                  <div className="w-6 h-6 rounded-lg bg-amber-100 dark:bg-stone-800 text-amber-700 dark:text-amber-400 flex items-center justify-center">
+                    <Plus className="w-3.5 h-3.5" />
+                  </div>
+                  <span>{t.submitPandal}</span>
+                </Link>
+
+                <Link
+                  to="/admin"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-stone-800 dark:text-stone-200 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors"
+                >
+                  <div className="w-6 h-6 rounded-lg bg-amber-100 dark:bg-stone-800 text-amber-700 dark:text-amber-400 flex items-center justify-center">
+                    <Shield className="w-3.5 h-3.5" />
+                  </div>
+                  <span>{t.adminPortalTitle}</span>
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Search Input Bar with Live Suggestions Dropdown */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 pb-2.5">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 pb-2 sm:pb-2.5">
         <SearchBarWithSuggestions
           query={searchQuery}
           onQueryChange={onSearchChange}

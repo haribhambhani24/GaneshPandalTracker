@@ -1,4 +1,4 @@
-# Pandal Map - Coordinate Verification Sheet
+# Ganesh Pandal Tracker - Coordinate Verification Sheet
 
 > [!IMPORTANT]
 > **Manual Verification Required**: Coordinates in this list have **NOT** been claimed as verified. Please click each Google Maps link to manually verify the exact pandal gate/entrance pin location. Update `/src/data/pandals.json` if any coordinate needs fine-tuning.

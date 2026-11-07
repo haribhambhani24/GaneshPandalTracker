@@ -15,10 +15,13 @@ interface I18nContextValue {
 
 const I18nContext = createContext<I18nContextValue | undefined>(undefined);
 
+const LANG_STORAGE_KEY = 'ganesh_pandal_tracker_lang';
+const LEGACY_STORAGE_KEY = 'pandal_map_lang';
+
 export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     try {
-      const saved = localStorage.getItem('pandal_map_lang') as Language;
+      const saved = (localStorage.getItem(LANG_STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY)) as Language;
       if (saved && (saved === 'en' || saved === 'hi' || saved === 'mr')) {
         return saved;
       }
@@ -31,7 +34,7 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     try {
-      localStorage.setItem('pandal_map_lang', lang);
+      localStorage.setItem(LANG_STORAGE_KEY, lang);
     } catch {
       // Ignore quota or privacy errors
     }
@@ -96,6 +99,7 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
+// oxlint-disable-next-line react/only-export-components
 export function useI18n(): I18nContextValue {
   const context = useContext(I18nContext);
   if (!context) {

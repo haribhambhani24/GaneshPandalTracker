@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { pandalService } from '../services/pandalService';
 import type { CrowdLevel, Pandal } from '../types/pandal';
 import type { UserLocation } from './useUserLocation';
@@ -14,18 +14,48 @@ export function usePandals(userLocation: UserLocation | null) {
   const [twentyFourHoursFilter, setTwentyFourHoursFilter] = useState<boolean>(false);
   const [selectedArea, setSelectedArea] = useState<string>('All');
   const [sortByDistance, setSortByDistance] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isFallbackActive, setIsFallbackActive] = useState<boolean>(false);
 
   useEffect(() => {
     let mounted = true;
-    pandalService.getPandals().then((data) => {
-      if (mounted) {
-        setPandals(data);
-        setLoading(false);
-      }
-    });
+    pandalService
+      .getPandals()
+      .then((data) => {
+        if (mounted) {
+          setPandals(data);
+          setIsFallbackActive(pandalService.isFallbackActive);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (mounted) {
+          setError(err instanceof Error ? err.message : 'Failed to fetch pandal data');
+          setIsFallbackActive(pandalService.isFallbackActive);
+          setLoading(false);
+        }
+      });
+
     return () => {
       mounted = false;
     };
+  }, []);
+
+  const refetch = useCallback(async (bypassCache = false) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = bypassCache
+        ? await pandalService.refreshPandals()
+        : await pandalService.getPandals();
+      setPandals(data);
+      setIsFallbackActive(pandalService.isFallbackActive);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch pandal data');
+      setIsFallbackActive(pandalService.isFallbackActive);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   // Compute map of distances for each pandal
@@ -125,6 +155,9 @@ export function usePandals(userLocation: UserLocation | null) {
     pandals,
     filteredPandals,
     loading,
+    error,
+    isFallbackActive,
+    refetch,
     selectedPandal,
     setSelectedPandal,
     searchQuery,

@@ -3,20 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕉️</text></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#EA580C" />
-    <meta name="description" content="Pandal Map - Interactive Mumbai Ganesh Chaturthi pandal finder for travellers with darshan timings, aarti schedules, crowd levels, and direct Google Maps directions." />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Pandal Tracker" />
+    <meta name="description" content="Ganesh Pandal Tracker - Interactive Mumbai Ganesh Chaturthi pandal finder with darshan timings, aarti schedules, crowd levels, walking circuits, and direct Google Maps directions." />
+    
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:title" content="Ganesh Pandal Tracker" />
+    <meta property="og:description" content="Explore Mumbai's Ganesh Chaturthi Pandals with real-time crowd status, walking circuits, darshan schedules and maps." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Ganesh Pandal Tracker" />
+
     <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
-    <title>Pandal Map | Mumbai Ganesh Chaturthi Guide</title>
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>Ganesh Pandal Tracker | Mumbai Ganesh Chaturthi Guide</title>
+
     <!-- Preconnect Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
+
+    <!-- Immediate Theme Initialization (Prevents flash of unstyled theme & migrates storage key) -->
     <script>
       (function() {
         try {
-          var t = localStorage.getItem('pandal_map_theme');
+          var t = localStorage.getItem('ganesh_pandal_tracker_theme') || localStorage.getItem('pandal_map_theme');
           var isDark = t === 'dark' || (!t && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
           var root = document.documentElement;
           if (isDark) {
@@ -32,12 +49,17 @@
           if (meta) {
             meta.setAttribute('content', isDark ? '#0c0a09' : '#ea580c');
           }
+          if (t && !localStorage.getItem('ganesh_pandal_tracker_theme')) {
+            localStorage.setItem('ganesh_pandal_tracker_theme', t);
+          }
         } catch (e) {}
       })();
     </script>
   </head>
   <body class="bg-stone-50 text-stone-900 antialiased">
-    <div id="root"></div>
+    <div id="root">
+      <main role="main" aria-label="Ganesh Pandal Tracker"></main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -31,6 +31,10 @@ export const MapPage: React.FC = () => {
   const {
     pandals,
     filteredPandals,
+    loading,
+    error,
+    isFallbackActive,
+    refetch,
     selectedPandal,
     setSelectedPandal,
     searchQuery,
@@ -160,7 +164,7 @@ export const MapPage: React.FC = () => {
       : null;
 
   return (
-    <div className="relative w-screen h-[100dvh] flex flex-col overflow-hidden bg-stone-50 dark:bg-stone-950 font-sans">
+    <div className="relative w-full max-w-full h-[100vh] h-[100dvh] flex flex-col overflow-hidden bg-stone-50 dark:bg-stone-950 font-sans">
       {/* Top Navbar */}
       <Navbar
         searchQuery={searchQuery}
@@ -233,7 +237,34 @@ export const MapPage: React.FC = () => {
 
       {/* Main View Area: Map or List */}
       <main className="relative flex-1 w-full h-full overflow-hidden">
-        {isListView ? (
+        {loading && pandals.length === 0 ? (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-stone-50 dark:bg-stone-950 p-6 text-center space-y-3 z-[600]">
+            <div className="w-12 h-12 rounded-full border-4 border-orange-500 border-t-transparent animate-spin mb-2" />
+            <p className="text-sm font-semibold text-stone-700 dark:text-stone-300">
+              {t.loadingPandalDetails || 'Loading pandals...'}
+            </p>
+          </div>
+        ) : error && pandals.length === 0 ? (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-stone-50 dark:bg-stone-950 p-6 text-center space-y-4 z-[600]">
+            <div className="w-16 h-16 rounded-2xl bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 flex items-center justify-center text-3xl shadow-inner">
+              ⚠️
+            </div>
+            <div className="space-y-1 max-w-sm">
+              <h3 className="font-extrabold text-base text-stone-900 dark:text-white">
+                Unable to load pandal data
+              </h3>
+              <p className="text-xs text-stone-500 dark:text-stone-400">
+                {error}
+              </p>
+            </div>
+            <button
+              onClick={() => refetch(true)}
+              className="px-5 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer min-h-[44px]"
+            >
+              Retry Connection
+            </button>
+          </div>
+        ) : isListView ? (
           <div className="w-full h-full overflow-y-auto bg-stone-50 dark:bg-stone-950">
             <PandalListView
               pandals={displayedPandals}
@@ -263,6 +294,14 @@ export const MapPage: React.FC = () => {
               zoomTarget={zoomTarget}
               activeCircuit={activeCircuit}
             />
+
+            {/* Offline Fallback Badge */}
+            {isFallbackActive && (
+              <div className="absolute top-3 left-3 z-[500] px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-600/90 text-white backdrop-blur-md shadow-md border border-amber-300/40 flex items-center gap-1.5 pointer-events-none">
+                <span>⚡</span>
+                <span>Offline / Local Fallback Data</span>
+              </div>
+            )}
 
             {/* Active Circuit Floating Banner */}
             {activeCircuit && (

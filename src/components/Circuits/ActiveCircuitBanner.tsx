@@ -50,6 +50,7 @@ export const ActiveCircuitBanner: React.FC<ActiveCircuitBannerProps> = ({
             onClick={onClear}
             className="p-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-500 hover:text-red-600 transition-colors cursor-pointer"
             title={t.exitCircuit}
+            aria-label={t.exitCircuit}
           >
             <X className="w-4 h-4" />
           </button>

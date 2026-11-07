@@ -26,7 +26,9 @@ export const LocationDeniedModal: React.FC<LocationDeniedModalProps> = ({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 rounded-full"
+          aria-label={t.close || 'Close'}
+          title={t.close || 'Close'}
+          className="absolute top-4 right-4 p-1.5 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 rounded-full cursor-pointer"
         >
           <X className="w-4 h-4" />
         </button>

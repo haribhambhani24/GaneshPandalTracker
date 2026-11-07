@@ -107,7 +107,12 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
 
           {/* Area Dropdown */}
           <div className="shrink-0 relative">
+            <label htmlFor="area-select" className="sr-only">
+              {t.allAreas}
+            </label>
             <select
+              id="area-select"
+              aria-label={t.allAreas}
               value={selectedArea}
               onChange={(e) => onAreaChange(e.target.value)}
               className={`appearance-none pl-7 pr-7 py-1.5 rounded-full text-xs font-semibold cursor-pointer border transition-all ${

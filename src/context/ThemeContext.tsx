@@ -11,10 +11,13 @@ export interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
+const THEME_STORAGE_KEY = 'ganesh_pandal_tracker_theme';
+const LEGACY_STORAGE_KEY = 'pandal_map_theme';
+
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<Theme>(() => {
     try {
-      const saved = localStorage.getItem('pandal_map_theme');
+      const saved = localStorage.getItem(THEME_STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
       if (saved === 'light' || saved === 'dark') {
         return saved;
       }
@@ -44,7 +47,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
 
     try {
-      localStorage.setItem('pandal_map_theme', targetTheme);
+      localStorage.setItem(THEME_STORAGE_KEY, targetTheme);
     } catch {
       // Ignore storage errors
     }
@@ -60,7 +63,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleSystemChange = (e: MediaQueryListEvent) => {
       try {
-        const saved = localStorage.getItem('pandal_map_theme');
+        const saved = localStorage.getItem(THEME_STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
         if (!saved) {
           const newTheme = e.matches ? 'dark' : 'light';
           setThemeState(newTheme);
@@ -87,6 +90,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 };
 
+// oxlint-disable-next-line react/only-export-components
 export function useTheme(): ThemeContextValue {
   const context = useContext(ThemeContext);
   if (!context) {

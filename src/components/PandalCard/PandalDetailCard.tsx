@@ -50,7 +50,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
   const directionsUrl = getGoogleMapsDirectionsUrl(pandal.lat, pandal.lng, pandal.name);
 
   const handleShare = async () => {
-    const shareText = `Check out ${pandal.name} in ${pandal.area} on Pandal Map!`;
+    const shareText = `Check out ${pandal.name} in ${pandal.area} on Ganesh Pandal Tracker!`;
     const shareUrl = `${window.location.origin}/pandal/${pandal.id}`;
 
     if (navigator.share) {
@@ -146,6 +146,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
             <button
               onClick={() => toggleSave(pandal.id)}
               title={saved ? 'Saved in My Darshan' : 'Save to My Darshan'}
+              aria-label={saved ? 'Saved in My Darshan' : 'Save to My Darshan'}
               className={`p-2 rounded-full backdrop-blur-md border transition-all cursor-pointer ${
                 saved
                   ? 'bg-amber-500 text-white border-amber-300 shadow-md scale-105'
@@ -159,6 +160,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
             <button
               onClick={() => toggleVisited(pandal.id)}
               title={visited ? 'Visited' : 'Mark as Visited'}
+              aria-label={visited ? 'Visited' : 'Mark as Visited'}
               className={`p-2 rounded-full backdrop-blur-md border transition-all cursor-pointer ${
                 visited
                   ? 'bg-emerald-600 text-white border-emerald-300 shadow-md scale-105'
@@ -172,6 +174,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
             <button
               onClick={handleShare}
               title={t.share}
+              aria-label={t.share}
               className="p-2 rounded-full bg-black/50 text-white backdrop-blur-md hover:bg-black/70 border border-white/20 transition-colors cursor-pointer"
             >
               {copied ? <CheckCircle className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
@@ -181,6 +184,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
               <button
                 onClick={onClose}
                 title={t.close}
+                aria-label={t.close || 'Close'}
                 className="p-2 rounded-full bg-black/50 text-white backdrop-blur-md hover:bg-black/70 border border-white/20 transition-colors cursor-pointer"
               >
                 ✕
