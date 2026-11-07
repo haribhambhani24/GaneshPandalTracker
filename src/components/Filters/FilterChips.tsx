@@ -1,6 +1,7 @@
 import React from 'react';
-import { Clock, Leaf, Locate, MapPin, Navigation, Users, X } from 'lucide-react';
+import { Clock, Compass, Leaf, Locate, MapPin, Navigation, Star, Users, X } from 'lucide-react';
 import type { CrowdLevel } from '../../types/pandal';
+import type { Circuit } from '../../types/circuit';
 import { useI18n } from '../../context/I18nContext';
 
 interface FilterChipsProps {
@@ -20,7 +21,12 @@ interface FilterChipsProps {
   onClearSearchQuery: () => void;
   onClearAllFilters: () => void;
   hasActiveFilters: boolean;
-  onOpenAreaSelect?: () => void;
+  onOpenCircuits?: () => void;
+  activeCircuit?: Circuit | null;
+  onClearCircuit?: () => void;
+  myDarshanFilterOnly?: boolean;
+  onToggleMyDarshanFilter?: () => void;
+  myDarshanCount?: number;
 }
 
 export const FilterChips: React.FC<FilterChipsProps> = ({
@@ -40,6 +46,12 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
   onClearSearchQuery,
   onClearAllFilters,
   hasActiveFilters,
+  onOpenCircuits,
+  activeCircuit,
+  onClearCircuit,
+  myDarshanFilterOnly,
+  onToggleMyDarshanFilter,
+  myDarshanCount = 0,
 }) => {
   const { t } = useI18n();
 
@@ -48,6 +60,21 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
       <div className="max-w-7xl mx-auto space-y-2">
         {/* Main Filters Scrollable Row */}
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth py-0.5">
+          {/* Walking Trails Button */}
+          {onOpenCircuits && (
+            <button
+              onClick={onOpenCircuits}
+              className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shadow-xs cursor-pointer ${
+                activeCircuit
+                  ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white ring-2 ring-orange-400/60'
+                  : 'bg-white dark:bg-stone-800 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-800 hover:bg-amber-100/60 dark:hover:bg-amber-950/40'
+              }`}
+            >
+              <Compass className="w-3.5 h-3.5 text-amber-500" />
+              <span>{activeCircuit ? `Trail: ${activeCircuit.name.split(' ')[0]}` : 'Walking Trails'}</span>
+            </button>
+          )}
+
           {/* Near Me Button */}
           <button
             onClick={onToggleSortByDistance}
@@ -62,6 +89,21 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
             <Locate className={`w-3.5 h-3.5 ${locatingDistance ? 'animate-spin' : ''}`} />
             <span>{locatingDistance ? t.nearMeLocating : sortByDistance ? t.nearMeActive : t.nearMe}</span>
           </button>
+
+          {/* My Darshan Bookmark Pill */}
+          {onToggleMyDarshanFilter && (
+            <button
+              onClick={onToggleMyDarshanFilter}
+              className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shadow-xs cursor-pointer ${
+                myDarshanFilterOnly
+                  ? 'bg-amber-500 text-white ring-2 ring-amber-300'
+                  : 'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:bg-stone-100'
+              }`}
+            >
+              <Star className={`w-3.5 h-3.5 ${myDarshanFilterOnly ? 'fill-white text-white' : 'fill-amber-400 text-amber-500'}`} />
+              <span>My Darshan ({myDarshanCount})</span>
+            </button>
+          )}
 
           {/* Area Dropdown */}
           <div className="shrink-0 relative">
@@ -113,7 +155,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
             <span>{t.twentyFourHours}</span>
           </button>
 
-          {/* Crowd Filter Dropdown / Pills */}
+          {/* Crowd Filter Pills */}
           <button
             onClick={() => onCrowdFilterChange(crowdFilter === 'Low' ? 'All' : 'Low')}
             className={`shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
@@ -140,7 +182,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
         </div>
 
         {/* Removable Active Filter Chips Row */}
-        {hasActiveFilters && (
+        {(hasActiveFilters || activeCircuit || myDarshanFilterOnly) && (
           <div
             id="active-filter-chips"
             className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 border-t border-amber-200/60 dark:border-stone-800 text-xs"
@@ -148,6 +190,38 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
             <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400 shrink-0">
               {t.activeFilters}
             </span>
+
+            {/* Active Circuit Chip */}
+            {activeCircuit && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-orange-600 text-white font-semibold shadow-xs shrink-0">
+                <Compass className="w-3 h-3 text-amber-200" />
+                <span>Trail: {activeCircuit.name}</span>
+                {onClearCircuit && (
+                  <button
+                    onClick={onClearCircuit}
+                    className="hover:text-amber-200 p-0.5 rounded-full ml-0.5"
+                    title="Exit trail"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </span>
+            )}
+
+            {/* My Darshan chip */}
+            {myDarshanFilterOnly && onToggleMyDarshanFilter && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500 text-white font-semibold shrink-0">
+                <Star className="w-3 h-3 fill-white" />
+                <span>My Darshan</span>
+                <button
+                  onClick={onToggleMyDarshanFilter}
+                  className="hover:text-amber-200 p-0.5 rounded-full ml-0.5"
+                  title="Remove My Darshan filter"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
 
             {/* Near Me Chip */}
             {sortByDistance && (

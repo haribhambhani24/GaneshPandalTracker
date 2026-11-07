@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
+import {
+  AlertTriangle,
   ArrowRight,
-  Calendar, 
-  CheckCircle, 
-  Clock, 
-  ExternalLink, 
-  Flame, 
-  Leaf, 
-  MapPin, 
-  Navigation, 
-  Share2, 
-  Train, 
-  Users 
+  Bookmark,
+  Calendar,
+  Check,
+  CheckCircle,
+  Clock,
+  ExternalLink,
+  Flame,
+  Leaf,
+  MapPin,
+  Navigation,
+  Share2,
+  Train,
+  Users,
 } from 'lucide-react';
 import type { Pandal } from '../../types/pandal';
 import { getGoogleMapsDirectionsUrl } from '../../utils/geoUtils';
 import { useI18n } from '../../context/I18nContext';
+import { useMyDarshan } from '../../hooks/useMyDarshan';
 
 interface PandalDetailCardProps {
   pandal: Pandal;
@@ -31,8 +35,12 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const { t } = useI18n();
+  const { isSaved, toggleSave, isVisited, toggleVisited } = useMyDarshan();
   const [copied, setCopied] = useState(false);
   const [imageError, setImageError] = useState(false);
+
+  const saved = isSaved(pandal.id);
+  const visited = isVisited(pandal.id);
 
   const fallbackPhoto =
     'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80';
@@ -106,7 +114,34 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
             {pandal.area}
           </span>
 
-          <div className="flex items-center gap-2 pointer-events-auto">
+          <div className="flex items-center gap-1.5 pointer-events-auto">
+            {/* Bookmark / Save to My Darshan */}
+            <button
+              onClick={() => toggleSave(pandal.id)}
+              title={saved ? 'Saved in My Darshan' : 'Save to My Darshan'}
+              className={`p-2 rounded-full backdrop-blur-md border transition-all cursor-pointer ${
+                saved
+                  ? 'bg-amber-500 text-white border-amber-300 shadow-md scale-105'
+                  : 'bg-black/50 text-white border-white/20 hover:bg-black/70'
+              }`}
+            >
+              <Bookmark className={`w-4 h-4 ${saved ? 'fill-white' : ''}`} />
+            </button>
+
+            {/* Mark Visited */}
+            <button
+              onClick={() => toggleVisited(pandal.id)}
+              title={visited ? 'Visited' : 'Mark as Visited'}
+              className={`p-2 rounded-full backdrop-blur-md border transition-all cursor-pointer ${
+                visited
+                  ? 'bg-emerald-600 text-white border-emerald-300 shadow-md scale-105'
+                  : 'bg-black/50 text-white border-white/20 hover:bg-black/70'
+              }`}
+            >
+              <Check className="w-4 h-4" />
+            </button>
+
+            {/* Share */}
             <button
               onClick={handleShare}
               title={t.share}
@@ -114,6 +149,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
             >
               {copied ? <CheckCircle className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
             </button>
+
             {onClose && (
               <button
                 onClick={onClose}
@@ -128,9 +164,16 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
 
         {/* Bottom Image Info */}
         <div className="absolute bottom-3 left-3 right-3 text-white">
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight drop-shadow-md text-amber-100">
-            {pandal.name}
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight drop-shadow-md text-amber-100 truncate">
+              {pandal.name}
+            </h2>
+            {visited && (
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white shadow">
+                Visited ✓
+              </span>
+            )}
+          </div>
           {userDistanceKm !== null && userDistanceKm !== undefined && (
             <p className="text-xs text-amber-300 font-semibold mt-0.5 flex items-center gap-1">
               <Navigation className="w-3 h-3 rotate-45" />
@@ -203,6 +246,29 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
             </div>
           </div>
         </div>
+
+        {/* Queue & Line Advice for Travellers */}
+        {pandal.crowdLevel === 'High' && (
+          <div className="p-3.5 rounded-2xl bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/40 dark:to-orange-950/30 border border-red-200 dark:border-red-900/50 space-y-2">
+            <div className="flex items-center gap-1.5 text-red-700 dark:text-red-400 font-bold text-xs uppercase tracking-wider">
+              <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+              <span>Devotee Queue Advisory (Two Separate Lines)</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-[11px]">
+              <div className="p-2 rounded-xl bg-white/80 dark:bg-stone-800/80 border border-red-200/50 dark:border-stone-700">
+                <span className="font-bold text-stone-900 dark:text-stone-100 block">👀 Mukh Darshan</span>
+                <span className="text-stone-600 dark:text-stone-400">View from stage. Faster line (typically 2 to 4 hours).</span>
+              </div>
+              <div className="p-2 rounded-xl bg-white/80 dark:bg-stone-800/80 border border-red-200/50 dark:border-stone-700">
+                <span className="font-bold text-stone-900 dark:text-stone-100 block">🙏 Charan Sparsh</span>
+                <span className="text-stone-600 dark:text-stone-400">Touch idol's feet. Can take 12 to 20+ hours on peak days.</span>
+              </div>
+            </div>
+            <p className="text-[10px] text-stone-500 dark:text-stone-400 italic">
+              Tip: Best queue times are early morning between 4:00 AM and 7:00 AM.
+            </p>
+          </div>
+        )}
 
         {/* Timings Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

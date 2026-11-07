@@ -506,3 +506,4 @@ ON CONFLICT (id) DO UPDATE SET
     nearest_station = EXCLUDED.nearest_station,
     visarjan_date = EXCLUDED.visarjan_date,
     status = EXCLUDED.status;
+

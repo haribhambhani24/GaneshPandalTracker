@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LeafletMap } from '../components/Map/LeafletMap';
 import { MUMBAI_CENTER } from '../utils/geoUtils';
 import { Navbar } from '../components/Header/Navbar';
@@ -8,9 +8,14 @@ import { MapControls } from '../components/Controls/MapControls';
 import { PandalBottomSheet } from '../components/BottomSheet/PandalBottomSheet';
 import { PandalListView } from '../components/ListView/PandalListView';
 import { LocationDeniedModal } from '../components/Modal/LocationDeniedModal';
+import { CircuitsModal } from '../components/Circuits/CircuitsModal';
+import { ActiveCircuitBanner } from '../components/Circuits/ActiveCircuitBanner';
 import { usePandals } from '../hooks/usePandals';
 import { useUserLocation } from '../hooks/useUserLocation';
+import { useMyDarshan } from '../hooks/useMyDarshan';
+import { circuitService } from '../services/circuitService';
 import type { Pandal } from '../types/pandal';
+import type { Circuit } from '../types/circuit';
 
 export const MapPage: React.FC = () => {
   const {
@@ -44,19 +49,37 @@ export const MapPage: React.FC = () => {
     distancesMap,
   } = usePandals(userLocation);
 
+  const { isSaved, savedCount } = useMyDarshan();
+
   const [isListView, setIsListView] = useState<boolean>(false);
   const [mapCenter, setMapCenter] = useState<[number, number]>(MUMBAI_CENTER);
   const [mapZoom, setMapZoom] = useState<number>(12);
   const [zoomTarget, setZoomTarget] = useState<{ lat: number; lng: number; zoom: number; timestamp: number } | null>(null);
   const [showLocationDeniedModal, setShowLocationDeniedModal] = useState<boolean>(false);
 
+  // Circuits & Walking Trails state
+  const [circuits, setCircuits] = useState<Circuit[]>([]);
+  const [activeCircuit, setActiveCircuit] = useState<Circuit | null>(null);
+  const [showCircuitsModal, setShowCircuitsModal] = useState<boolean>(false);
+
+  // My Darshan bookmark filter
+  const [myDarshanFilterOnly, setMyDarshanFilterOnly] = useState<boolean>(false);
+
+  useEffect(() => {
+    circuitService.getCircuits().then(setCircuits);
+  }, []);
+
+  // Compute displayed pandals (accounting for My Darshan filter)
+  const displayedPandals = myDarshanFilterOnly
+    ? filteredPandals.filter((p) => isSaved(p.id))
+    : filteredPandals;
+
   // Handle selecting a pandal from marker or list
   const handleSelectPandal = (pandal: Pandal) => {
     setSelectedPandal(pandal);
   };
 
-  // Handle selecting a suggestion from the live search bar:
-  // "the map zooms to the selected result"
+  // Handle selecting a suggestion from live search bar
   const handleSelectSuggestion = (pandal: Pandal) => {
     setSelectedPandal(pandal);
     setZoomTarget({
@@ -65,7 +88,6 @@ export const MapPage: React.FC = () => {
       zoom: 16,
       timestamp: Date.now(),
     });
-    // If on list view, switch back to map view
     if (isListView) {
       setIsListView(false);
     }
@@ -84,7 +106,6 @@ export const MapPage: React.FC = () => {
 
     if (userLocation) {
       setSortByDistance(true);
-      // Zoom map to user location
       setZoomTarget({
         lat: userLocation.lat,
         lng: userLocation.lng,
@@ -119,6 +140,18 @@ export const MapPage: React.FC = () => {
     setSelectedPandal(null);
   };
 
+  const handleSelectCircuit = (circuit: Circuit) => {
+    setActiveCircuit(circuit);
+    setShowCircuitsModal(false);
+    if (isListView) {
+      setIsListView(false);
+    }
+  };
+
+  const handleClearCircuit = () => {
+    setActiveCircuit(null);
+  };
+
   const userDistanceKm =
     userLocation && selectedPandal
       ? distancesMap.get(selectedPandal.id) ?? null
@@ -135,7 +168,7 @@ export const MapPage: React.FC = () => {
         isListView={isListView}
         onToggleView={() => setIsListView((prev) => !prev)}
         totalPandals={pandals.length}
-        filteredCount={filteredPandals.length}
+        filteredCount={displayedPandals.length}
         distancesMap={distancesMap}
       />
 
@@ -158,8 +191,29 @@ export const MapPage: React.FC = () => {
         locatingDistance={locating}
         searchQuery={searchQuery}
         onClearSearchQuery={() => setSearchQuery('')}
-        onClearAllFilters={clearAllFilters}
+        onClearAllFilters={() => {
+          clearAllFilters();
+          setActiveCircuit(null);
+          setMyDarshanFilterOnly(false);
+        }}
         hasActiveFilters={hasActiveFilters}
+        onOpenCircuits={() => setShowCircuitsModal(true)}
+        activeCircuit={activeCircuit}
+        onClearCircuit={handleClearCircuit}
+        myDarshanFilterOnly={myDarshanFilterOnly}
+        onToggleMyDarshanFilter={() => setMyDarshanFilterOnly((prev) => !prev)}
+        myDarshanCount={savedCount}
+      />
+
+      {/* Walking Tours Modal */}
+      <CircuitsModal
+        isOpen={showCircuitsModal}
+        onClose={() => setShowCircuitsModal(false)}
+        circuits={circuits}
+        pandals={pandals}
+        activeCircuit={activeCircuit}
+        onSelectCircuit={handleSelectCircuit}
+        onClearCircuit={handleClearCircuit}
       />
 
       {/* Location Denied Friendly Modal */}
@@ -180,42 +234,64 @@ export const MapPage: React.FC = () => {
         {isListView ? (
           <div className="w-full h-full overflow-y-auto bg-stone-50 dark:bg-stone-950">
             <PandalListView
-              pandals={filteredPandals}
+              pandals={displayedPandals}
               onSelectPandal={(p) => {
                 handleSelectPandal(p);
                 setIsListView(false);
               }}
               selectedPandal={selectedPandal}
               distancesMap={distancesMap}
-              onClearFilters={clearAllFilters}
+              onClearFilters={() => {
+                clearAllFilters();
+                setMyDarshanFilterOnly(false);
+                setActiveCircuit(null);
+              }}
               searchQuery={searchQuery}
             />
           </div>
         ) : (
           <>
             <LeafletMap
-              pandals={filteredPandals}
+              pandals={pandals}
               selectedPandal={selectedPandal}
               onSelectPandal={handleSelectPandal}
               userLocation={userLocation}
               center={mapCenter}
               zoom={mapZoom}
               zoomTarget={zoomTarget}
+              activeCircuit={activeCircuit}
             />
 
+            {/* Active Circuit Floating Banner */}
+            {activeCircuit && (
+              <ActiveCircuitBanner
+                circuit={activeCircuit}
+                onClear={handleClearCircuit}
+                onOpenDetails={() => setShowCircuitsModal(true)}
+              />
+            )}
+
             {/* Empty State Overlay for Map View when 0 results */}
-            {filteredPandals.length === 0 && (
+            {displayedPandals.length === 0 && (
               <div className="absolute top-6 left-1/2 -translate-x-1/2 z-[500] w-[90%] max-w-sm">
                 <div className="bg-white/95 dark:bg-stone-900/95 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-amber-300 dark:border-amber-800 text-center space-y-2">
                   <div className="text-2xl">🕉️</div>
                   <h4 className="font-bold text-sm text-stone-900 dark:text-stone-100">
-                    No pandals match your filters
+                    {myDarshanFilterOnly
+                      ? 'No pandals saved in My Darshan yet'
+                      : 'No pandals match your filters'}
                   </h4>
                   <p className="text-xs text-stone-600 dark:text-stone-400">
-                    Try adjusting or clearing your search and filters.
+                    {myDarshanFilterOnly
+                      ? 'Tap the bookmark icon on any pandal card to save it for your festival visit.'
+                      : 'Try adjusting or clearing your search and filters.'}
                   </p>
                   <button
-                    onClick={clearAllFilters}
+                    onClick={() => {
+                      clearAllFilters();
+                      setMyDarshanFilterOnly(false);
+                      setActiveCircuit(null);
+                    }}
                     className="mt-2 px-4 py-1.5 rounded-lg bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold shadow cursor-pointer transition-colors"
                   >
                     Clear All Filters

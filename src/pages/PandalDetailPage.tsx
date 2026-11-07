@@ -1,26 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { 
-  ArrowLeft, 
-  Calendar, 
-  CheckCircle, 
-  Clock, 
-  ExternalLink, 
-  Flame, 
-  Image as ImageIcon, 
-  Info, 
-  Leaf, 
-  MapPin, 
-  Navigation, 
-  Share2, 
-  Sparkles, 
-  Train, 
-  Users 
+import {
+  AlertTriangle,
+  ArrowLeft,
+  Bookmark,
+  Calendar,
+  Check,
+  CheckCircle,
+  Clock,
+  ExternalLink,
+  Flame,
+  Image as ImageIcon,
+  Info,
+  Leaf,
+  MapPin,
+  Navigation,
+  Share2,
+  Sparkles,
+  Train,
+  Users,
 } from 'lucide-react';
 import { pandalService } from '../services/pandalService';
 import type { Pandal } from '../types/pandal';
 import { useI18n } from '../context/I18nContext';
 import { useTheme } from '../context/ThemeContext';
+import { useMyDarshan } from '../hooks/useMyDarshan';
 import { getGoogleMapsDirectionsUrl } from '../utils/geoUtils';
 
 export const PandalDetailPage: React.FC = () => {
@@ -28,6 +32,7 @@ export const PandalDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useI18n();
   const { isDark, toggleTheme } = useTheme();
+  const { isSaved, toggleSave, isVisited, toggleVisited } = useMyDarshan();
 
   const [pandal, setPandal] = useState<Pandal | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -78,6 +83,9 @@ export const PandalDetailPage: React.FC = () => {
       </div>
     );
   }
+
+  const saved = isSaved(pandal.id);
+  const visited = isVisited(pandal.id);
 
   const photos = pandal.gallery && pandal.gallery.length > 0 ? pandal.gallery : [pandal.photoUrl];
   const directionsUrl = getGoogleMapsDirectionsUrl(pandal.lat, pandal.lng, pandal.name);
@@ -140,6 +148,32 @@ export const PandalDetailPage: React.FC = () => {
         </button>
 
         <div className="flex items-center gap-2">
+          {/* Bookmark Button */}
+          <button
+            onClick={() => toggleSave(pandal.id)}
+            title={saved ? 'Saved in My Darshan' : 'Save to My Darshan'}
+            className={`p-2 rounded-xl transition-all cursor-pointer ${
+              saved
+                ? 'bg-amber-500 text-white shadow-xs'
+                : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 hover:bg-stone-200'
+            }`}
+          >
+            <Bookmark className={`w-4 h-4 ${saved ? 'fill-white' : ''}`} />
+          </button>
+
+          {/* Mark Visited Button */}
+          <button
+            onClick={() => toggleVisited(pandal.id)}
+            title={visited ? 'Visited' : 'Mark as Visited'}
+            className={`p-2 rounded-xl transition-all cursor-pointer ${
+              visited
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 hover:bg-stone-200'
+            }`}
+          >
+            <Check className="w-4 h-4" />
+          </button>
+
           {/* Share Button */}
           <button
             onClick={handleShare}
@@ -179,12 +213,17 @@ export const PandalDetailPage: React.FC = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-transparent to-transparent pointer-events-none" />
 
-            {/* Area Badge on Image */}
-            <div className="absolute top-4 left-4">
+            {/* Area & Visited Badge on Image */}
+            <div className="absolute top-4 left-4 flex items-center gap-2">
               <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold bg-black/60 text-white backdrop-blur-md border border-white/20">
                 <MapPin className="w-3.5 h-3.5 text-amber-400" />
                 {pandal.area}
               </span>
+              {visited && (
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-600 text-white shadow">
+                  Visited ✓
+                </span>
+              )}
             </div>
 
             {/* Counter badge on bottom-right of photo */}
@@ -271,6 +310,37 @@ export const PandalDetailPage: React.FC = () => {
             <ExternalLink className="w-4 h-4 opacity-80" />
           </a>
         </section>
+
+        {/* Queue Advisory Card for High-Crowd Pandals */}
+        {pandal.crowdLevel === 'High' && (
+          <section className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/40 dark:to-orange-950/30 rounded-3xl p-5 border border-red-200 dark:border-red-900/50 shadow-md space-y-3">
+            <div className="flex items-center gap-2 text-red-700 dark:text-red-400 font-bold text-sm uppercase tracking-wider">
+              <AlertTriangle className="w-5 h-5 text-red-600 shrink-0" />
+              <span>Devotee Queue Advisory: Two Distinct Lines</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div className="p-3.5 rounded-2xl bg-white/90 dark:bg-stone-800/90 border border-red-200/60 dark:border-stone-700 space-y-1">
+                <span className="font-extrabold text-stone-900 dark:text-stone-100 text-sm block">
+                  👀 Mukh Darshan (Viewing Only)
+                </span>
+                <p className="text-stone-600 dark:text-stone-300 leading-relaxed">
+                  Devotees walk across the main viewing stage 20 feet from the idol. Significantly faster queue (typically 2 to 4 hours). Recommended for travellers with limited time.
+                </p>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-white/90 dark:bg-stone-800/90 border border-red-200/60 dark:border-stone-700 space-y-1">
+                <span className="font-extrabold text-stone-900 dark:text-stone-100 text-sm block">
+                  🙏 Navas / Charan Sparsh (Feet Touching)
+                </span>
+                <p className="text-stone-600 dark:text-stone-300 leading-relaxed">
+                  Line for pilgrims fulfilling special vows by touching Bappa's sacred feet. Can take 12 to 24+ hours on peak days and weekends.
+                </p>
+              </div>
+            </div>
+            <p className="text-xs text-stone-600 dark:text-stone-400 italic">
+              💡 Insider Tip: The lightest queues occur between 4:00 AM and 7:00 AM. Avoid peak evening hours between 6:00 PM and 11:00 PM.
+            </p>
+          </section>
+        )}
 
         {/* Timings Grid */}
         <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
