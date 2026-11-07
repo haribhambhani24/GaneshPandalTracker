@@ -6,6 +6,8 @@ import { ThemeProvider } from './context/ThemeContext';
 // Lazy-load routes for maximum performance on slow mobile networks
 const MapPage = lazy(() => import('./pages/MapPage'));
 const PandalDetailPage = lazy(() => import('./pages/PandalDetailPage'));
+const SubmitPandalPage = lazy(() => import('./pages/SubmitPandalPage'));
+const AdminPage = lazy(() => import('./pages/AdminPage'));
 
 const PageLoadingFallback: React.FC = () => (
   <div className="w-screen h-screen flex flex-col items-center justify-center bg-stone-50 dark:bg-stone-950 text-stone-800 dark:text-stone-200">
@@ -25,6 +27,8 @@ export function App() {
             <Routes>
               <Route path="/" element={<MapPage />} />
               <Route path="/pandal/:id" element={<PandalDetailPage />} />
+              <Route path="/submit" element={<SubmitPandalPage />} />
+              <Route path="/admin" element={<AdminPage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>

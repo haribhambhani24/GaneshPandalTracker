@@ -4,12 +4,15 @@ import { ArrowRight, Clock, Leaf, MapPin, Navigation, Train, Users } from 'lucid
 import type { Pandal } from '../../types/pandal';
 import { getGoogleMapsDirectionsUrl, formatDistance } from '../../utils/geoUtils';
 import { useI18n } from '../../context/I18nContext';
+import { EmptyState } from '../EmptyState/EmptyState';
 
 interface PandalListViewProps {
   pandals: Pandal[];
   onSelectPandal: (pandal: Pandal) => void;
   selectedPandal: Pandal | null;
   distancesMap?: Map<string, number>;
+  onClearFilters?: () => void;
+  searchQuery?: string;
 }
 
 export const PandalListView: React.FC<PandalListViewProps> = ({
@@ -17,17 +20,19 @@ export const PandalListView: React.FC<PandalListViewProps> = ({
   onSelectPandal,
   selectedPandal,
   distancesMap,
+  onClearFilters,
+  searchQuery,
 }) => {
   const navigate = useNavigate();
   const { t } = useI18n();
 
   if (pandals.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 text-center text-stone-500">
-        <div className="text-4xl mb-3">🕉️</div>
-        <p className="text-base font-semibold text-stone-700 dark:text-stone-300">
-          {t.noPandalsFound}
-        </p>
+      <div className="w-full max-w-md mx-auto p-4 sm:p-6">
+        <EmptyState
+          onClearFilters={onClearFilters || (() => {})}
+          searchQuery={searchQuery}
+        />
       </div>
     );
   }

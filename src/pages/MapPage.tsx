@@ -187,6 +187,8 @@ export const MapPage: React.FC = () => {
               }}
               selectedPandal={selectedPandal}
               distancesMap={distancesMap}
+              onClearFilters={clearAllFilters}
+              searchQuery={searchQuery}
             />
           </div>
         ) : (
@@ -200,6 +202,27 @@ export const MapPage: React.FC = () => {
               zoom={mapZoom}
               zoomTarget={zoomTarget}
             />
+
+            {/* Empty State Overlay for Map View when 0 results */}
+            {filteredPandals.length === 0 && (
+              <div className="absolute top-6 left-1/2 -translate-x-1/2 z-[500] w-[90%] max-w-sm">
+                <div className="bg-white/95 dark:bg-stone-900/95 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-amber-300 dark:border-amber-800 text-center space-y-2">
+                  <div className="text-2xl">🕉️</div>
+                  <h4 className="font-bold text-sm text-stone-900 dark:text-stone-100">
+                    No pandals match your filters
+                  </h4>
+                  <p className="text-xs text-stone-600 dark:text-stone-400">
+                    Try adjusting or clearing your search and filters.
+                  </p>
+                  <button
+                    onClick={clearAllFilters}
+                    className="mt-2 px-4 py-1.5 rounded-lg bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold shadow cursor-pointer transition-colors"
+                  >
+                    Clear All Filters
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Floating Map Controls (Thumb-friendly) */}
             <MapControls

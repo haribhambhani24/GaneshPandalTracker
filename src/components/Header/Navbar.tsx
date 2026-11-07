@@ -1,5 +1,6 @@
 import React from 'react';
-import { List, Map, Moon, Sun } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { List, Map, Moon, Plus, Shield, Sun } from 'lucide-react';
 import type { Language } from '../../i18n';
 import { useI18n } from '../../context/I18nContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -85,6 +86,25 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             {isDark ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4" />}
           </button>
+
+          {/* Submit Pandal CTA */}
+          <Link
+            to="/submit"
+            className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-red-950 font-bold text-xs shadow-xs active:scale-95 transition-all"
+            title="Submit a Pandal"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span className="hidden md:inline">Submit</span>
+          </Link>
+
+          {/* Admin Link */}
+          <Link
+            to="/admin"
+            className="p-1.5 sm:p-2 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-amber-100 hover:text-white border border-white/20 transition-all"
+            title="Admin Moderation Portal"
+          >
+            <Shield className="w-4 h-4 text-amber-300" />
+          </Link>
 
           {/* Map vs List View Toggle */}
           <button

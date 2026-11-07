@@ -1,0 +1,19 @@
+{
+  "name": "Pandal Map - Mumbai Ganesh Chaturthi Guide",
+  "short_name": "Pandal Map",
+  "description": "Mobile guide for Ganesh Chaturthi pandals in Mumbai with offline map and darshan tracking",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FFFBEB",
+  "theme_color": "#EA580C",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["travel", "navigation", "culture", "utilities"]
+}
