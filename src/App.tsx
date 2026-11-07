@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { I18nProvider } from './context/I18nContext';
 import { ThemeProvider } from './context/ThemeContext';
 
@@ -8,6 +8,7 @@ const MapPage = lazy(() => import('./pages/MapPage'));
 const PandalDetailPage = lazy(() => import('./pages/PandalDetailPage'));
 const SubmitPandalPage = lazy(() => import('./pages/SubmitPandalPage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const PageLoadingFallback: React.FC = () => (
   <main
@@ -33,7 +34,7 @@ export function App() {
               <Route path="/pandal/:id" element={<PandalDetailPage />} />
               <Route path="/submit" element={<SubmitPandalPage />} />
               <Route path="/admin" element={<AdminPage />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
         </BrowserRouter>

@@ -8,8 +8,10 @@ import { MapControls } from '../components/Controls/MapControls';
 import { PandalBottomSheet } from '../components/BottomSheet/PandalBottomSheet';
 import { PandalListView } from '../components/ListView/PandalListView';
 import { LocationDeniedModal } from '../components/Modal/LocationDeniedModal';
+import { PrePromptGpsModal } from '../components/Modal/PrePromptGpsModal';
 import { CircuitsModal } from '../components/Circuits/CircuitsModal';
 import { ActiveCircuitBanner } from '../components/Circuits/ActiveCircuitBanner';
+import { MyDarshanModal } from '../components/MyDarshan/MyDarshanModal';
 import { usePandals } from '../hooks/usePandals';
 import { useUserLocation } from '../hooks/useUserLocation';
 import { useMyDarshan } from '../hooks/useMyDarshan';
@@ -17,9 +19,14 @@ import { useI18n } from '../context/I18nContext';
 import { circuitService } from '../services/circuitService';
 import type { Pandal } from '../types/pandal';
 import type { Circuit } from '../types/circuit';
+import { Sparkles, WifiOff, X } from 'lucide-react';
+
+const HINT_STORAGE_KEY = 'ganesh_pandal_hint_dismissed';
+const LANG_CHOSEN_KEY = 'ganesh_pandal_lang_chosen';
+const MAP_POS_KEY = 'ganesh_pandal_map_pos';
 
 export const MapPage: React.FC = () => {
-  const { t } = useI18n();
+  const { t, setLanguage } = useI18n();
   const {
     location: userLocation,
     loading: locating,
@@ -47,6 +54,8 @@ export const MapPage: React.FC = () => {
     setTwentyFourHoursFilter,
     selectedArea,
     setSelectedArea,
+    sortBy,
+    setSortBy,
     sortByDistance,
     setSortByDistance,
     hasActiveFilters,
@@ -58,41 +67,117 @@ export const MapPage: React.FC = () => {
   const { isSaved, savedCount } = useMyDarshan();
 
   const [isListView, setIsListView] = useState<boolean>(false);
-  const [mapCenter, setMapCenter] = useState<[number, number]>(MUMBAI_CENTER);
-  const [mapZoom, setMapZoom] = useState<number>(12);
+
+  // Preserve map center and zoom in sessionStorage
+  const [mapCenter, setMapCenter] = useState<[number, number]>(() => {
+    try {
+      const saved = sessionStorage.getItem(MAP_POS_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed.center) && parsed.center.length === 2) {
+          return parsed.center;
+        }
+      }
+    } catch {}
+    return MUMBAI_CENTER;
+  });
+
+  const [mapZoom, setMapZoom] = useState<number>(() => {
+    try {
+      const saved = sessionStorage.getItem(MAP_POS_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.zoom === 'number') return parsed.zoom;
+      }
+    } catch {}
+    return 12;
+  });
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(
+        MAP_POS_KEY,
+        JSON.stringify({ center: mapCenter, zoom: mapZoom })
+      );
+    } catch {}
+  }, [mapCenter, mapZoom]);
+
   const [zoomTarget, setZoomTarget] = useState<{ lat: number; lng: number; zoom: number; timestamp: number } | null>(null);
+  const [zoomCounter, setZoomCounter] = useState<number>(1);
   const [showLocationDeniedModal, setShowLocationDeniedModal] = useState<boolean>(false);
+  const [showPrePromptGps, setShowPrePromptGps] = useState<boolean>(false);
 
   // Circuits & Walking Trails state
   const [circuits, setCircuits] = useState<Circuit[]>([]);
   const [activeCircuit, setActiveCircuit] = useState<Circuit | null>(null);
   const [showCircuitsModal, setShowCircuitsModal] = useState<boolean>(false);
 
-  // My Darshan bookmark filter
+  // My Darshan bookmark filter & Modal
   const [myDarshanFilterOnly, setMyDarshanFilterOnly] = useState<boolean>(false);
+  const [showMyDarshanModal, setShowMyDarshanModal] = useState<boolean>(false);
+
+  // First-visit dismissible hint
+  const [showFirstVisitHint, setShowFirstVisitHint] = useState<boolean>(() => {
+    try {
+      return !localStorage.getItem(HINT_STORAGE_KEY);
+    } catch {
+      return false;
+    }
+  });
+
+  // First-visit language chooser prompt
+  const [showFirstVisitLangPrompt, setShowFirstVisitLangPrompt] = useState<boolean>(() => {
+    try {
+      return !localStorage.getItem(LANG_CHOSEN_KEY);
+    } catch {
+      return false;
+    }
+  });
+
+  // Offline banner & auto-reconnect
+  const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
+  const [showReconnectedBanner, setShowReconnectedBanner] = useState<boolean>(false);
 
   useEffect(() => {
     circuitService.getCircuits().then(setCircuits);
   }, []);
+
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      setShowReconnectedBanner(true);
+      refetch(true);
+      setTimeout(() => setShowReconnectedBanner(false), 3000);
+    };
+    const handleOffline = () => {
+      setIsOnline(false);
+    };
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [refetch]);
 
   // Compute displayed pandals (accounting for My Darshan filter)
   const displayedPandals = myDarshanFilterOnly
     ? filteredPandals.filter((p) => isSaved(p.id))
     : filteredPandals;
 
-  // Handle selecting a pandal from marker or list
   const handleSelectPandal = (pandal: Pandal) => {
     setSelectedPandal(pandal);
   };
 
-  // Handle selecting a suggestion from live search bar
   const handleSelectSuggestion = (pandal: Pandal) => {
     setSelectedPandal(pandal);
+    const nextSeq = zoomCounter + 1;
+    setZoomCounter(nextSeq);
     setZoomTarget({
       lat: pandal.lat,
       lng: pandal.lng,
       zoom: 16,
-      timestamp: Date.now(),
+      timestamp: nextSeq,
     });
     if (isListView) {
       setIsListView(false);
@@ -103,7 +188,7 @@ export const MapPage: React.FC = () => {
     setSelectedPandal(null);
   };
 
-  // Handle "Near Me" button click
+  // Near Me trigger with pre-prompt explanation
   const handleToggleNearMe = async () => {
     if (sortByDistance) {
       setSortByDistance(false);
@@ -112,36 +197,56 @@ export const MapPage: React.FC = () => {
 
     if (userLocation) {
       setSortByDistance(true);
+      const nextSeq = zoomCounter + 1;
+      setZoomCounter(nextSeq);
       setZoomTarget({
         lat: userLocation.lat,
         lng: userLocation.lng,
         zoom: 14,
-        timestamp: Date.now(),
+        timestamp: nextSeq,
+      });
+      return;
+    }
+
+    const explained = localStorage.getItem('ganesh_pandal_gps_explained');
+    if (!explained) {
+      setShowPrePromptGps(true);
+    } else {
+      executeLocationRequest();
+    }
+  };
+
+  const executeLocationRequest = async () => {
+    try {
+      localStorage.setItem('ganesh_pandal_gps_explained', 'true');
+    } catch {}
+    setShowPrePromptGps(false);
+    const loc = await requestLocation();
+    if (loc) {
+      setSortByDistance(true);
+      const nextSeq = zoomCounter + 1;
+      setZoomCounter(nextSeq);
+      setZoomTarget({
+        lat: loc.lat,
+        lng: loc.lng,
+        zoom: 14,
+        timestamp: nextSeq,
       });
     } else {
-      const loc = await requestLocation();
-      if (loc) {
-        setSortByDistance(true);
-        setZoomTarget({
-          lat: loc.lat,
-          lng: loc.lng,
-          zoom: 14,
-          timestamp: Date.now(),
-        });
-      } else {
-        setShowLocationDeniedModal(true);
-      }
+      setShowLocationDeniedModal(true);
     }
   };
 
   const handleResetCenter = () => {
     setMapCenter(MUMBAI_CENTER);
     setMapZoom(12);
+    const nextSeq = zoomCounter + 1;
+    setZoomCounter(nextSeq);
     setZoomTarget({
       lat: MUMBAI_CENTER[0],
       lng: MUMBAI_CENTER[1],
       zoom: 12,
-      timestamp: Date.now(),
+      timestamp: nextSeq,
     });
     setSelectedPandal(null);
   };
@@ -156,6 +261,28 @@ export const MapPage: React.FC = () => {
 
   const handleClearCircuit = () => {
     setActiveCircuit(null);
+  };
+
+  const handleDismissHint = () => {
+    setShowFirstVisitHint(false);
+    try {
+      localStorage.setItem(HINT_STORAGE_KEY, 'true');
+    } catch {}
+  };
+
+  const handleSelectFirstVisitLanguage = (lang: 'en' | 'hi' | 'mr') => {
+    setLanguage(lang);
+    setShowFirstVisitLangPrompt(false);
+    try {
+      localStorage.setItem(LANG_CHOSEN_KEY, 'true');
+    } catch {}
+  };
+
+  const handleDismissLangPrompt = () => {
+    setShowFirstVisitLangPrompt(false);
+    try {
+      localStorage.setItem(LANG_CHOSEN_KEY, 'true');
+    } catch {}
   };
 
   const userDistanceKm =
@@ -177,6 +304,60 @@ export const MapPage: React.FC = () => {
         filteredCount={displayedPandals.length}
         distancesMap={distancesMap}
       />
+
+      {/* Offline Status Banner */}
+      {!isOnline && (
+        <div className="bg-amber-600 text-white text-xs font-bold px-3 py-1.5 flex items-center justify-center gap-1.5 shadow-xs z-[990]">
+          <WifiOff className="w-3.5 h-3.5" />
+          <span>{t.offlineBanner}</span>
+        </div>
+      )}
+
+      {/* Reconnected Status Banner */}
+      {showReconnectedBanner && (
+        <div className="bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 flex items-center justify-center gap-1.5 shadow-xs z-[990] animate-in slide-in-from-top-2">
+          <span>✓</span>
+          <span>{t.onlineBanner}</span>
+        </div>
+      )}
+
+      {/* First-Visit Language Chooser Banner */}
+      {showFirstVisitLangPrompt && (
+        <div className="bg-amber-100 dark:bg-stone-800 border-b border-amber-300 dark:border-stone-700 px-3 py-2 flex items-center justify-between gap-2 z-[980] text-xs animate-in fade-in">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-bold text-amber-950 dark:text-amber-300">
+              {t.chooseLanguagePrompt}:
+            </span>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => handleSelectFirstVisitLanguage('en')}
+                className="px-2.5 py-0.5 rounded-full font-bold bg-white dark:bg-stone-700 text-stone-800 dark:text-stone-200 border border-stone-300 dark:border-stone-600 hover:bg-amber-50 cursor-pointer"
+              >
+                English
+              </button>
+              <button
+                onClick={() => handleSelectFirstVisitLanguage('hi')}
+                className="px-2.5 py-0.5 rounded-full font-bold bg-white dark:bg-stone-700 text-stone-800 dark:text-stone-200 border border-stone-300 dark:border-stone-600 hover:bg-amber-50 cursor-pointer"
+              >
+                हिंदी
+              </button>
+              <button
+                onClick={() => handleSelectFirstVisitLanguage('mr')}
+                className="px-2.5 py-0.5 rounded-full font-bold bg-white dark:bg-stone-700 text-stone-800 dark:text-stone-200 border border-stone-300 dark:border-stone-600 hover:bg-amber-50 cursor-pointer"
+              >
+                मराठी
+              </button>
+            </div>
+          </div>
+          <button
+            onClick={handleDismissLangPrompt}
+            className="p-1 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 rounded-full"
+            title="Dismiss"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Festival Dates & Countdown Banner */}
       <FestivalCountdownBanner />
@@ -207,8 +388,35 @@ export const MapPage: React.FC = () => {
         activeCircuit={activeCircuit}
         onClearCircuit={handleClearCircuit}
         myDarshanFilterOnly={myDarshanFilterOnly}
-        onToggleMyDarshanFilter={() => setMyDarshanFilterOnly((prev) => !prev)}
+        onToggleMyDarshanFilter={() => setShowMyDarshanModal(true)}
         myDarshanCount={savedCount}
+        filteredCount={displayedPandals.length}
+        totalCount={pandals.length}
+        sortBy={sortBy}
+        onSortByChange={setSortBy}
+      />
+
+      {/* First-Visit Lightweight Dismissible Hint */}
+      {showFirstVisitHint && (
+        <div className="bg-amber-500 text-white text-xs px-3.5 py-1.5 flex items-center justify-between gap-2 z-[960] shadow-sm">
+          <span className="flex items-center gap-1.5 font-medium">
+            <Sparkles className="w-3.5 h-3.5 shrink-0" />
+            <span>{t.firstVisitHint}</span>
+          </span>
+          <button
+            onClick={handleDismissHint}
+            className="font-bold underline hover:text-amber-100 shrink-0 cursor-pointer ml-2"
+          >
+            {t.firstVisitDismiss}
+          </button>
+        </div>
+      )}
+
+      {/* Pre-Prompt GPS Modal */}
+      <PrePromptGpsModal
+        isOpen={showPrePromptGps}
+        onConfirm={executeLocationRequest}
+        onCancel={() => setShowPrePromptGps(false)}
       />
 
       {/* Walking Tours Modal */}
@@ -222,16 +430,28 @@ export const MapPage: React.FC = () => {
         onClearCircuit={handleClearCircuit}
       />
 
-      {/* Location Denied Friendly Modal */}
+      {/* Location Denied Friendly Modal with Popular Areas */}
       <LocationDeniedModal
         isOpen={showLocationDeniedModal || isPermissionDenied}
         onClose={() => {
           setShowLocationDeniedModal(false);
           clearLocationError();
         }}
-        onSelectArea={() => {
+        onSelectArea={(area) => {
+          setSelectedArea(area);
           setShowLocationDeniedModal(false);
           clearLocationError();
+        }}
+      />
+
+      {/* My Darshan Multi-Stop Route Modal */}
+      <MyDarshanModal
+        isOpen={showMyDarshanModal}
+        onClose={() => setShowMyDarshanModal(false)}
+        pandals={pandals}
+        userLocation={userLocation}
+        onSelectPandal={(p) => {
+          handleSelectSuggestion(p);
         }}
       />
 

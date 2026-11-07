@@ -23,8 +23,9 @@ async function generate() {
 
   for (const cfg of configs) {
     await page.setViewport({ width: cfg.size, height: cfg.size, deviceScaleFactor: 1 });
-    const fontSize = cfg.maskable ? Math.round(cfg.size * 0.5) : Math.round(cfg.size * 0.58);
     const radius = cfg.maskable ? '0px' : `${Math.round(cfg.size * 0.22)}px`;
+    const iconScale = cfg.maskable ? 0.5 : 0.6;
+    const pinSize = Math.round(cfg.size * iconScale);
 
     const html = `
       <!DOCTYPE html>
@@ -36,27 +37,24 @@ async function generate() {
             .icon-box {
               width: ${cfg.size}px;
               height: ${cfg.size}px;
-              background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
+              background-color: #D9531E;
               border-radius: ${radius};
               display: flex;
               align-items: center;
               justify-content: center;
-              box-shadow: ${cfg.maskable ? 'none' : 'inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 6px rgba(0,0,0,0.3)'};
             }
-            .symbol {
-              font-size: ${fontSize}px;
-              line-height: 1;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              filter: drop-shadow(0 2px 8px rgba(0,0,0,0.35));
-              user-select: none;
+            svg {
+              width: ${pinSize}px;
+              height: ${pinSize}px;
             }
           </style>
         </head>
         <body>
           <div class="icon-box">
-            <div class="symbol">🕉️</div>
+            <svg viewBox="0 0 32 32" fill="none">
+              <path d="M16 4C10.477 4 6 8.477 6 14C6 21.5 16 29 16 29C16 29 26 21.5 26 14C26 8.477 21.523 4 16 4ZM16 18.5C13.515 18.5 11.5 16.485 11.5 14C11.5 11.515 13.515 9.5 16 9.5C18.485 9.5 20.5 11.515 20.5 14C20.5 16.485 18.485 18.5 16 18.5Z" fill="#FFFFFF"/>
+              <circle cx="16" cy="14" r="3.5" fill="#D9531E"/>
+            </svg>
           </div>
         </body>
       </html>
@@ -69,10 +67,10 @@ async function generate() {
   }
 
   await browser.close();
-  console.log('All PWA icons generated successfully in public/');
+  console.log('All professional PWA icons generated successfully in public/');
 }
 
-generate().catch(err => {
+generate().catch((err) => {
   console.error(err);
   process.exit(1);
 });

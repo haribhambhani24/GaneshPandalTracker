@@ -193,6 +193,75 @@ export interface Translations {
   dragToSet: string;
   changePhoto: string;
   supabaseLocalFallbackNote: string;
+  firstVisitHint: string;
+  firstVisitDismiss: string;
+  chooseLanguagePrompt: string;
+  prePromptGpsTitle: string;
+  prePromptGpsDesc: string;
+  continueGps: string;
+  popularAreas: string;
+  howToEnableLocation: string;
+  recentSearches: string;
+  clearRecentSearches: string;
+  noSearchResults: string;
+  tryPopularArea: string;
+  sortByLabel: string;
+  sortByDistance: string;
+  sortByName: string;
+  sortByCrowd: string;
+  resultsCount: string;
+  openNow: string;
+  closedNow: string;
+  open24Hours: string;
+  closesAt: string;
+  opensAt: string;
+  nextAartiLabel: string;
+  verifiedBadge: string;
+  communityBadge: string;
+  lastUpdatedLabel: string;
+  reportProblem: string;
+  reportProblemTitle: string;
+  reportProblemSubtitle: string;
+  reportIssueType: string;
+  issueWrongLocation: string;
+  issueWrongTimings: string;
+  issueCrowdInaccurate: string;
+  issueClosed: string;
+  issueOther: string;
+  reportDetails: string;
+  reportDetailsPlaceholder: string;
+  reporterNameOptional: string;
+  reporterContactOptional: string;
+  submitReport: string;
+  submittingReport: string;
+  reportSubmitted: string;
+  previousPandal: string;
+  nextPandal: string;
+  roadClosureNotice: string;
+  myDarshanRoute: string;
+  openGoogleMapsRoute: string;
+  localDeviceNote: string;
+  reorderTip: string;
+  pandalRemoved: string;
+  undo: string;
+  offlineBanner: string;
+  onlineBanner: string;
+  notFoundTitle: string;
+  notFoundDesc: string;
+  step1Title: string;
+  step2Title: string;
+  step3Title: string;
+  nextStep: string;
+  prevStep: string;
+  draftSavedNotice: string;
+  draftRestoredNotice: string;
+  clearDraft: string;
+  useCurrentGps: string;
+  pinLocationSelected: string;
+  userReportsTab: string;
+  markResolved: string;
+  dismissReport: string;
+  noReportsFound: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -382,6 +451,75 @@ export const translations: Record<Language, Translations> = {
     dragToSet: 'Drag to Set',
     changePhoto: 'Change Photo',
     supabaseLocalFallbackNote: 'Note: Supabase credentials operating with local fallback.',
+    firstVisitHint: "Tap 'Near me' to find pandals around you, or pick an area below.",
+    firstVisitDismiss: "Got it",
+    chooseLanguagePrompt: "Choose your language",
+    prePromptGpsTitle: "Find pandals closest to you",
+    prePromptGpsDesc: "We use your GPS to calculate walking and travel distance. Your location stays on your device.",
+    continueGps: "Allow Location",
+    popularAreas: "Popular Areas",
+    howToEnableLocation: "To enable location: Open browser site settings > Permissions > Location > Allow.",
+    recentSearches: "Recent Searches",
+    clearRecentSearches: "Clear",
+    noSearchResults: "No pandals matching",
+    tryPopularArea: "Try searching a popular area instead:",
+    sortByLabel: "Sort by",
+    sortByDistance: "Nearest",
+    sortByName: "Name (A-Z)",
+    sortByCrowd: "Lowest Crowd",
+    resultsCount: "pandals",
+    openNow: "Open now",
+    closedNow: "Closed",
+    open24Hours: "Open 24 Hours",
+    closesAt: "Closes",
+    opensAt: "Opens",
+    nextAartiLabel: "Next Aarti",
+    verifiedBadge: "Verified Mandal",
+    communityBadge: "Community Submitted",
+    lastUpdatedLabel: "Last updated",
+    reportProblem: "Report a problem with this info",
+    reportProblemTitle: "Report Inaccurate Information",
+    reportProblemSubtitle: "Help fellow devotees by reporting incorrect locations, timings or crowd status.",
+    reportIssueType: "What is incorrect?",
+    issueWrongLocation: "Wrong map location / pin",
+    issueWrongTimings: "Darshan / Aarti timings changed",
+    issueCrowdInaccurate: "Crowd status is inaccurate",
+    issueClosed: "Pandal is closed / not active",
+    issueOther: "Other correction",
+    reportDetails: "Additional details (optional)",
+    reportDetailsPlaceholder: "E.g., Entry gate moved to side lane, road closed for vehicles...",
+    reporterNameOptional: "Your name (optional)",
+    reporterContactOptional: "Phone or email (optional)",
+    submitReport: "Submit Report",
+    submittingReport: "Submitting...",
+    reportSubmitted: "Thank you! Your report has been submitted for review.",
+    previousPandal: "Previous",
+    nextPandal: "Next",
+    roadClosureNotice: "Traffic Advisory: Road restricted to pedestrian entry only",
+    myDarshanRoute: "My Darshan Itinerary",
+    openGoogleMapsRoute: "Open Multi-Stop Route in Google Maps",
+    localDeviceNote: "Saved pandals are stored safely on this device without requiring a login.",
+    reorderTip: "Use arrows to reorder your stops or export to Google Maps directions.",
+    pandalRemoved: "Pandal removed from My Darshan",
+    undo: "Undo",
+    offlineBanner: "You're offline • Showing saved data",
+    onlineBanner: "Back online • Data updated",
+    notFoundTitle: "Page Not Found",
+    notFoundDesc: "The page or pandal you are looking for doesn't exist or has moved.",
+    step1Title: "1. Basic Info",
+    step2Title: "2. Location & Timings",
+    step3Title: "3. Photo & Review",
+    nextStep: "Next Step",
+    prevStep: "Back",
+    draftSavedNotice: "Draft auto-saved",
+    draftRestoredNotice: "Restored your unsaved draft",
+    clearDraft: "Discard draft",
+    useCurrentGps: "Use my current location (GPS)",
+    pinLocationSelected: "Location pinned from device GPS",
+    userReportsTab: "User Reports",
+    markResolved: "Mark Resolved",
+    dismissReport: "Dismiss",
+    noReportsFound: "No active user reports found.",
   },
 
   hi: {
@@ -570,6 +708,75 @@ export const translations: Record<Language, Translations> = {
     dragToSet: 'स्थान सेट करने के लिए खींचें',
     changePhoto: 'फोटो बदलें',
     supabaseLocalFallbackNote: 'नोट: Supabase क्रेडेंशियल्स स्थानीय फ़ॉलबैक के साथ काम कर रहे हैं।',
+    firstVisitHint: "अपने आसपास के पंडाल खोजने के लिए 'मेरे पास' पर टैप करें, या नीचे से क्षेत्र चुनें।",
+    firstVisitDismiss: "समझ गया",
+    chooseLanguagePrompt: "अपनी भाषा चुनें",
+    prePromptGpsTitle: "अपने सबसे नजदीकी पंडाल खोजें",
+    prePromptGpsDesc: "पैदल और यात्रा की दूरी मापने के लिए GPS का उपयोग किया जाता है। आपका स्थान आपके फोन पर ही रहता है।",
+    continueGps: "स्थान की अनुमति दें",
+    popularAreas: "लोकप्रिय क्षेत्र",
+    howToEnableLocation: "स्थान सक्षम करने के लिए: ब्राउज़र साइट सेटिंग > अनुमतियाँ > स्थान > अनुमति दें पर जाएं।",
+    recentSearches: "हाल की खोजें",
+    clearRecentSearches: "हटाएं",
+    noSearchResults: "इस खोज से कोई पंडाल मेल नहीं खाता",
+    tryPopularArea: "इसके बजाय कोई लोकप्रिय क्षेत्र खोजें:",
+    sortByLabel: "क्रमबद्ध करें",
+    sortByDistance: "सबसे पास",
+    sortByName: "नाम (A-Z)",
+    sortByCrowd: "कम भीड़",
+    resultsCount: "पंडाल",
+    openNow: "अभी खुला है",
+    closedNow: "बंद है",
+    open24Hours: "24 घंटे खुला",
+    closesAt: "समापन",
+    opensAt: "शुरुआत",
+    nextAartiLabel: "अगली आरती",
+    verifiedBadge: "सत्यापित मंडल",
+    communityBadge: "समुदाय द्वारा प्रस्तुत",
+    lastUpdatedLabel: "अंतिम अपडेट",
+    reportProblem: "इस जानकारी में कोई त्रुटि रिपोर्ट करें",
+    reportProblemTitle: "गलत जानकारी रिपोर्ट करें",
+    reportProblemSubtitle: "गलत स्थान, समय या भीड़ की स्थिति रिपोर्ट करके अन्य भक्तों की सहायता करें।",
+    reportIssueType: "क्या गलत है?",
+    issueWrongLocation: "नक्शे पर गलत स्थान",
+    issueWrongTimings: "दर्शन / आरती का समय बदल गया",
+    issueCrowdInaccurate: "भीड़ की स्थिति गलत है",
+    issueClosed: "पंडाल बंद है / चालू नहीं है",
+    issueOther: "अन्य सुधार",
+    reportDetails: "अतिरिक्त विवरण (वैकल्पिक)",
+    reportDetailsPlaceholder: "उदा. प्रवेश द्वार बगल की गली में बदल दिया गया है...",
+    reporterNameOptional: "आपका नाम (वैकल्िक)",
+    reporterContactOptional: "फोन या ईमेल (वैकल्पिक)",
+    submitReport: "रिपोर्ट भेजें",
+    submittingReport: "भेज रहे हैं...",
+    reportSubmitted: "धन्यवाद! आपकी रिपोर्ट समीक्षा के लिए जमा कर दी गई है।",
+    previousPandal: "पिछला",
+    nextPandal: "अगला",
+    roadClosureNotice: "यातायात सूचना: केवल पैदल यात्रियों के लिए मार्ग खुला है",
+    myDarshanRoute: "मेरा दर्शन मार्ग",
+    openGoogleMapsRoute: "गूगल मैप्स में संपूर्ण मार्ग खोलें",
+    localDeviceNote: "सहेजे गए पंडाल बिना लॉगिन के इस डिवाइस पर सुरक्षित रहते हैं।",
+    reorderTip: "अपने स्टॉप्स को पुनर्व्यवस्थित करने के लिए तीर का उपयोग करें।",
+    pandalRemoved: "पंडाल को दर्शन सूची से हटाया गया",
+    undo: "पूर्ववत करें",
+    offlineBanner: "ऑफ़लाइन मोड • सहेजा गया डेटा दिखाया जा रहा है",
+    onlineBanner: "ऑनलाइन वापस आ गए • डेटा अपडेट किया गया",
+    notFoundTitle: "पृष्ठ नहीं मिला",
+    notFoundDesc: "जिस पृष्ठ या पंडाल को आप ढूंढ रहे हैं, वह मौजूद नहीं है या बदल दिया गया है।",
+    step1Title: "1. बुनियादी जानकारी",
+    step2Title: "2. स्थान और समय",
+    step3Title: "3. फोटो और समीक्षा",
+    nextStep: "अगला चरण",
+    prevStep: "पिछला",
+    draftSavedNotice: "ड्राफ्ट सहेजा गया",
+    draftRestoredNotice: "पिछला ड्राफ्ट पुनर्स्थापित किया गया",
+    clearDraft: "ड्राफ्ट हटाएं",
+    useCurrentGps: "मेरे वर्तमान स्थान (GPS) का उपयोग करें",
+    pinLocationSelected: "GPS से स्थान पिन किया गया",
+    userReportsTab: "उपयोगकर्ता रिपोर्ट",
+    markResolved: "हल किया हुआ चिह्नित करें",
+    dismissReport: "खारिज करें",
+    noReportsFound: "कोई सक्रिय रिपोर्ट नहीं मिली।",
   },
 
   mr: {
@@ -758,5 +965,74 @@ export const translations: Record<Language, Translations> = {
     dragToSet: 'स्थान निश्चित करण्यासाठी ओढा',
     changePhoto: 'फोटो बदला',
     supabaseLocalFallbackNote: 'टीप: Supabase क्रेडेंशियल्स स्थानिक फॉलबॅकसह कार्यरत आहेत.',
+    firstVisitHint: "तुमच्या सभोवतालचे मंडळ शोधण्यासाठी 'माझ्याजवळ' टॅप करा, किंवा खालील परिसर निवडा.",
+    firstVisitDismiss: "समजले",
+    chooseLanguagePrompt: "तुमची भाषा निवडा",
+    prePromptGpsTitle: "तुमच्या सर्वात जवळची मंडळे शोधा",
+    prePromptGpsDesc: "पायवाट आणि प्रवासाचे अंतर मोजण्यासाठी GPS वापरले जाते. तुमचे स्थान तुमच्या फोनवरच राहते.",
+    continueGps: "स्थान अनुमती द्या",
+    popularAreas: "लोकप्रिय परिसर",
+    howToEnableLocation: "स्थान सक्षम करण्यासाठी: ब्राउझर साइट सेटिंग्ज > परवानग्या > स्थान > अनुमती द्या वर जा.",
+    recentSearches: "अलीकडील शोध",
+    clearRecentSearches: "साफ करा",
+    noSearchResults: "या शोधाशी कोणतेही मंडळ जुळत नाही",
+    tryPopularArea: "त्याऐवजी लोकप्रिय परिसर निवडून पहा:",
+    sortByLabel: "क्रमवारी",
+    sortByDistance: "सर्वात जवळ",
+    sortByName: "नाव (A-Z)",
+    sortByCrowd: "कमी गर्दी",
+    resultsCount: "मंडळे",
+    openNow: "आता चालू आहे",
+    closedNow: "बंद आहे",
+    open24Hours: "२४ तास चालू",
+    closesAt: "बंद वेळ",
+    opensAt: "उघडण्याची वेळ",
+    nextAartiLabel: "पुढील आरती",
+    verifiedBadge: "सत्यापित मंडळ माहिती",
+    communityBadge: "भाविकांनी नोंदवलेले",
+    lastUpdatedLabel: "शेवटचे अपडेट",
+    reportProblem: "या माहितीमधील त्रुटी नोंदवा",
+    reportProblemTitle: "चुकीची माहिती नोंदवा",
+    reportProblemSubtitle: "चुकीचे स्थान, वेळा किंवा गर्दीची माहिती कळवून इतर भाविकांना मदत करा.",
+    reportIssueType: "काय चुकीचे आहे?",
+    issueWrongLocation: "नकाशावर चुकीचे स्थान",
+    issueWrongTimings: "दर्शन / आरतीची वेळ बदलली",
+    issueCrowdInaccurate: "गर्दीची माहिती चुकीची आहे",
+    issueClosed: "मंडळ बंद आहे / सुरू नाही",
+    issueOther: "इतर दुरुस्ती",
+    reportDetails: "अतिरिक्त माहिती (पर्यायी)",
+    reportDetailsPlaceholder: "उदा. प्रवेशद्वार बाजूच्या गल्लीतून केले आहे...",
+    reporterNameOptional: "तुमचे नाव (पर्यायी)",
+    reporterContactOptional: "फोन किंवा ईमेल (पर्यायी)",
+    submitReport: "अहवाल पाठवा",
+    submittingReport: "पाठवत आहे...",
+    reportSubmitted: "धन्यवाद! तुमचा अहवाल पुनरावलोकनासाठी पाठवला आहे.",
+    previousPandal: "मागील",
+    nextPandal: "पुढील",
+    roadClosureNotice: "वाहतूक सूचना: वाहनांना बंदी, केवळ पायी प्रवेश अनुज्ञेय",
+    myDarshanRoute: "माझा दर्शन मार्ग",
+    openGoogleMapsRoute: "गुगल मॅप्समध्ये संपूर्ण मार्ग उघडा",
+    localDeviceNote: "जतन केलेली मंडळे लॉगिनशिवाय याच डिव्हाइसवर सुरक्षित साठवली जातात.",
+    reorderTip: "थांब्यांची क्रमवारी बदलण्यासाठी बाण वापरा किंवा थेट गुगल मॅप्स मार्ग उघडा.",
+    pandalRemoved: "मंडळ दर्शन यादीतून काढले",
+    undo: "पूर्ववत करा",
+    offlineBanner: "ऑफलाइन मोड • जतन केलेला डेटा दाखवत आहे",
+    onlineBanner: "इंटरनेट पूर्ववत झाले • डेटा अपडेट केला",
+    notFoundTitle: "पृष्ठ सापडले नाही",
+    notFoundDesc: "तुम्ही शोधत असलेले पृष्ठ किंवा मंडळ अस्तित्वात नाही किंवा हलवले गेले आहे.",
+    step1Title: "1. मूलभूत माहिती",
+    step2Title: "2. स्थान व वेळा",
+    step3Title: "3. फोटो आणि पुनरावलोकन",
+    nextStep: "पुढील टप्पा",
+    prevStep: "मागे",
+    draftSavedNotice: "मसुदा जतन झाला",
+    draftRestoredNotice: "पूर्वीचा मसुदा परत मिळवला",
+    clearDraft: "मसुदा पुसा",
+    useCurrentGps: "माझे सध्याचे स्थान (GPS) वापरा",
+    pinLocationSelected: "GPS वरून स्थान निश्चित केले",
+    userReportsTab: "वापरकर्ता अहवाल",
+    markResolved: "निवारण झाले",
+    dismissReport: "रद्द करा",
+    noReportsFound: "कोणतेही प्रलंबित अहवाल नाहीत.",
   },
 };

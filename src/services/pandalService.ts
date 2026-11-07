@@ -1,4 +1,4 @@
-import type { Pandal, PandalSubmission, PandalStatus, CrowdLevel } from '../types/pandal';
+import type { Pandal, PandalSubmission, PandalStatus, CrowdLevel, PandalReport } from '../types/pandal';
 import rawPandalsData from '../data/pandals.json?raw';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
@@ -408,6 +408,137 @@ class PandalService {
 
     this.cachedPandals = null;
     return true;
+  }
+
+  /**
+   * Submit crowdsourced issue / correction report.
+   */
+  public async submitReport(report: PandalReport): Promise<boolean> {
+    const payload = {
+      pandal_id: sanitizeInput(report.pandalId),
+      pandal_name: sanitizeInput(report.pandalName),
+      issue_type: report.issueType,
+      description: sanitizeInput(report.description || ''),
+      reporter_name: sanitizeInput(report.reporterName || ''),
+      reporter_contact: sanitizeInput(report.reporterContact || ''),
+      status: 'pending',
+    };
+
+    if (!isSupabaseConfigured) {
+      try {
+        const existing = JSON.parse(localStorage.getItem('ganesh_pandal_local_reports') || '[]');
+        existing.unshift({
+          ...report,
+          id: 'local-' + Date.now(),
+          status: 'pending',
+          createdAt: new Date().toISOString(),
+        });
+        localStorage.setItem('ganesh_pandal_local_reports', JSON.stringify(existing));
+      } catch {
+        // localStorage not accessible
+      }
+      return true;
+    }
+
+    try {
+      const insertPromise = supabase.from('pandal_reports').insert([payload]);
+      const { error } = await withTimeout(insertPromise);
+      if (error) {
+        console.warn('Supabase report insert error, saving locally:', error);
+        const existing = JSON.parse(localStorage.getItem('ganesh_pandal_local_reports') || '[]');
+        existing.unshift({
+          ...report,
+          id: 'local-' + Date.now(),
+          status: 'pending',
+          createdAt: new Date().toISOString(),
+        });
+        localStorage.setItem('ganesh_pandal_local_reports', JSON.stringify(existing));
+      }
+      return true;
+    } catch (err) {
+      console.warn('Network error during report submission:', err);
+      return true;
+    }
+  }
+
+  /**
+   * Get all user reports (for admin).
+   */
+  public async getReports(): Promise<PandalReport[]> {
+    if (!isSupabaseConfigured) {
+      try {
+        return JSON.parse(localStorage.getItem('ganesh_pandal_local_reports') || '[]');
+      } catch {
+        return [];
+      }
+    }
+
+    try {
+      const fetchPromise = supabase
+        .from('pandal_reports')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      const { data, error } = await withTimeout(fetchPromise);
+      if (error) {
+        console.warn('Error fetching reports from Supabase:', error);
+        return JSON.parse(localStorage.getItem('ganesh_pandal_local_reports') || '[]');
+      }
+
+      return (data || []).map((row: {
+        id: string;
+        pandal_id: string;
+        pandal_name: string;
+        issue_type: PandalReport['issueType'];
+        description?: string;
+        reporter_name?: string;
+        reporter_contact?: string;
+        status: PandalReport['status'];
+        created_at: string;
+      }) => ({
+        id: row.id,
+        pandalId: row.pandal_id,
+        pandalName: row.pandal_name,
+        issueType: row.issue_type,
+        description: row.description,
+        reporterName: row.reporter_name,
+        reporterContact: row.reporter_contact,
+        status: row.status,
+        createdAt: row.created_at,
+      }));
+    } catch {
+      return JSON.parse(localStorage.getItem('ganesh_pandal_local_reports') || '[]');
+    }
+  }
+
+  /**
+   * Update report status (e.g. mark resolved or dismissed).
+   */
+  public async updateReportStatus(reportId: string, status: 'pending' | 'resolved' | 'dismissed'): Promise<boolean> {
+    if (!isSupabaseConfigured || reportId.startsWith('local-')) {
+      try {
+        const existing: PandalReport[] = JSON.parse(localStorage.getItem('ganesh_pandal_local_reports') || '[]');
+        const updated = existing.map((r) => (r.id === reportId ? { ...r, status } : r));
+        localStorage.setItem('ganesh_pandal_local_reports', JSON.stringify(updated));
+      } catch {}
+      return true;
+    }
+
+    try {
+      const updatePromise = supabase
+        .from('pandal_reports')
+        .update({ status })
+        .eq('id', reportId);
+
+      const { error } = await withTimeout(updatePromise);
+      if (error) {
+        throw new Error(`Failed to update report: ${error.message}`);
+      }
+      return true;
+    } catch (err) {
+      console.warn('Failed to update report status:', err);
+      return false;
+    }
   }
 }
 

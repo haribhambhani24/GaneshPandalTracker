@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  AlertTriangle,
   ArrowRight,
+  Bell,
   Bookmark,
-  Calendar,
   Check,
   CheckCircle,
   Clock,
   Copy,
   ExternalLink,
   Flame,
+  Flag,
+  Footprints,
   Leaf,
   MapPin,
   Navigation,
   Share2,
+  ShieldCheck,
   Train,
   Users,
 } from 'lucide-react';
@@ -22,6 +24,8 @@ import type { Pandal } from '../../types/pandal';
 import { getGoogleMapsDirectionsUrl } from '../../utils/geoUtils';
 import { useI18n } from '../../context/I18nContext';
 import { useMyDarshan } from '../../hooks/useMyDarshan';
+import { getDarshanStatus, getNextAarti, getTravelEstimate } from '../../utils/timingsUtils';
+import { ReportProblemModal } from '../Modal/ReportProblemModal';
 
 interface PandalDetailCardProps {
   pandal: Pandal;
@@ -40,6 +44,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
   const [copied, setCopied] = useState(false);
   const [addressCopied, setAddressCopied] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   const saved = isSaved(pandal.id);
   const visited = isVisited(pandal.id);
@@ -48,6 +53,11 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
     'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80';
 
   const directionsUrl = getGoogleMapsDirectionsUrl(pandal.lat, pandal.lng, pandal.name);
+
+  // Real-time status
+  const darshanStatus = getDarshanStatus(pandal);
+  const nextAarti = getNextAarti(pandal);
+  const travelEstimate = getTravelEstimate(userDistanceKm);
 
   const handleShare = async () => {
     const shareText = `Check out ${pandal.name} in ${pandal.area} on Ganesh Pandal Tracker!`;
@@ -124,7 +134,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
   return (
     <div className="flex flex-col h-full bg-white dark:bg-stone-900 rounded-2xl overflow-hidden shadow-2xl">
       {/* Header Image with Overlays */}
-      <div className="relative h-48 sm:h-56 w-full bg-stone-800 overflow-hidden shrink-0">
+      <div className="relative h-44 sm:h-52 w-full bg-stone-800 overflow-hidden shrink-0">
         <img
           src={imageError ? fallbackPhoto : pandal.photoUrl}
           alt={pandal.name}
@@ -136,10 +146,16 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
 
         {/* Top Badges */}
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-black/60 text-white backdrop-blur-md border border-white/20">
-            <MapPin className="w-3.5 h-3.5 text-amber-400" />
-            {pandal.area}
-          </span>
+          <div className="flex items-center gap-1.5 pointer-events-auto">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-black/60 text-white backdrop-blur-md border border-white/20">
+              <MapPin className="w-3.5 h-3.5 text-amber-400" />
+              {pandal.area}
+            </span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-black/60 text-emerald-300 backdrop-blur-md border border-white/20">
+              <ShieldCheck className="w-3 h-3 text-emerald-400" />
+              {pandal.isVerified ? t.verifiedBadge : t.communityBadge}
+            </span>
+          </div>
 
           <div className="flex items-center gap-1.5 pointer-events-auto">
             {/* Bookmark / Save to My Darshan */}
@@ -196,7 +212,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
         {/* Bottom Image Info */}
         <div className="absolute bottom-3 left-3 right-3 text-white">
           <div className="flex items-center gap-2">
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight drop-shadow-md text-amber-100 truncate select-text">
+            <h2 className="text-lg sm:text-xl font-bold tracking-tight drop-shadow-md text-amber-100 truncate select-text">
               {pandal.name}
             </h2>
             {visited && (
@@ -205,23 +221,50 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
               </span>
             )}
           </div>
+
+          {/* Distance & Travel Time Estimate */}
           {userDistanceKm !== null && userDistanceKm !== undefined && (
-            <p className="text-xs text-amber-300 font-semibold mt-0.5 flex items-center gap-1">
-              <Navigation className="w-3 h-3 rotate-45" />
-              {t.approxDistance} {formatNumber(Number(userDistanceKm.toFixed(1)))} km {t.distanceAway}
-            </p>
+            <div className="flex items-center gap-2 text-xs text-amber-300 font-semibold mt-0.5">
+              <span className="flex items-center gap-1">
+                <Navigation className="w-3 h-3 rotate-45" />
+                {formatNumber(Number(userDistanceKm.toFixed(1)))} km
+              </span>
+              {travelEstimate && (
+                <>
+                  <span>•</span>
+                  <span className="flex items-center gap-1 text-emerald-300">
+                    <Footprints className="w-3 h-3" />
+                    {travelEstimate.walkingText}
+                  </span>
+                </>
+              )}
+            </div>
           )}
         </div>
       </div>
 
       {/* Content Body - Scrollable */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 text-stone-800 dark:text-stone-200">
-        {/* Status Pills: Crowd & Eco-Friendly */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-stone-800 dark:text-stone-200">
+        {/* Quick Real-Time Status Bar */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* Crowd Level */}
+          {/* Darshan Open/Closed Status */}
           <div
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${badge.bg}`}
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
+              darshanStatus.isOpen
+                ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                : 'bg-stone-200 text-stone-700 dark:bg-stone-700 dark:text-stone-300'
+            }`}
           >
+            <span
+              className={`w-2 h-2 rounded-full ${
+                darshanStatus.isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-stone-400'
+              }`}
+            />
+            <span>{darshanStatus.statusText}</span>
+          </div>
+
+          {/* Crowd Level */}
+          <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${badge.bg}`}>
             <span className="relative flex h-2 w-2">
               <span className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${badge.dot}`} />
               <span className={`relative inline-flex rounded-full h-2 w-2 ${badge.dot.replace(' animate-ping', '')}`} />
@@ -231,35 +274,33 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
           </div>
 
           {/* Eco Friendly */}
-          {pandal.ecoFriendly ? (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300">
-              <Leaf className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+          {pandal.ecoFriendly && (
+            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300">
+              <Leaf className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
               <span>{t.ecoFriendlyBadge}</span>
-            </div>
-          ) : (
-            <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-normal text-stone-500 bg-stone-100 border border-stone-200 dark:bg-stone-800 dark:text-stone-400">
-              <span>{t.traditionalIdol}</span>
-            </div>
-          )}
-
-          {/* 24-Hours badge */}
-          {(pandal.is24Hours || pandal.darshanTimings.toLowerCase().includes('24')) && (
-            <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 dark:bg-indigo-950/60 dark:text-indigo-300">
-              <Clock className="w-3 h-3 text-indigo-600" />
-              <span>{t.twentyFourHoursBadge}</span>
             </div>
           )}
         </div>
 
-        {/* Address & Transit */}
-        <div className="bg-amber-50/60 dark:bg-stone-800/60 p-3.5 rounded-xl border border-amber-200/60 dark:border-stone-700/60 space-y-2">
+        {/* Next Aarti Callout */}
+        {nextAarti && (
+          <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/40 flex items-center gap-2 text-xs text-rose-800 dark:text-rose-300 font-medium">
+            <Bell className="w-4 h-4 text-rose-600 shrink-0 animate-bounce" />
+            <span>
+              <strong>{t.nextAartiLabel}:</strong> {nextAarti.displayText}
+            </span>
+          </div>
+        )}
+
+        {/* Address & Public Transport */}
+        <div className="bg-amber-50/60 dark:bg-stone-800/60 p-3 rounded-xl border border-amber-200/60 dark:border-stone-700/60 space-y-2">
           <div className="flex items-start gap-2.5">
             <Train className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
             <div>
-              <p className="text-xs uppercase font-bold text-red-700 dark:text-red-400 tracking-wider">
+              <p className="text-[11px] uppercase font-bold text-red-700 dark:text-red-400 tracking-wider">
                 {t.nearestStation}
               </p>
-              <p className="text-sm font-semibold text-stone-900 dark:text-stone-100 select-text">
+              <p className="text-xs font-semibold text-stone-900 dark:text-stone-100 select-text">
                 {pandal.nearestStation}
               </p>
             </div>
@@ -269,7 +310,7 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
             <div className="flex items-start gap-2.5 flex-1 min-w-0">
               <MapPin className="w-4 h-4 text-orange-600 dark:text-orange-400 shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs uppercase font-bold text-stone-500 dark:text-stone-400 tracking-wider">
+                <p className="text-[11px] uppercase font-bold text-stone-500 dark:text-stone-400 tracking-wider">
                   {t.address}
                 </p>
                 <p className="text-xs leading-relaxed text-stone-700 dark:text-stone-300 select-text">
@@ -305,75 +346,27 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
           </div>
         </div>
 
-        {/* Queue & Line Advice for Travellers */}
-        {pandal.crowdLevel === 'High' && (
-          <div className="p-3.5 rounded-2xl bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/40 dark:to-orange-950/30 border border-red-200 dark:border-red-900/50 space-y-2">
-            <div className="flex items-center gap-1.5 text-red-700 dark:text-red-400 font-bold text-xs uppercase tracking-wider">
-              <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
-              <span>{t.queueAdvisoryTitle}</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2 text-[11px]">
-              <div className="p-2 rounded-xl bg-white/80 dark:bg-stone-800/80 border border-red-200/50 dark:border-stone-700">
-                <span className="font-bold text-stone-900 dark:text-stone-100 block">{t.mukhDarshan}</span>
-                <span className="text-stone-600 dark:text-stone-400">{t.mukhDarshanDesc}</span>
-              </div>
-              <div className="p-2 rounded-xl bg-white/80 dark:bg-stone-800/80 border border-red-200/50 dark:border-stone-700">
-                <span className="font-bold text-stone-900 dark:text-stone-100 block">{t.navasDarshan}</span>
-                <span className="text-stone-600 dark:text-stone-400">{t.navasDarshanDesc}</span>
-              </div>
-            </div>
-            <p className="text-[10px] text-stone-500 dark:text-stone-400 italic">
-              {t.queueInsiderTip}
-            </p>
-          </div>
-        )}
-
         {/* Timings Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {/* Darshan */}
-          <div className="p-3 rounded-xl bg-orange-50/70 dark:bg-stone-800/80 border border-orange-200/60 dark:border-orange-900/30">
-            <div className="flex items-center gap-2 text-orange-800 dark:text-orange-300 mb-1">
-              <Clock className="w-4 h-4" />
-              <span className="text-xs font-bold uppercase tracking-wider">{t.darshanTimings}</span>
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          <div className="p-2.5 rounded-xl bg-orange-50/70 dark:bg-stone-800/80 border border-orange-200/60 dark:border-orange-900/30">
+            <div className="flex items-center gap-1 text-orange-800 dark:text-orange-300 mb-1">
+              <Clock className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-bold uppercase tracking-wider">{t.darshanTimings}</span>
             </div>
-            <p className="text-xs font-medium text-stone-800 dark:text-stone-200 leading-snug select-text">
+            <p className="text-xs font-medium text-stone-800 dark:text-stone-200 select-text">
               {pandal.darshanTimings}
             </p>
           </div>
 
-          {/* Aarti */}
-          <div className="p-3 rounded-xl bg-rose-50/70 dark:bg-stone-800/80 border border-rose-200/60 dark:border-rose-900/30">
-            <div className="flex items-center gap-2 text-rose-800 dark:text-rose-300 mb-1">
-              <Flame className="w-4 h-4" />
-              <span className="text-xs font-bold uppercase tracking-wider">{t.aartiTimings}</span>
+          <div className="p-2.5 rounded-xl bg-rose-50/70 dark:bg-stone-800/80 border border-rose-200/60 dark:border-rose-900/30">
+            <div className="flex items-center gap-1 text-rose-800 dark:text-rose-300 mb-1">
+              <Flame className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-bold uppercase tracking-wider">{t.aartiTimings}</span>
             </div>
-            <p className="text-xs font-medium text-stone-800 dark:text-stone-200 leading-snug select-text">
+            <p className="text-xs font-medium text-stone-800 dark:text-stone-200 select-text">
               {pandal.aartiTimings}
             </p>
           </div>
-        </div>
-
-        {/* Visarjan Date */}
-        <div className="p-3 rounded-xl bg-stone-100 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 flex items-start gap-2.5">
-          <Calendar className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-          <div>
-            <p className="text-xs uppercase font-bold text-stone-600 dark:text-stone-400 tracking-wider">
-              {t.visarjanDate}
-            </p>
-            <p className="text-xs text-stone-800 dark:text-stone-200 font-medium select-text">
-              {pandal.visarjanDate}
-            </p>
-          </div>
-        </div>
-
-        {/* Description snippet */}
-        <div>
-          <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400 mb-1">
-            {t.aboutPandal}
-          </h3>
-          <p className="text-xs sm:text-sm text-stone-700 dark:text-stone-300 leading-relaxed">
-            {pandal.description}
-          </p>
         </div>
 
         {/* View Full Details Button */}
@@ -384,21 +377,40 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
           <span>{t.viewFullDetails}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
+
+        {/* Report a Problem shortcut */}
+        <div className="text-center pt-1">
+          <button
+            type="button"
+            onClick={() => setShowReportModal(true)}
+            className="text-[11px] text-stone-500 dark:text-stone-400 hover:text-orange-600 dark:hover:text-orange-400 inline-flex items-center gap-1 cursor-pointer"
+          >
+            <Flag className="w-3 h-3" />
+            <span>{t.reportProblem}</span>
+          </button>
+        </div>
       </div>
 
-      {/* Action Footer: Get Directions */}
-      <div className="p-4 bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 shrink-0">
+      {/* Action Footer: Large Get Directions Button */}
+      <div className="p-3.5 bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 shrink-0">
         <a
           href={directionsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl font-bold text-white bg-gradient-to-r from-orange-600 via-amber-600 to-red-600 hover:from-orange-700 hover:via-amber-700 hover:to-red-700 shadow-lg shadow-orange-600/30 active:scale-[0.98] transition-all text-sm sm:text-base cursor-pointer"
+          className="w-full flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl font-bold text-white bg-gradient-to-r from-orange-600 via-amber-600 to-red-600 hover:from-orange-700 hover:via-amber-700 hover:to-red-700 shadow-lg shadow-orange-600/30 active:scale-[0.98] transition-all text-sm cursor-pointer"
         >
           <Navigation className="w-4 h-4" />
           <span>{t.getDirections}</span>
           <ExternalLink className="w-3.5 h-3.5 opacity-80" />
         </a>
       </div>
+
+      {/* Report Problem Modal */}
+      <ReportProblemModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        pandal={pandal}
+      />
     </div>
   );
 };

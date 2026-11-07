@@ -1,7 +1,8 @@
 import React from 'react';
-import { Clock, Compass, Leaf, Locate, MapPin, Navigation, Star, Users, X } from 'lucide-react';
+import { ArrowUpDown, Clock, Compass, Leaf, Locate, MapPin, Star, Users, X } from 'lucide-react';
 import type { CrowdLevel } from '../../types/pandal';
 import type { Circuit } from '../../types/circuit';
+import type { SortOption } from '../../hooks/usePandals';
 import { useI18n } from '../../context/I18nContext';
 
 interface FilterChipsProps {
@@ -27,6 +28,10 @@ interface FilterChipsProps {
   myDarshanFilterOnly?: boolean;
   onToggleMyDarshanFilter?: () => void;
   myDarshanCount?: number;
+  filteredCount?: number;
+  totalCount?: number;
+  sortBy?: SortOption;
+  onSortByChange?: (sort: SortOption) => void;
 }
 
 export const FilterChips: React.FC<FilterChipsProps> = ({
@@ -52,6 +57,9 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
   myDarshanFilterOnly,
   onToggleMyDarshanFilter,
   myDarshanCount = 0,
+  filteredCount,
+  sortBy = 'default',
+  onSortByChange,
 }) => {
   const { t, formatNumber } = useI18n();
 
@@ -75,7 +83,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
             </button>
           )}
 
-          {/* Near Me Button */}
+          {/* Near Me Button with Clear States */}
           <button
             onClick={onToggleSortByDistance}
             id="near-me-btn"
@@ -89,6 +97,44 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
             <Locate className={`w-3.5 h-3.5 ${locatingDistance ? 'animate-spin' : ''}`} />
             <span>{locatingDistance ? t.nearMeLocating : sortByDistance ? t.nearMeActive : t.nearMe}</span>
           </button>
+
+          {/* Sort By Dropdown */}
+          {onSortByChange && (
+            <div className="shrink-0 relative">
+              <label htmlFor="sort-select" className="sr-only">
+                {t.sortByLabel}
+              </label>
+              <select
+                id="sort-select"
+                aria-label={t.sortByLabel}
+                value={sortBy}
+                onChange={(e) => onSortByChange(e.target.value as SortOption)}
+                className={`appearance-none pl-7 pr-7 py-1.5 rounded-full text-xs font-semibold cursor-pointer border transition-all ${
+                  sortBy !== 'default'
+                    ? 'bg-orange-600 text-white border-orange-600 shadow-xs'
+                    : 'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border-amber-200/60 dark:border-stone-700 hover:bg-amber-100/50 dark:hover:bg-stone-700'
+                }`}
+              >
+                <option value="default" className="text-stone-900 bg-white dark:bg-stone-800 dark:text-white">
+                  {t.sortByLabel}: {t.allPandals}
+                </option>
+                <option value="distance" className="text-stone-900 bg-white dark:bg-stone-800 dark:text-white">
+                  {t.sortByLabel}: {t.sortByDistance}
+                </option>
+                <option value="name" className="text-stone-900 bg-white dark:bg-stone-800 dark:text-white">
+                  {t.sortByLabel}: {t.sortByName}
+                </option>
+                <option value="crowd" className="text-stone-900 bg-white dark:bg-stone-800 dark:text-white">
+                  {t.sortByLabel}: {t.sortByCrowd}
+                </option>
+              </select>
+              <ArrowUpDown
+                className={`w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none ${
+                  sortBy !== 'default' ? 'text-white' : 'text-stone-500 dark:text-stone-400'
+                }`}
+              />
+            </div>
+          )}
 
           {/* My Darshan Bookmark Pill */}
           {onToggleMyDarshanFilter && (
@@ -186,15 +232,18 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
           </button>
         </div>
 
-        {/* Removable Active Filter Chips Row */}
-        {(hasActiveFilters || activeCircuit || myDarshanFilterOnly) && (
-          <div
-            id="active-filter-chips"
-            className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 border-t border-amber-200/60 dark:border-stone-800 text-xs"
-          >
-            <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400 shrink-0">
-              {t.activeFilters}
-            </span>
+        {/* Removable Active Filter Chips & Result Count Row */}
+        <div
+          id="active-filter-chips"
+          className="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar pt-1 border-t border-amber-200/60 dark:border-stone-800 text-xs"
+        >
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            {/* Result count pill */}
+            {filteredCount !== undefined && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-stone-200/80 dark:bg-stone-800 text-stone-700 dark:text-stone-300 font-bold text-[11px] shrink-0">
+                {formatNumber(filteredCount)} {t.resultsCount}
+              </span>
+            )}
 
             {/* Active Circuit Chip */}
             {activeCircuit && (
@@ -228,15 +277,21 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
               </span>
             )}
 
-            {/* Near Me Chip */}
-            {sortByDistance && (
+            {/* Sort Chip (if not default) */}
+            {sortBy !== 'default' && onSortByChange && (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950 text-orange-900 dark:text-orange-200 font-semibold border border-orange-300 dark:border-orange-800 shrink-0">
-                <Navigation className="w-3 h-3 text-orange-600" />
-                <span>{t.nearMe}</span>
+                <ArrowUpDown className="w-3 h-3 text-orange-600" />
+                <span>
+                  {sortBy === 'distance'
+                    ? t.sortByDistance
+                    : sortBy === 'name'
+                    ? t.sortByName
+                    : t.sortByCrowd}
+                </span>
                 <button
-                  onClick={onToggleSortByDistance}
+                  onClick={() => onSortByChange('default')}
                   className="hover:text-red-600 p-0.5 rounded-full ml-0.5"
-                  title="Remove Near Me filter"
+                  title="Reset sorting"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -312,8 +367,10 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
                 </button>
               </span>
             )}
+          </div>
 
-            {/* Clear All button */}
+          {/* Single-tap Clear All button */}
+          {(hasActiveFilters || activeCircuit || myDarshanFilterOnly) && (
             <button
               onClick={onClearAllFilters}
               id="clear-all-filters-btn"
@@ -321,8 +378,8 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
             >
               {t.clearAllFilters}
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

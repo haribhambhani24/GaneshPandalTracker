@@ -7,6 +7,7 @@ import {
   Edit2,
   ExternalLink,
   Eye,
+  Flag,
   KeyRound,
   Leaf,
   Lock,
@@ -25,7 +26,7 @@ import { pandalService } from '../services/pandalService';
 import { useI18n } from '../context/I18nContext';
 import { LanguageSwitcher } from '../components/Header/LanguageSwitcher';
 import { ThemeToggle } from '../components/Header/ThemeToggle';
-import type { CrowdLevel, Pandal, PandalStatus } from '../types/pandal';
+import type { CrowdLevel, Pandal, PandalStatus, PandalReport } from '../types/pandal';
 
 interface AdminSessionUser {
   email?: string;
@@ -48,8 +49,9 @@ export const AdminPage: React.FC = () => {
 
   // Moderation states
   const [pandals, setPandals] = useState<Pandal[]>([]);
+  const [reports, setReports] = useState<PandalReport[]>([]);
   const [loadingData, setLoadingData] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<PandalStatus>('pending');
+  const [activeTab, setActiveTab] = useState<PandalStatus | 'reports'>('pending');
   const [actionInProgressId, setActionInProgressId] = useState<string | null>(null);
 
   // Edit Modal state
@@ -57,18 +59,58 @@ export const AdminPage: React.FC = () => {
   const [editForm, setEditForm] = useState<Partial<Pandal>>({});
   const [editSaving, setEditSaving] = useState<boolean>(false);
 
-  // Fetch admin pandals
+  // Fetch admin pandals & reports
   const fetchAdminPandals = React.useCallback(async () => {
     setLoadingData(true);
     try {
-      const data = await pandalService.getAdminPandals();
-      setPandals(data);
+      const [pandalData, reportData] = await Promise.all([
+        pandalService.getAdminPandals(),
+        pandalService.getReports(),
+      ]);
+      setPandals(pandalData);
+      setReports(reportData);
     } catch (err) {
-      console.error('Failed to load admin pandals:', err);
+      console.error('Failed to load admin pandals or reports:', err);
     } finally {
       setLoadingData(false);
     }
   }, []);
+
+  const handleResolveReport = async (reportId?: string) => {
+    if (!reportId) return;
+    await pandalService.updateReportStatus(reportId, 'resolved');
+    setReports((prev) =>
+      prev.map((r) => (r.id === reportId ? { ...r, status: 'resolved' } : r))
+    );
+  };
+
+  const handleDismissReport = async (reportId?: string) => {
+    if (!reportId) return;
+    await pandalService.updateReportStatus(reportId, 'dismissed');
+    setReports((prev) =>
+      prev.map((r) => (r.id === reportId ? { ...r, status: 'dismissed' } : r))
+    );
+  };
+
+  const handleOpenEdit = (pandal: Pandal) => {
+    setEditingPandal(pandal);
+    setEditForm({
+      name: pandal.name,
+      area: pandal.area,
+      address: pandal.address,
+      lat: pandal.lat,
+      lng: pandal.lng,
+      nearestStation: pandal.nearestStation,
+      darshanTimings: pandal.darshanTimings,
+      aartiTimings: pandal.aartiTimings,
+      visarjanDate: pandal.visarjanDate,
+      crowdLevel: pandal.crowdLevel,
+      ecoFriendly: pandal.ecoFriendly,
+      is24Hours: pandal.is24Hours,
+      description: pandal.description,
+      photoUrl: pandal.photoUrl,
+    });
+  };
 
   // 1. Check Auth Session on mount
   useEffect(() => {
@@ -375,6 +417,22 @@ export const AdminPage: React.FC = () => {
                     {formatNumber(rejectedList.length)}
                   </span>
                 </button>
+
+                {/* User Reports Tab */}
+                <button
+                  onClick={() => setActiveTab('reports')}
+                  className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === 'reports'
+                      ? 'bg-orange-600 text-white shadow'
+                      : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200'
+                  }`}
+                >
+                  <Flag className="w-3.5 h-3.5" />
+                  <span>{t.userReportsTab}</span>
+                  <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-black/20 text-white">
+                    {formatNumber(reports.filter((r) => r.status !== 'resolved').length)}
+                  </span>
+                </button>
               </div>
 
               <button
@@ -387,8 +445,111 @@ export const AdminPage: React.FC = () => {
               </button>
             </div>
 
-            {/* List of pandals in active tab */}
-            {currentList.length === 0 ? (
+            {/* List of pandals or reports in active tab */}
+            {activeTab === 'reports' ? (
+              reports.length === 0 ? (
+                <div className="bg-white dark:bg-stone-900 rounded-3xl p-12 text-center border border-stone-200 dark:border-stone-800 shadow-sm space-y-2">
+                  <div className="text-3xl">🚩</div>
+                  <h3 className="font-bold text-sm text-stone-800 dark:text-stone-200">
+                    {t.noReportsFound}
+                  </h3>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {reports.map((report) => {
+                    const matchingPandal = pandals.find((p) => p.id === report.pandalId);
+                    const isResolved = report.status === 'resolved';
+                    const isDismissed = report.status === 'dismissed';
+
+                    return (
+                      <div
+                        key={report.id}
+                        className={`p-4 sm:p-5 rounded-2xl border transition-all ${
+                          isResolved
+                            ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800/40 opacity-70'
+                            : isDismissed
+                            ? 'bg-stone-100 dark:bg-stone-900 border-stone-200 dark:border-stone-800 opacity-60'
+                            : 'bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-800 shadow-sm'
+                        }`}
+                      >
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                          <div className="space-y-1.5 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-orange-100 dark:bg-orange-950 text-orange-800 dark:text-orange-300 border border-orange-200 dark:border-orange-800">
+                                {report.issueType.replace('_', ' ')}
+                              </span>
+                              <span
+                                className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                  isResolved
+                                    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300'
+                                    : isDismissed
+                                    ? 'bg-stone-200 text-stone-600 dark:bg-stone-800 dark:text-stone-400'
+                                    : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                                }`}
+                              >
+                                {report.status || 'pending'}
+                              </span>
+                              <span className="text-[11px] text-stone-400">
+                                {report.createdAt ? new Date(report.createdAt).toLocaleDateString() : ''}
+                              </span>
+                            </div>
+
+                            <h4 className="text-sm sm:text-base font-bold text-stone-900 dark:text-white">
+                              {report.pandalName}
+                              {report.pandalArea && (
+                                <span className="text-xs text-stone-500 font-normal ml-1">
+                                  ({report.pandalArea})
+                                </span>
+                              )}
+                            </h4>
+
+                            {report.description && (
+                              <p className="text-xs text-stone-700 dark:text-stone-300 bg-stone-50 dark:bg-stone-800 p-2.5 rounded-xl border border-stone-100 dark:border-stone-700">
+                                {report.description}
+                              </p>
+                            )}
+
+                            {(report.reporterName || report.reporterContact) && (
+                              <p className="text-[11px] text-stone-400">
+                                Reported by: {report.reporterName || 'Anonymous'} {report.reporterContact ? `(${report.reporterContact})` : ''}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="flex items-center gap-2 shrink-0 pt-2 sm:pt-0">
+                            {matchingPandal && (
+                              <button
+                                onClick={() => handleOpenEdit(matchingPandal)}
+                                className="px-3 py-1.5 rounded-xl bg-orange-100 hover:bg-orange-200 text-orange-800 dark:bg-orange-950/60 dark:text-orange-300 text-xs font-bold transition-colors cursor-pointer"
+                              >
+                                {t.edit} Pandal
+                              </button>
+                            )}
+                            {!isResolved && (
+                              <button
+                                onClick={() => handleResolveReport(report.id)}
+                                className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors shadow-xs cursor-pointer"
+                              >
+                                {t.markResolved}
+                              </button>
+                            )}
+                            {!isDismissed && !isResolved && (
+                              <button
+                                onClick={() => handleDismissReport(report.id)}
+                                className="px-3 py-1.5 rounded-xl bg-stone-200 hover:bg-stone-300 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-600 dark:text-stone-400 text-xs font-semibold transition-colors cursor-pointer"
+                              >
+                                {t.dismissReport}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )
+            ) : currentList.length === 0 ? (
               <div className="bg-white dark:bg-stone-900 rounded-3xl p-12 text-center border border-stone-200 dark:border-stone-800 shadow-sm space-y-2">
                 <div className="text-3xl">🕉️</div>
                 <h3 className="font-bold text-sm text-stone-800 dark:text-stone-200">
@@ -512,23 +673,7 @@ export const AdminPage: React.FC = () => {
                           )}
 
                           <button
-                            onClick={() => {
-                              setEditingPandal(pandal);
-                              setEditForm({
-                                name: pandal.name,
-                                area: pandal.area,
-                                address: pandal.address,
-                                lat: pandal.lat,
-                                lng: pandal.lng,
-                                nearestStation: pandal.nearestStation,
-                                darshanTimings: pandal.darshanTimings,
-                                aartiTimings: pandal.aartiTimings,
-                                crowdLevel: pandal.crowdLevel,
-                                ecoFriendly: pandal.ecoFriendly,
-                                is24Hours: pandal.is24Hours,
-                                description: pandal.description,
-                              });
-                            }}
+                            onClick={() => handleOpenEdit(pandal)}
                             className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 text-stone-800 dark:text-stone-200 font-semibold text-xs cursor-pointer"
                           >
                             <Edit2 className="w-3 h-3" />

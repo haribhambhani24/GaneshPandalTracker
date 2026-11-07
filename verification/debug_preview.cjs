@@ -1,6 +1,5 @@
 const puppeteer = require('puppeteer-core');
 const { spawn } = require('child_process');
-const http = require('http');
 
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 

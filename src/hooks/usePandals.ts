@@ -3,19 +3,61 @@ import { pandalService } from '../services/pandalService';
 import type { CrowdLevel, Pandal } from '../types/pandal';
 import type { UserLocation } from './useUserLocation';
 import { calculateDistanceKm } from '../utils/geoUtils';
+import { matchesSearchQuery } from '../utils/searchUtils';
+
+export type SortOption = 'default' | 'distance' | 'name' | 'crowd';
+
+const SESSION_FILTERS_KEY = 'ganesh_pandal_filters_state';
+
+interface StoredFilters {
+  searchQuery?: string;
+  crowdFilter?: 'All' | CrowdLevel;
+  ecoFriendlyFilter?: boolean;
+  twentyFourHoursFilter?: boolean;
+  selectedArea?: string;
+  sortBy?: SortOption;
+}
+
+function loadSavedFilters(): StoredFilters {
+  try {
+    const raw = sessionStorage.getItem(SESSION_FILTERS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
 
 export function usePandals(userLocation: UserLocation | null) {
+  const initial = useMemo(() => loadSavedFilters(), []);
+
   const [pandals, setPandals] = useState<Pandal[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedPandal, setSelectedPandal] = useState<Pandal | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [crowdFilter, setCrowdFilter] = useState<'All' | CrowdLevel>('All');
-  const [ecoFriendlyFilter, setEcoFriendlyFilter] = useState<boolean>(false);
-  const [twentyFourHoursFilter, setTwentyFourHoursFilter] = useState<boolean>(false);
-  const [selectedArea, setSelectedArea] = useState<string>('All');
-  const [sortByDistance, setSortByDistance] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>(initial.searchQuery || '');
+  const [crowdFilter, setCrowdFilter] = useState<'All' | CrowdLevel>(initial.crowdFilter || 'All');
+  const [ecoFriendlyFilter, setEcoFriendlyFilter] = useState<boolean>(Boolean(initial.ecoFriendlyFilter));
+  const [twentyFourHoursFilter, setTwentyFourHoursFilter] = useState<boolean>(Boolean(initial.twentyFourHoursFilter));
+  const [selectedArea, setSelectedArea] = useState<string>(initial.selectedArea || 'All');
+  const [sortBy, setSortBy] = useState<SortOption>(initial.sortBy || 'default');
   const [error, setError] = useState<string | null>(null);
   const [isFallbackActive, setIsFallbackActive] = useState<boolean>(false);
+
+  // Sync filters to sessionStorage for back-navigation preservation
+  useEffect(() => {
+    try {
+      const stateToSave: StoredFilters = {
+        searchQuery,
+        crowdFilter,
+        ecoFriendlyFilter,
+        twentyFourHoursFilter,
+        selectedArea,
+        sortBy,
+      };
+      sessionStorage.setItem(SESSION_FILTERS_KEY, JSON.stringify(stateToSave));
+    } catch {
+      // sessionStorage unavailable
+    }
+  }, [searchQuery, crowdFilter, ecoFriendlyFilter, twentyFourHoursFilter, selectedArea, sortBy]);
 
   useEffect(() => {
     let mounted = true;
@@ -76,6 +118,12 @@ export function usePandals(userLocation: UserLocation | null) {
     return ['All', ...Array.from(set).sort()];
   }, [pandals]);
 
+  const sortByDistance = sortBy === 'distance';
+
+  const setSortByDistance = useCallback((enable: boolean) => {
+    setSortBy(enable ? 'distance' : 'default');
+  }, []);
+
   const hasActiveFilters = useMemo(() => {
     return (
       searchQuery.trim() !== '' ||
@@ -83,28 +131,24 @@ export function usePandals(userLocation: UserLocation | null) {
       ecoFriendlyFilter ||
       twentyFourHoursFilter ||
       crowdFilter !== 'All' ||
-      sortByDistance
+      sortBy !== 'default'
     );
-  }, [searchQuery, selectedArea, ecoFriendlyFilter, twentyFourHoursFilter, crowdFilter, sortByDistance]);
+  }, [searchQuery, selectedArea, ecoFriendlyFilter, twentyFourHoursFilter, crowdFilter, sortBy]);
 
-  const clearAllFilters = () => {
+  const clearAllFilters = useCallback(() => {
     setSearchQuery('');
     setSelectedArea('All');
     setEcoFriendlyFilter(false);
     setTwentyFourHoursFilter(false);
     setCrowdFilter('All');
-    setSortByDistance(false);
-  };
+    setSortBy('default');
+  }, []);
 
   const filteredPandals = useMemo(() => {
     const list = pandals.filter((pandal) => {
+      // 1. Multilingual + typo-tolerant fuzzy search
       if (searchQuery.trim() !== '') {
-        const q = searchQuery.toLowerCase().trim();
-        const matchesName = pandal.name.toLowerCase().includes(q);
-        const matchesArea = pandal.area.toLowerCase().includes(q);
-        const matchesStation = pandal.nearestStation.toLowerCase().includes(q);
-        const matchesDesc = pandal.description.toLowerCase().includes(q);
-        if (!matchesName && !matchesArea && !matchesStation && !matchesDesc) {
+        if (!matchesSearchQuery(pandal, searchQuery)) {
           return false;
         }
       }
@@ -129,16 +173,22 @@ export function usePandals(userLocation: UserLocation | null) {
       return true;
     });
 
-    // Distance sorting
-    if (sortByDistance && userLocation) {
-      return [...list].sort((a, b) => {
+    // 2. Multi-criteria sorting
+    const sorted = [...list];
+    if (sortBy === 'distance' && userLocation) {
+      sorted.sort((a, b) => {
         const distA = distancesMap.get(a.id) ?? Infinity;
         const distB = distancesMap.get(b.id) ?? Infinity;
         return distA - distB;
       });
+    } else if (sortBy === 'name') {
+      sorted.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === 'crowd') {
+      const crowdRank: Record<CrowdLevel, number> = { Low: 1, Medium: 2, High: 3 };
+      sorted.sort((a, b) => crowdRank[a.crowdLevel] - crowdRank[b.crowdLevel]);
     }
 
-    return list;
+    return sorted;
   }, [
     pandals,
     searchQuery,
@@ -146,7 +196,7 @@ export function usePandals(userLocation: UserLocation | null) {
     ecoFriendlyFilter,
     twentyFourHoursFilter,
     selectedArea,
-    sortByDistance,
+    sortBy,
     userLocation,
     distancesMap,
   ]);
@@ -170,6 +220,8 @@ export function usePandals(userLocation: UserLocation | null) {
     setTwentyFourHoursFilter,
     selectedArea,
     setSelectedArea,
+    sortBy,
+    setSortBy,
     sortByDistance,
     setSortByDistance,
     hasActiveFilters,
