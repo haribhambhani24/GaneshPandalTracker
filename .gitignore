@@ -8,8 +8,11 @@ dist-ssr/
 # Environment variables
 .env
 .env.local
-.env.*.local
+.env.*
 !.env.example
+
+# Private documentation & database assets
+private-docs/
 
 # Logs
 logs/
@@ -32,9 +35,11 @@ pnpm-debug.log*
 Thumbs.db
 Desktop.ini
 
-# Test artifacts and screenshots
-*.png
-verify-*.cjs
-debug-*.cjs
-test-*.cjs
+# Test artifacts, verification and screenshots
+verification/
 scratch/
+test-*.cjs
+debug-*.cjs
+verify-*.cjs
+*.png
+!public/*.png
