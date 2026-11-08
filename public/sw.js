@@ -51,6 +51,11 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Pass-through for Supabase dynamic API and OSRM routing requests
+  if (url.hostname.includes('supabase.co') || url.hostname.includes('project-osrm.org')) {
+    return;
+  }
+
   // 1. Navigation requests (HTML pages) -> Network first, fallback to cached index.html
   if (request.mode === 'navigate') {
     event.respondWith(

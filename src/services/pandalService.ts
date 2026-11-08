@@ -9,6 +9,10 @@ import { photoService } from './photoService';
 const CACHE_STORAGE_KEY = 'ganesh_pandal_tracker_offline_pandals';
 const REQUEST_TIMEOUT_MS = 8000;
 
+// Explicit public column whitelist (excludes internal table columns)
+const PUBLIC_PANDAL_COLUMNS =
+  'id, name, area, lat, lng, address, description, photo_url, gallery, history, darshan_timings, aarti_timings, eco_friendly, is_24_hours, crowd_level, nearest_station, visarjan_date, status, created_at';
+
 // Type representing a Supabase DB row
 interface PandalDbRow {
   id: string;
@@ -138,7 +142,7 @@ class PandalService {
       try {
         const queryPromise = supabase
           .from('pandals')
-          .select('*')
+          .select(PUBLIC_PANDAL_COLUMNS)
           .eq('status', 'approved')
           .order('name');
 
