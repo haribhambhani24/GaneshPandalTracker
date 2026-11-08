@@ -1,0 +1,22 @@
+Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+
+This software, including all related source code, architecture, designs,
+interfaces, graphics, text, content, and data compilations, is the proprietary
+and confidential property of Hari Bhambhani.
+
+NO PERMISSION IS GRANTED to any person or entity to copy, modify, merge,
+publish, distribute, sublicense, sell, rent, lease, host, display publicly,
+create derivative works of, or otherwise exploit this software, design,
+content, or data in any form or by any means, whether in whole or in part.
+
+Viewing, browsing, or inspecting this repository or its source files on GitHub
+or any other platform is permitted solely for evaluation, personal inspection,
+and portfolio review purposes, and grants NO LICENSE OR RIGHT to run, deploy,
+redistribute, fork for reuse, or repurpose any part of the project.
+
+Any unauthorized use, copying, reproduction, redistribution, or modification
+is strictly prohibited and may result in legal action.
+
+Permission requests or licensing inquiries may be directed to:
+contact@example.com
+(or via the current contact email listed in src/config/site.ts)
