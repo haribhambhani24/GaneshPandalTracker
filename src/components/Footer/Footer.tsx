@@ -313,8 +313,13 @@ export const Footer: React.FC<FooterProps> = ({
             {t.footerDisclaimerText}
           </p>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-stone-500 dark:text-stone-400">
-            <span>{t.footerPhotoCreditsNotice}</span>
-            <span>•</span>
+            {/* GALLERY-DISABLED: Photo credits notice (re-enable when gallery returns) */}
+            {false as boolean && (
+              <>
+                <span>{t.footerPhotoCreditsNotice}</span>
+                <span>•</span>
+              </>
+            )}
             <a
               href={siteConfig.credits.osmUrl}
               target="_blank"

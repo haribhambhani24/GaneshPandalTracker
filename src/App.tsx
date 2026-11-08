@@ -37,6 +37,7 @@ export function App() {
           <Suspense fallback={<PageLoadingFallback />}>
             <Routes>
               <Route path="/" element={<MapPage />} />
+              <Route path="/navigate/:id" element={<MapPage />} />
               <Route path="/pandal/:id" element={<PandalDetailPage />} />
               <Route path="/submit" element={<SubmitPandalPage />} />
               <Route path="/admin" element={<AdminPage />} />

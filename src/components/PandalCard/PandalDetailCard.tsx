@@ -8,7 +8,6 @@ import {
   CheckCircle,
   Clock,
   Copy,
-  ExternalLink,
   Flame,
   Flag,
   Footprints,
@@ -21,7 +20,7 @@ import {
   Users,
 } from 'lucide-react';
 import type { Pandal } from '../../types/pandal';
-import { getGoogleMapsDirectionsUrl } from '../../utils/geoUtils';
+import { getInAppNavigationUrl } from '../../utils/geoUtils';
 import { useI18n } from '../../context/I18nContext';
 import { useMyDarshan } from '../../hooks/useMyDarshan';
 import { getDarshanStatus, getNextAarti, getTravelEstimate } from '../../utils/timingsUtils';
@@ -31,12 +30,14 @@ interface PandalDetailCardProps {
   pandal: Pandal;
   onClose?: () => void;
   userDistanceKm?: number | null;
+  onNavigateToPandal?: (pandal: Pandal) => void;
 }
 
 export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
   pandal,
   onClose,
   userDistanceKm,
+  onNavigateToPandal,
 }) => {
   const navigate = useNavigate();
   const { t, formatNumber } = useI18n();
@@ -51,8 +52,6 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
 
   const fallbackPhoto =
     'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80';
-
-  const directionsUrl = getGoogleMapsDirectionsUrl(pandal.lat, pandal.lng, pandal.name);
 
   // Real-time status
   const darshanStatus = getDarshanStatus(pandal);
@@ -391,18 +390,22 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
         </div>
       </div>
 
-      {/* Action Footer: Large Get Directions Button */}
+      {/* Action Footer: In-App Directions Button */}
       <div className="p-3.5 bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 shrink-0">
-        <a
-          href={directionsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={() => {
+            if (onNavigateToPandal) {
+              onNavigateToPandal(pandal);
+            } else {
+              navigate(getInAppNavigationUrl(pandal.id));
+            }
+          }}
           className="w-full flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl font-bold text-white bg-gradient-to-r from-orange-600 via-amber-600 to-red-600 hover:from-orange-700 hover:via-amber-700 hover:to-red-700 shadow-lg shadow-orange-600/30 active:scale-[0.98] transition-all text-sm cursor-pointer"
         >
           <Navigation className="w-4 h-4" />
           <span>{t.getDirections}</span>
-          <ExternalLink className="w-3.5 h-3.5 opacity-80" />
-        </a>
+        </button>
       </div>
 
       {/* Report Problem Modal */}

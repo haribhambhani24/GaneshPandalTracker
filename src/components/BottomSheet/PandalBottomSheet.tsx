@@ -6,12 +6,14 @@ interface PandalBottomSheetProps {
   pandal: Pandal | null;
   onClose: () => void;
   userDistanceKm?: number | null;
+  onNavigateToPandal?: (pandal: Pandal) => void;
 }
 
 export const PandalBottomSheet: React.FC<PandalBottomSheetProps> = ({
   pandal,
   onClose,
   userDistanceKm,
+  onNavigateToPandal,
 }) => {
   // Close on Escape key
   useEffect(() => {
@@ -48,6 +50,7 @@ export const PandalBottomSheet: React.FC<PandalBottomSheetProps> = ({
             pandal={pandal}
             onClose={onClose}
             userDistanceKm={userDistanceKm}
+            onNavigateToPandal={onNavigateToPandal}
           />
         </div>
       </div>
@@ -62,6 +65,7 @@ export const PandalBottomSheet: React.FC<PandalBottomSheetProps> = ({
             pandal={pandal}
             onClose={onClose}
             userDistanceKm={userDistanceKm}
+            onNavigateToPandal={onNavigateToPandal}
           />
         </div>
       </div>

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
   Check,
   Clock,
   Edit2,
-  ExternalLink,
   Eye,
   Flag,
   ImageIcon,
@@ -40,6 +39,7 @@ interface AdminSession {
 }
 
 export const AdminPage: React.FC = () => {
+  const navigate = useNavigate();
   const { t, formatStatus, formatCrowdLevel, formatNumber } = useI18n();
 
   // Auth states
@@ -590,7 +590,6 @@ export const AdminPage: React.FC = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {currentList.map((pandal) => {
-                  const googleMapsUrl = `https://www.google.com/maps?q=${pandal.lat},${pandal.lng}`;
                   const isProcessing = actionInProgressId === pandal.id;
 
                   return (
@@ -634,18 +633,16 @@ export const AdminPage: React.FC = () => {
                             {formatStatus(pandal.status)}
                           </span>
 
-                          {/* External link to Google Maps */}
-                          <a
-                            href={googleMapsUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-black/60 text-white backdrop-blur-md flex items-center gap-1 border border-white/20 hover:bg-black"
+                          {/* In-app link to map */}
+                          <button
+                            type="button"
+                            onClick={() => navigate(`/?highlight=${pandal.id}`)}
+                            className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-black/60 text-white backdrop-blur-md flex items-center gap-1 border border-white/20 hover:bg-black cursor-pointer"
                             title={t.verifyGps}
                           >
                             <MapPin className="w-3 h-3 text-amber-400" />
                             <span>{t.verifyGps}</span>
-                            <ExternalLink className="w-2.5 h-2.5" />
-                          </a>
+                          </button>
 
                           <div className="absolute bottom-2.5 left-3 right-3 text-white">
                             <h3 className="font-extrabold text-base leading-tight truncate text-amber-100">

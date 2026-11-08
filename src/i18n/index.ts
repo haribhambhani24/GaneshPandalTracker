@@ -333,6 +333,30 @@ export interface Translations {
   sendMessage: string;
   sendEmail: string;
   officialChannels: string;
+  directionsTitle: string;
+  startNavigation: string;
+  endNavigation: string;
+  recenterMap: string;
+  routeUnavailable: string;
+  retryRoute: string;
+  festivalRoadWarning: string;
+  byTrainTip: string;
+  walkFromStation: string;
+  travelModeWalk: string;
+  travelModeDrive: string;
+  travelModeBike: string;
+  chooseStartPoint: string;
+  useCurrentLocation: string;
+  tapMapToSetStart: string;
+  searchStartArea: string;
+  planDarshanRoute: string;
+  darshanRouteTitle: string;
+  stopsCount: string;
+  liveReroutingUnavailableOffline: string;
+  offRouteRecalculating: string;
+  allowLocationPrompt: string;
+  turnByTurn: string;
+  yourLocation: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -368,7 +392,7 @@ export const translations: Record<Language, Translations> = {
     nearestStation: 'Nearest Railway Station',
     visarjanDate: 'Visarjan (Immersion)',
     address: 'Address',
-    getDirections: 'Get Directions (Google Maps)',
+    getDirections: 'Directions',
     viewFullDetails: 'View Full Details & Story',
     close: 'Close',
     share: 'Share',
@@ -564,7 +588,7 @@ export const translations: Record<Language, Translations> = {
     nextPandal: "Next",
     roadClosureNotice: "Traffic Advisory: Road restricted to pedestrian entry only",
     myDarshanRoute: "My Darshan Itinerary",
-    openGoogleMapsRoute: "Open Multi-Stop Route in Google Maps",
+    openGoogleMapsRoute: "Plan My Darshan Route",
     localDeviceNote: "Saved pandals are stored safely on this device without requiring a login.",
     reorderTip: "Use arrows to reorder your stops or export to Google Maps directions.",
     pandalRemoved: "Pandal removed from My Darshan",
@@ -662,6 +686,30 @@ export const translations: Record<Language, Translations> = {
     sendMessage: "Send Message",
     sendEmail: "Email Support",
     officialChannels: "Official Channels",
+    directionsTitle: "Directions",
+    startNavigation: "Start",
+    endNavigation: "End Navigation",
+    recenterMap: "Recenter",
+    routeUnavailable: "Route unavailable",
+    retryRoute: "Retry Route",
+    festivalRoadWarning: "Roads near pandals may be closed or crowded during the festival. Follow police and volunteer guidance on the ground.",
+    byTrainTip: "By Local Train / Metro",
+    walkFromStation: "Short walk from {station} ({distance})",
+    travelModeWalk: "Walking",
+    travelModeDrive: "Driving",
+    travelModeBike: "Cycling",
+    chooseStartPoint: "Choose Starting Point",
+    useCurrentLocation: "Use My Current Location",
+    tapMapToSetStart: "Tap on Map to Set Start",
+    searchStartArea: "Search Area or Station",
+    planDarshanRoute: "Plan My Darshan Route",
+    darshanRouteTitle: "My Darshan Route",
+    stopsCount: "{count} Stops",
+    liveReroutingUnavailableOffline: "Offline: Live re-routing is unavailable.",
+    offRouteRecalculating: "Off route. Recalculating...",
+    allowLocationPrompt: "Allow location access to get directions from your current position.",
+    turnByTurn: "Turn-by-turn guidance",
+    yourLocation: "Your Location",
   },
 
   hi: {
@@ -696,7 +744,7 @@ export const translations: Record<Language, Translations> = {
     nearestStation: 'निकटतम रेलवे स्टेशन',
     visarjanDate: 'विसर्जन तिथि',
     address: 'पता',
-    getDirections: 'दिशा-निर्देश (Google Maps)',
+    getDirections: 'दिशा-निर्देश',
     viewFullDetails: 'पूर्ण विवरण व इतिहास देखें',
     close: 'बंद करें',
     share: 'साझा करें',
@@ -892,7 +940,7 @@ export const translations: Record<Language, Translations> = {
     nextPandal: "अगला",
     roadClosureNotice: "यातायात सूचना: केवल पैदल यात्रियों के लिए मार्ग खुला है",
     myDarshanRoute: "मेरा दर्शन मार्ग",
-    openGoogleMapsRoute: "गूगल मैप्स में संपूर्ण मार्ग खोलें",
+    openGoogleMapsRoute: "दर्शन मार्ग बनाएं",
     localDeviceNote: "सहेजे गए पंडाल बिना लॉगिन के इस डिवाइस पर सुरक्षित रहते हैं।",
     reorderTip: "अपने स्टॉप्स को पुनर्व्यवस्थित करने के लिए तीर का उपयोग करें।",
     pandalRemoved: "पंडाल को दर्शन सूची से हटाया गया",
@@ -990,6 +1038,30 @@ export const translations: Record<Language, Translations> = {
     sendMessage: "संदेश भेजें",
     sendEmail: "ईमेल भेजें",
     officialChannels: "आधिकारिक चैनल",
+    directionsTitle: "दिशा-निर्देश",
+    startNavigation: "शुरू करें",
+    endNavigation: "समाप्त करें",
+    recenterMap: "पुनः केंद्रित करें",
+    routeUnavailable: "मार्ग अनुपलब्ध",
+    retryRoute: "पुनः प्रयास करें",
+    festivalRoadWarning: "उत्सव के दौरान पंडालों के पास की सड़कें बंद या भीड़भाड़ वाली हो सकती हैं। पुलिस और स्वयंसेवकों के निर्देशों का पालन करें।",
+    byTrainTip: "लोकल ट्रेन / मेट्रो द्वारा",
+    walkFromStation: "{station} से थोड़ी पैदल दूरी ({distance})",
+    travelModeWalk: "पैदल",
+    travelModeDrive: "गाड़ी",
+    travelModeBike: "साइकिल",
+    chooseStartPoint: "प्रारंभिक बिंदु चुनें",
+    useCurrentLocation: "मेरे वर्तमान स्थान का उपयोग करें",
+    tapMapToSetStart: "शुरुआत सेट करने के लिए मैप पर टैप करें",
+    searchStartArea: "क्षेत्र या स्टेशन खोजें",
+    planDarshanRoute: "दर्शन मार्ग बनाएं",
+    darshanRouteTitle: "मेरा दर्शन मार्ग",
+    stopsCount: "{count} पड़ाव",
+    liveReroutingUnavailableOffline: "ऑफ़लाइन: लाइव मार्ग पुनर्गणना अनुपलब्ध है।",
+    offRouteRecalculating: "मार्ग से हट गए। पुनर्गणना हो रही है...",
+    allowLocationPrompt: "अपनी वर्तमान स्थिति से दिशा-निर्देश प्राप्त करने के लिए स्थान की अनुमति दें।",
+    turnByTurn: "मोड़-दर-मोड़ मार्गदर्शन",
+    yourLocation: "आपका स्थान",
   },
 
   mr: {
@@ -1024,7 +1096,7 @@ export const translations: Record<Language, Translations> = {
     nearestStation: 'जवळचे रेल्वे स्टेशन',
     visarjanDate: 'विसर्जन दिवस',
     address: 'पत्ता',
-    getDirections: 'मार्ग दाखवा (Google Maps)',
+    getDirections: 'मार्ग दाखवा',
     viewFullDetails: 'संपूर्ण माहिती व इतिहास पहा',
     close: 'बंद करा',
     share: 'शेअर करा',
@@ -1220,7 +1292,7 @@ export const translations: Record<Language, Translations> = {
     nextPandal: "पुढील",
     roadClosureNotice: "वाहतूक सूचना: वाहनांना बंदी, केवळ पायी प्रवेश अनुज्ञेय",
     myDarshanRoute: "माझा दर्शन मार्ग",
-    openGoogleMapsRoute: "गुगल मॅप्समध्ये संपूर्ण मार्ग उघडा",
+    openGoogleMapsRoute: "दर्शन मार्ग आखा",
     localDeviceNote: "जतन केलेली मंडळे लॉगिनशिवाय याच डिव्हाइसवर सुरक्षित साठवली जातात.",
     reorderTip: "थांब्यांची क्रमवारी बदलण्यासाठी बाण वापरा किंवा थेट गुगल मॅप्स मार्ग उघडा.",
     pandalRemoved: "मंडळ दर्शन यादीतून काढले",
@@ -1318,5 +1390,29 @@ export const translations: Record<Language, Translations> = {
     sendMessage: "संदेश पाठवा",
     sendEmail: "ईमेल पाठवा",
     officialChannels: "अधिकृत चॅनेल्स",
+    directionsTitle: "मार्ग दाखवा",
+    startNavigation: "सुरू करा",
+    endNavigation: "मार्ग बंद करा",
+    recenterMap: "पुन्हा मध्यवर्ती करा",
+    routeUnavailable: "मार्ग उपलब्ध नाही",
+    retryRoute: "पुन्हा प्रयत्न करा",
+    festivalRoadWarning: "उत्सवादरम्यान मंडळांजवळील रस्ते बंद किंवा गर्दीचे असू शकतात. पोलीस आणि स्वयंसेवकांच्या सूचनांचे पालन करा.",
+    byTrainTip: "लोकल ट्रेन / मेट्रोने",
+    walkFromStation: "{station} वरून थोड्या अंतरावर ({distance})",
+    travelModeWalk: "पायी",
+    travelModeDrive: "गाडी",
+    travelModeBike: "सायकल",
+    chooseStartPoint: "सुरुवातीचे ठिकाण निवडा",
+    useCurrentLocation: "माझे चालू स्थान वापरा",
+    tapMapToSetStart: "सुरुवात ठरवण्यासाठी नकाशावर टॅप करा",
+    searchStartArea: "परिसर किंवा स्टेशन शोधा",
+    planDarshanRoute: "दर्शन मार्ग आखा",
+    darshanRouteTitle: "माझा दर्शन मार्ग",
+    stopsCount: "{count} थांबे",
+    liveReroutingUnavailableOffline: "ऑफलाइन: लाइव्ह मार्ग पुनर्गणना उपलब्ध नाही.",
+    offRouteRecalculating: "मार्गावरून भरकटले. पुन्हा मार्ग शोधत आहे...",
+    allowLocationPrompt: "आपल्या सध्याच्या स्थानावरून दिशा-निर्देश मिळवण्यासाठी स्थान अनुमती द्या.",
+    turnByTurn: "वळण-दर-वळण मार्गदर्शन",
+    yourLocation: "तुमचे स्थान",
   },
 };

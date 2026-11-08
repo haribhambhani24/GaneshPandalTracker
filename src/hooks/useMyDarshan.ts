@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { Pandal } from '../types/pandal';
 
 const STORAGE_SAVED_KEY = 'ganesh_pandal_tracker_saved';
 const LEGACY_SAVED_KEY = 'pandal_map_saved';
@@ -102,53 +101,6 @@ export function useMyDarshan() {
   const isSaved = useCallback((pandalId: string) => savedList.includes(pandalId), [savedList]);
   const isVisited = useCallback((pandalId: string) => visitedIds.has(pandalId), [visitedIds]);
 
-  /**
-   * Generates a multi-stop Google Maps directions link for saved pandals
-   */
-  const generateGoogleMapsRouteUrl = useCallback(
-    (pandals: Pandal[], userLocation?: { lat: number; lng: number } | null): string => {
-      if (pandals.length === 0) {
-        return 'https://www.google.com/maps';
-      }
-
-      if (pandals.length === 1) {
-        const p = pandals[0];
-        if (userLocation) {
-          return `https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${p.lat},${p.lng}`;
-        }
-        return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name)}+${encodeURIComponent(p.area)}+Mumbai`;
-      }
-
-      // Max 9 waypoints in standard Google Maps URL
-      if (userLocation) {
-        const origin = `${userLocation.lat},${userLocation.lng}`;
-        const destinationPandal = pandals[pandals.length - 1];
-        const destination = `${destinationPandal.lat},${destinationPandal.lng}`;
-        const waypoints = pandals
-          .slice(0, pandals.length - 1)
-          .slice(0, 9)
-          .map((p) => `${p.lat},${p.lng}`)
-          .join('|');
-
-        return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}&travelmode=walking`;
-      } else {
-        const origin = `${pandals[0].lat},${pandals[0].lng}`;
-        const destination = `${pandals[pandals.length - 1].lat},${pandals[pandals.length - 1].lng}`;
-        const waypoints = pandals
-          .slice(1, pandals.length - 1)
-          .slice(0, 8)
-          .map((p) => `${p.lat},${p.lng}`)
-          .join('|');
-
-        if (waypoints) {
-          return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}&travelmode=walking`;
-        }
-        return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=walking`;
-      }
-    },
-    []
-  );
-
   return {
     savedIds,
     savedList,
@@ -163,6 +115,5 @@ export function useMyDarshan() {
     toggleVisited,
     isSaved,
     isVisited,
-    generateGoogleMapsRouteUrl,
   };
 }

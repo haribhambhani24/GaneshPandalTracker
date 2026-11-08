@@ -173,7 +173,8 @@ export const AboutBottomSheet: React.FC<AboutBottomSheetProps> = ({
           {/* Disclaimer & Credits */}
           <div className="pt-2 border-t border-stone-100 dark:border-stone-800 space-y-1 text-[11px] text-stone-500">
             <p>{t.footerDisclaimerText}</p>
-            <p>{t.footerPhotoCreditsNotice}</p>
+            {/* GALLERY-DISABLED: Photo credits notice (re-enable when gallery returns) */}
+            {false as boolean && <p>{t.footerPhotoCreditsNotice}</p>}
           </div>
         </div>
       </div>

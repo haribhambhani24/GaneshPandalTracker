@@ -43,7 +43,7 @@ export const PhotoManagerModal: React.FC<PhotoManagerModalProps> = ({
   onClose,
   onCoverUpdated,
 }) => {
-  const { t, formatNumber } = useI18n();
+  const { t, formatNumber: _formatNumber } = useI18n();
 
   const [photos, setPhotos] = useState<PandalPhoto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -215,6 +215,7 @@ export const PhotoManagerModal: React.FC<PhotoManagerModalProps> = ({
     setUploadQueue((prev) => prev.filter((q) => q.id !== itemId));
   };
 
+  // GALLERY-DISABLED (re-enable when gallery returns): Gallery action handlers
   // Set Cover Photo
   const handleSetCover = async (photo: PandalPhoto) => {
     try {
@@ -355,11 +356,13 @@ export const PhotoManagerModal: React.FC<PhotoManagerModalProps> = ({
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <h2 id="photo-manager-title" className="text-base sm:text-lg font-bold text-stone-900 dark:text-stone-100 truncate">
-                  {t.photoManagerTitle}
+                  {t.photoManagerTitle} (Cover Photo)
                 </h2>
+                {/* GALLERY-DISABLED: re-enable when gallery returns
                 <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-stone-200 dark:bg-stone-800 text-stone-700 dark:text-stone-300 shrink-0">
                   {formatNumber(photos.length)} / {MAX_PHOTOS_PER_PANDAL}
                 </span>
+                */}
               </div>
               <p className="text-xs text-stone-500 dark:text-stone-400 truncate">
                 {pandal.name} • {pandal.area}
@@ -430,82 +433,83 @@ export const PhotoManagerModal: React.FC<PhotoManagerModalProps> = ({
             )}
           </div>
 
-          {/* Multi-Photo Upload Dropzone */}
-          <div>
-            <input
-              ref={galleryInputRef}
-              type="file"
-              multiple
-              accept="image/jpeg,image/png,image/webp"
-              className="hidden"
-              onChange={(e) => {
-                if (e.target.files) handleProcessFiles(e.target.files);
-                e.target.value = '';
-              }}
-            />
-            <input
-              ref={cameraInputRef}
-              type="file"
-              capture="environment"
-              accept="image/jpeg,image/png,image/webp"
-              className="hidden"
-              onChange={(e) => {
-                if (e.target.files) handleProcessFiles(e.target.files);
-                e.target.value = '';
-              }}
-            />
+          {/* GALLERY-DISABLED: Multi-Photo Upload Dropzone (re-enable when gallery returns) */}
+          {false as boolean && (
+            <div>
+              <input
+                ref={galleryInputRef}
+                type="file"
+                multiple
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files) handleProcessFiles(e.target.files);
+                  e.target.value = '';
+                }}
+              />
+              <input
+                ref={cameraInputRef}
+                type="file"
+                capture="environment"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files) handleProcessFiles(e.target.files);
+                  e.target.value = '';
+                }}
+              />
 
-            <div
-              onDragOver={(e) => {
-                e.preventDefault();
-                setIsDraggingOver(true);
-              }}
-              onDragLeave={() => setIsDraggingOver(false)}
-              onDrop={(e) => {
-                e.preventDefault();
-                setIsDraggingOver(false);
-                if (e.dataTransfer.files) handleProcessFiles(e.dataTransfer.files);
-              }}
-              onClick={() => galleryInputRef.current?.click()}
-              className={`p-6 sm:p-8 rounded-2xl border-2 border-dashed transition-all cursor-pointer text-center ${
-                isDraggingOver
-                  ? 'border-orange-500 bg-orange-50/70 dark:bg-orange-950/30'
-                  : 'border-stone-300 dark:border-stone-700 bg-stone-50/60 dark:bg-stone-850 hover:border-orange-400 hover:bg-stone-100/50'
-              }`}
-            >
-              <div className="w-12 h-12 rounded-2xl bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 flex items-center justify-center mx-auto mb-3">
-                <Upload className="w-6 h-6" />
-              </div>
-              <p className="text-sm font-bold text-stone-900 dark:text-stone-100 mb-1">
-                {t.dragDropOrBrowse}
-              </p>
-              <p className="text-xs text-stone-500 dark:text-stone-400 mb-3">
-                JPG, PNG, WebP • Max 5 MB per file • Up to {MAX_PHOTOS_PER_PANDAL} photos
-              </p>
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDraggingOver(true);
+                }}
+                onDragLeave={() => setIsDraggingOver(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDraggingOver(false);
+                  if (e.dataTransfer.files) handleProcessFiles(e.dataTransfer.files);
+                }}
+                onClick={() => galleryInputRef.current?.click()}
+                className={`p-6 sm:p-8 rounded-2xl border-2 border-dashed transition-all cursor-pointer text-center ${
+                  isDraggingOver
+                    ? 'border-orange-500 bg-orange-50/70 dark:bg-orange-950/30'
+                    : 'border-stone-300 dark:border-stone-700 bg-stone-50/60 dark:bg-stone-850 hover:border-orange-400 hover:bg-stone-100/50'
+                }`}
+              >
+                <div className="w-12 h-12 rounded-2xl bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 flex items-center justify-center mx-auto mb-3">
+                  <Upload className="w-6 h-6" />
+                </div>
+                <p className="text-sm font-bold text-stone-900 dark:text-stone-100 mb-1">
+                  {t.dragDropOrBrowse}
+                </p>
+                <p className="text-xs text-stone-500 dark:text-stone-400 mb-3">
+                  JPG, PNG, WebP • Max 5 MB per file • Up to {MAX_PHOTOS_PER_PANDAL} photos
+                </p>
 
-              <div className="flex items-center justify-center gap-2" onClick={(e) => e.stopPropagation()}>
-                <button
-                  type="button"
-                  onClick={() => galleryInputRef.current?.click()}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 min-h-[44px] rounded-xl text-xs font-bold bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 border border-stone-300 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-750 shadow-xs cursor-pointer"
-                >
-                  <Plus className="w-4 h-4 text-orange-600" />
-                  <span>{t.uploadPhotos}</span>
-                </button>
+                <div className="flex items-center justify-center gap-2" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    type="button"
+                    onClick={() => galleryInputRef.current?.click()}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 min-h-[44px] rounded-xl text-xs font-bold bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 border border-stone-300 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-750 shadow-xs cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4 text-orange-600" />
+                    <span>{t.uploadPhotos}</span>
+                  </button>
 
-                {/* Mobile Camera Trigger */}
-                <button
-                  type="button"
-                  onClick={() => cameraInputRef.current?.click()}
-                  className="sm:hidden inline-flex items-center gap-1.5 px-4 py-2 min-h-[44px] rounded-xl text-xs font-bold bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 border border-stone-300 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-750 shadow-xs cursor-pointer"
-                  title="Take Photo with Camera"
-                >
-                  <Camera className="w-4 h-4 text-orange-600" />
-                  <span>Camera</span>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => cameraInputRef.current?.click()}
+                    className="sm:hidden inline-flex items-center gap-1.5 px-4 py-2 min-h-[44px] rounded-xl text-xs font-bold bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 border border-stone-300 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-750 shadow-xs cursor-pointer"
+                    title="Take Photo with Camera"
+                  >
+                    <Camera className="w-4 h-4 text-orange-600" />
+                    <span>Camera</span>
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Active Upload Queue */}
           {uploadQueue.length > 0 && (
@@ -586,7 +590,8 @@ export const PhotoManagerModal: React.FC<PhotoManagerModalProps> = ({
             </div>
           )}
 
-          {/* Photo Gallery Grid */}
+          {/* GALLERY-DISABLED: Photo Gallery Grid (re-enable when gallery returns) */}
+          {false as boolean && (
           <div>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-xs font-bold uppercase tracking-wider text-stone-600 dark:text-stone-400">
@@ -740,12 +745,13 @@ export const PhotoManagerModal: React.FC<PhotoManagerModalProps> = ({
               </div>
             )}
           </div>
+          )}
         </div>
 
         {/* Footer */}
         <div className="p-4 border-t border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 flex items-center justify-between gap-3 shrink-0">
           <span className="text-xs text-stone-500">
-            {formatNumber(photos.length)} of {MAX_PHOTOS_PER_PANDAL} photos
+            {coverPhoto ? '1 Cover photo set' : t.noPhotosPlaceholder}
           </span>
           <button
             type="button"
@@ -757,10 +763,8 @@ export const PhotoManagerModal: React.FC<PhotoManagerModalProps> = ({
         </div>
       </div>
 
-      {/* ====================================================================
-          DELETE CONFIRMATION MODAL
-          ==================================================================== */}
-      {photoToDelete && (
+      {/* GALLERY-DISABLED: DELETE CONFIRMATION MODAL (re-enable when gallery returns) */}
+      {false as boolean && photoToDelete && (
         <div className="fixed inset-0 z-60 bg-black/70 flex items-center justify-center p-4">
           <div className="bg-white dark:bg-stone-900 w-full max-w-sm rounded-3xl p-5 border border-stone-200 dark:border-stone-800 shadow-2xl space-y-4 animate-in zoom-in-95 duration-150">
             <div className="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-950/60 text-red-600 flex items-center justify-center mx-auto">
@@ -796,10 +800,8 @@ export const PhotoManagerModal: React.FC<PhotoManagerModalProps> = ({
         </div>
       )}
 
-      {/* ====================================================================
-          EDIT PHOTO DETAILS DRAWER / MODAL
-          ==================================================================== */}
-      {editingPhoto && (
+      {/* GALLERY-DISABLED: EDIT PHOTO DETAILS DRAWER / MODAL (re-enable when gallery returns) */}
+      {false as boolean && editingPhoto && (
         <div className="fixed inset-0 z-60 bg-black/70 flex items-center justify-center p-4">
           <div className="bg-white dark:bg-stone-900 w-full max-w-lg rounded-3xl p-5 border border-stone-200 dark:border-stone-800 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between pb-3 border-b border-stone-200 dark:border-stone-800">
@@ -940,8 +942,8 @@ export const PhotoManagerModal: React.FC<PhotoManagerModalProps> = ({
         </div>
       )}
 
-      {/* Undo Toast Snackbar */}
-      {undoPhoto && (
+      {/* GALLERY-DISABLED: Undo Toast Snackbar (re-enable when gallery returns) */}
+      {false as boolean && undoPhoto && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-70 bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-3 text-xs border border-stone-700 dark:border-stone-300 animate-in slide-in-from-bottom duration-200">
           <span>{t.photoDeletedToast}</span>
           <button

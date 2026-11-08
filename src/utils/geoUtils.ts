@@ -2,11 +2,10 @@ export const MUMBAI_CENTER: [number, number] = [19.0150, 72.8450];
 export const DEFAULT_ZOOM = 12;
 
 /**
- * Generates a direct Google Maps navigation URL for a given destination.
+ * Generates an in-app navigation URL for a given pandal and travel mode.
  */
-export function getGoogleMapsDirectionsUrl(lat: number, lng: number, placeName?: string): string {
-  const query = placeName ? encodeURIComponent(`${placeName}, ${lat},${lng}`) : `${lat},${lng}`;
-  return `https://www.google.com/maps/dir/?api=1&destination=${query}`;
+export function getInAppNavigationUrl(pandalId: string, mode: 'walk' | 'drive' | 'bike' = 'walk'): string {
+  return `/?navigate=${encodeURIComponent(pandalId)}&mode=${mode}`;
 }
 
 /**
@@ -42,4 +41,3 @@ export function formatDistance(distanceKm: number, locale = 'en-IN'): string {
   const km = Number(distanceKm.toFixed(1));
   return `${km.toLocaleString(locale)} km`;
 }
-

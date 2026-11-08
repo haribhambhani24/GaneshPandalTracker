@@ -12,7 +12,7 @@ A mobile-first, high-performance web and PWA application designed specifically f
 - **Multi-Criteria Filter Chips**: Filter by Area, Eco-Friendly (Shadu Mati) idols, 24-Hour Darshan, and Crowd Rush levels with active removable chips.
 - **"Near Me" GPS Radar**: Haversine distance calculation sorting pandals by distance in kilometers with distance badges and friendly permission-denied modal.
 - **Curated Walking Trails (Circuits)**: Pre-planned walking itineraries (Lalbaug Trail, Girgaon Heritage Trail, Vedic Annadanam Tour) with numbered stop pins and dashed route polylines.
-- **Dedicated Pandal Detail Page (`/pandal/:id`)**: High-res photo gallery, historical stories, darshan & aarti timings, nearest suburban railway/metro station, and direct Google Maps directions.
+- **Dedicated Pandal Detail Page (`/pandal/:id`)**: High-res photo gallery, historical stories, darshan & aarti timings, nearest suburban railway/metro station, and in-app navigation directions.
 - **Multi-Language Support (i18n)**: English (`en`), Hindi (`hi`), and Marathi (`mr`) with instant toggle and `localStorage` persistence.
 - **Community Submission (`/submit`)**: Submit new pandals with image upload (< 2 MB) and an interactive Leaflet map to drop/drag the exact entrance pin.
 - **Admin Moderation Portal (`/admin`)**: Protected by Supabase Auth (email/password) to review pending submissions, edit coordinates/details, approve to live map, or reject spam.

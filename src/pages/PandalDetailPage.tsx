@@ -13,7 +13,6 @@ import {
   ChevronRight,
   Clock,
   Copy,
-  ExternalLink,
   Flame,
   Flag,
   Image as ImageIcon,
@@ -35,7 +34,7 @@ import { useI18n } from '../context/I18nContext';
 import { LanguageSwitcher } from '../components/Header/LanguageSwitcher';
 import { ThemeToggle } from '../components/Header/ThemeToggle';
 import { useMyDarshan } from '../hooks/useMyDarshan';
-import { getGoogleMapsDirectionsUrl } from '../utils/geoUtils';
+import { getInAppNavigationUrl } from '../utils/geoUtils';
 import { getDarshanStatus, getNextAarti } from '../utils/timingsUtils';
 import { ReportProblemModal } from '../components/Modal/ReportProblemModal';
 import { Footer } from '../components/Footer/Footer';
@@ -51,6 +50,7 @@ export const PandalDetailPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(Boolean(id));
   const [pandalPhotos, setPandalPhotos] = useState<PandalPhoto[]>([]);
   const [activePhotoIdx, setActivePhotoIdx] = useState<number>(0);
+  // GALLERY-DISABLED: re-enable when gallery returns
   const [lightboxOpen, setLightboxOpen] = useState<boolean>(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
@@ -166,7 +166,6 @@ export const PandalDetailPage: React.FC = () => {
 
   const saved = isSaved(pandal.id);
   const visited = isVisited(pandal.id);
-  const directionsUrl = getGoogleMapsDirectionsUrl(pandal.lat, pandal.lng, pandal.name);
 
   // Active photo attributes & localization
   const currentPhoto = pandalPhotos[activePhotoIdx];
@@ -180,6 +179,7 @@ export const PandalDetailPage: React.FC = () => {
     currentPhoto?.altText || currentPhotoCaption || `${pandal.name} photo ${activePhotoIdx + 1}`;
   const currentPhotoSrc = currentPhoto?.url || currentPhoto?.storagePath || pandal.photoUrl;
 
+  // GALLERY-DISABLED: re-enable when gallery returns
   const handleNextPhoto = () => {
     if (pandalPhotos.length <= 1) return;
     setActivePhotoIdx((prev) => (prev + 1) % pandalPhotos.length);
@@ -367,16 +367,15 @@ export const PandalDetailPage: React.FC = () => {
                   src={currentPhotoSrc}
                   alt={currentPhotoAlt}
                   onLoad={() => setImageLoaded(true)}
-                  onClick={() => setLightboxOpen(true)}
-                  className={`w-full h-full object-cover transition-opacity duration-300 cursor-pointer ${
+                  className={`w-full h-full object-cover transition-opacity duration-300 ${
                     imageLoaded ? 'opacity-100' : 'opacity-0'
                   }`}
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-stone-950/30 to-transparent pointer-events-none" />
 
-                {/* Carousel Prev/Next Buttons */}
-                {pandalPhotos.length > 1 && (
+                {/* GALLERY-DISABLED: Carousel Prev/Next Buttons (re-enable when gallery returns) */}
+                {false as boolean && pandalPhotos.length > 1 && (
                   <>
                     <button
                       type="button"
@@ -417,27 +416,29 @@ export const PandalDetailPage: React.FC = () => {
                   </span>
                 </div>
 
-                {/* Top Right: Counter & Fullscreen trigger */}
-                <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
-                  {pandalPhotos.length > 1 && (
-                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-black/60 text-white backdrop-blur-md border border-white/20">
-                      {activePhotoIdx + 1} / {pandalPhotos.length}
-                    </span>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => setLightboxOpen(true)}
-                    className="p-1.5 sm:px-2.5 sm:py-1 rounded-full text-xs font-semibold bg-black/60 hover:bg-black text-white backdrop-blur-md border border-white/20 flex items-center gap-1.5 transition-all cursor-pointer min-h-[36px]"
-                    title={t.fullScreenViewer}
-                    aria-label={t.fullScreenViewer}
-                  >
-                    <Maximize2 className="w-4 h-4 text-amber-300" />
-                    <span className="hidden sm:inline">{t.fullScreenViewer}</span>
-                  </button>
-                </div>
+                {/* GALLERY-DISABLED: Counter & Fullscreen trigger (re-enable when gallery returns) */}
+                {false as boolean && (
+                  <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
+                    {pandalPhotos.length > 1 && (
+                      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-black/60 text-white backdrop-blur-md border border-white/20">
+                        {activePhotoIdx + 1} / {pandalPhotos.length}
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setLightboxOpen(true)}
+                      className="p-1.5 sm:px-2.5 sm:py-1 rounded-full text-xs font-semibold bg-black/60 hover:bg-black text-white backdrop-blur-md border border-white/20 flex items-center gap-1.5 transition-all cursor-pointer min-h-[36px]"
+                      title={t.fullScreenViewer}
+                      aria-label={t.fullScreenViewer}
+                    >
+                      <Maximize2 className="w-4 h-4 text-amber-300" />
+                      <span className="hidden sm:inline">{t.fullScreenViewer}</span>
+                    </button>
+                  </div>
+                )}
 
-                {/* Navigation Dots */}
-                {pandalPhotos.length > 1 && (
+                {/* GALLERY-DISABLED: Navigation Dots (re-enable when gallery returns) */}
+                {false as boolean && pandalPhotos.length > 1 && (
                   <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10">
                     {pandalPhotos.map((_, idx) => (
                       <button
@@ -523,18 +524,16 @@ export const PandalDetailPage: React.FC = () => {
             )}
           </div>
 
-          {/* Primary Action Button: LARGE DIRECTIONS BUTTON */}
+          {/* Primary Action Button: IN-APP DIRECTIONS BUTTON */}
           <div className="p-4 sm:p-5">
-            <a
-              href={directionsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => navigate(getInAppNavigationUrl(pandal.id, 'walk'))}
               className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-2xl font-black text-white bg-gradient-to-r from-orange-600 via-amber-600 to-red-600 hover:from-orange-700 hover:via-amber-700 hover:to-red-700 shadow-xl shadow-orange-600/30 active:scale-[0.98] transition-all text-base sm:text-lg cursor-pointer"
             >
               <Navigation className="w-6 h-6" />
               <span>{t.getDirections}</span>
-              <ExternalLink className="w-4 h-4 opacity-80" />
-            </a>
+            </button>
           </div>
         </section>
 
@@ -764,8 +763,8 @@ export const PandalDetailPage: React.FC = () => {
         pandal={pandal}
       />
 
-      {/* Full-Screen Lightbox Viewer */}
-      {lightboxOpen && pandalPhotos.length > 0 && (
+      {/* GALLERY-DISABLED: Full-Screen Lightbox Viewer (re-enable when gallery returns) */}
+      {false as boolean && lightboxOpen && pandalPhotos.length > 0 && (
         <div
           className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-md flex flex-col justify-between p-4 sm:p-6 select-none"
           role="dialog"
@@ -773,7 +772,6 @@ export const PandalDetailPage: React.FC = () => {
           aria-label={t.fullScreenViewer}
           onClick={() => setLightboxOpen(false)}
         >
-          {/* Top Bar */}
           <div
             className="flex items-center justify-between text-white z-10"
             onClick={(e) => e.stopPropagation()}
@@ -796,7 +794,6 @@ export const PandalDetailPage: React.FC = () => {
             </button>
           </div>
 
-          {/* Center Image Area */}
           <div
             className="relative flex-1 flex items-center justify-center min-h-0 my-2"
             onClick={(e) => e.stopPropagation()}
@@ -830,7 +827,6 @@ export const PandalDetailPage: React.FC = () => {
             )}
           </div>
 
-          {/* Bottom Caption & Credit Area */}
           <div
             className="max-w-2xl mx-auto text-center z-10 px-4 py-2"
             onClick={(e) => e.stopPropagation()}

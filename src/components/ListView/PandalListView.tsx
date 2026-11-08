@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Clock, Footprints, Leaf, MapPin, Navigation, Train, Users } from 'lucide-react';
 import type { Pandal } from '../../types/pandal';
-import { getGoogleMapsDirectionsUrl, formatDistance } from '../../utils/geoUtils';
+import { getInAppNavigationUrl, formatDistance } from '../../utils/geoUtils';
 import { useI18n } from '../../context/I18nContext';
 import { EmptyState } from '../EmptyState/EmptyState';
 import { getDarshanStatus, getTravelEstimate } from '../../utils/timingsUtils';
@@ -14,6 +14,7 @@ interface PandalListViewProps {
   distancesMap?: Map<string, number>;
   onClearFilters?: () => void;
   searchQuery?: string;
+  onNavigateToPandal?: (pandal: Pandal) => void;
 }
 
 export const PandalListView: React.FC<PandalListViewProps> = ({
@@ -23,6 +24,7 @@ export const PandalListView: React.FC<PandalListViewProps> = ({
   distancesMap,
   onClearFilters,
   searchQuery,
+  onNavigateToPandal,
 }) => {
   const navigate = useNavigate();
   const { t, locale } = useI18n();
@@ -42,7 +44,6 @@ export const PandalListView: React.FC<PandalListViewProps> = ({
     <div className="w-full max-w-5xl mx-auto p-3 sm:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-24">
       {pandals.map((pandal) => {
         const isSelected = selectedPandal?.id === pandal.id;
-        const directionsUrl = getGoogleMapsDirectionsUrl(pandal.lat, pandal.lng, pandal.name);
         const distanceKm = distancesMap?.get(pandal.id);
         const darshanStatus = getDarshanStatus(pandal);
         const travelEst = getTravelEstimate(distanceKm);
@@ -173,16 +174,22 @@ export const PandalListView: React.FC<PandalListViewProps> = ({
                     <ArrowRight className="w-3 h-3" />
                   </button>
 
-                  <a
-                    href={directionsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="p-1.5 rounded-lg bg-orange-50 dark:bg-stone-800 text-orange-600 hover:bg-orange-100 transition-colors cursor-pointer"
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (onNavigateToPandal) {
+                        onNavigateToPandal(pandal);
+                      } else {
+                        navigate(getInAppNavigationUrl(pandal.id));
+                      }
+                    }}
+                    className="p-1.5 rounded-lg bg-orange-50 dark:bg-stone-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-stone-700 transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
                     title={t.getDirections}
+                    aria-label={t.getDirections}
                   >
                     <Navigation className="w-3.5 h-3.5" />
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>

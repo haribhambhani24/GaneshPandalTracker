@@ -335,6 +335,7 @@ class PhotoService {
   }
 
   /**
+   * GALLERY-DISABLED: re-enable when gallery returns
    * Sets a specific photo as the cover photo for a pandal.
    */
   public async setCoverPhoto(pandalId: string, photoId: string): Promise<boolean> {
@@ -382,6 +383,7 @@ class PhotoService {
   }
 
   /**
+   * GALLERY-DISABLED: re-enable when gallery returns
    * Reorders photos according to given array of IDs.
    */
   public async reorderPhotos(pandalId: string, orderedPhotoIds: string[]): Promise<boolean> {
@@ -414,6 +416,7 @@ class PhotoService {
   }
 
   /**
+   * GALLERY-DISABLED: re-enable when gallery returns
    * Updates caption, credit, or alt text for a photo.
    */
   public async updatePhotoDetails(
@@ -456,6 +459,7 @@ class PhotoService {
   }
 
   /**
+   * GALLERY-DISABLED: re-enable when gallery returns
    * Deletes a photo and removes its storage objects.
    * If it was the cover, automatically promotes the next photo.
    */

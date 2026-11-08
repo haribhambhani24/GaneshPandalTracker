@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { LeafletMap, type LeafletMapRef } from '../components/Map/LeafletMap';
 import { MUMBAI_CENTER } from '../utils/geoUtils';
 import { Navbar } from '../components/Header/Navbar';
@@ -12,14 +13,25 @@ import { PrePromptGpsModal } from '../components/Modal/PrePromptGpsModal';
 import { CircuitsModal } from '../components/Circuits/CircuitsModal';
 import { ActiveCircuitBanner } from '../components/Circuits/ActiveCircuitBanner';
 import { MyDarshanModal } from '../components/MyDarshan/MyDarshanModal';
+import { NavigationPanel } from '../components/Navigation/NavigationPanel';
+import { NavigationBottomSheet } from '../components/Navigation/NavigationBottomSheet';
+import { StartPointModal } from '../components/Navigation/StartPointModal';
 import { usePandals } from '../hooks/usePandals';
-import { useUserLocation } from '../hooks/useUserLocation';
+import { useUserLocation, type UserLocation } from '../hooks/useUserLocation';
 import { useMyDarshan } from '../hooks/useMyDarshan';
 import { useI18n } from '../context/I18nContext';
 import { circuitService } from '../services/circuitService';
+import {
+  routingService,
+  getDistanceToPolylineMeters,
+  type RouteResult,
+  type MultiStopRouteResult,
+  type TravelMode,
+  type Coordinates,
+} from '../services/routing';
 import type { Pandal } from '../types/pandal';
 import type { Circuit } from '../types/circuit';
-import { Sparkles, WifiOff, X } from 'lucide-react';
+import { Sparkles, WifiOff, X, MapPin } from 'lucide-react';
 import { Footer } from '../components/Footer/Footer';
 import { AboutBottomSheet } from '../components/Footer/AboutBottomSheet';
 
@@ -67,6 +79,32 @@ export const MapPage: React.FC = () => {
   const { isSaved, savedCount } = useMyDarshan();
 
   const [isListView, setIsListView] = useState<boolean>(false);
+
+  const navigate = useNavigate();
+  const { id: routePandalId } = useParams<{ id?: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // In-App Navigation State
+  const [navDestinationPandal, setNavDestinationPandal] = useState<Pandal | null>(null);
+  const [navMode, setNavMode] = useState<TravelMode>('walk');
+  const [navRoute, setNavRoute] = useState<RouteResult | null>(null);
+  const [navMultiStopRoute, setNavMultiStopRoute] = useState<MultiStopRouteResult | null>(null);
+  const [navOrigin, setNavOrigin] = useState<Coordinates | null>(null);
+  const [originName, setOriginName] = useState<string>('Your Location');
+  const [navLoading, setNavLoading] = useState<boolean>(false);
+  const [navError, setNavError] = useState<string | null>(null);
+
+  // Live Guidance & GPS watch
+  const [isLiveTracking, setIsLiveTracking] = useState<boolean>(false);
+  const [liveUserLocation, setLiveUserLocation] = useState<UserLocation | null>(null);
+  const [liveAccuracy, setLiveAccuracy] = useState<number | null>(null);
+  const [activeStepIndex, setActiveStepIndex] = useState<number | null>(null);
+  const [isOffRoute, setIsOffRoute] = useState<boolean>(false);
+
+  // Start point selection modal & map tap
+  const [showStartPointModal, setShowStartPointModal] = useState<boolean>(false);
+  const [isSelectingOriginOnMap, setIsSelectingOriginOnMap] = useState<boolean>(false);
+  const watchIdRef = useRef<number | null>(null);
 
   // Preserve map center and zoom in sessionStorage
   const [mapCenter, setMapCenter] = useState<[number, number]>(() => {
@@ -308,6 +346,283 @@ export const MapPage: React.FC = () => {
     } catch {}
   };
 
+  // Sync navigation target from URL path /navigate/:id or query param ?navigate=id
+  useEffect(() => {
+    const targetId = routePandalId || searchParams.get('navigate');
+    if (targetId && pandals.length > 0) {
+      const found = pandals.find((p) => p.id === targetId);
+      if (found && navDestinationPandal?.id !== found.id) {
+        const modeParam = searchParams.get('mode');
+        const targetMode: TravelMode =
+          modeParam === 'drive' || modeParam === 'car'
+            ? 'drive'
+            : modeParam === 'bike'
+            ? 'bike'
+            : 'walk';
+        setSelectedPandal(null);
+        setNavDestinationPandal(found);
+        setNavMode(targetMode);
+        setNavMultiStopRoute(null);
+        if (userLocation) {
+          setNavOrigin({ lat: userLocation.lat, lng: userLocation.lng });
+          setOriginName(t.yourLocation || 'Your Location');
+        } else {
+          setNavOrigin({ lat: 19.0183, lng: 72.8434 });
+          setOriginName('Dadar Station (Default)');
+        }
+      }
+    }
+  }, [routePandalId, searchParams, pandals, userLocation, navDestinationPandal, t.yourLocation, setSelectedPandal]);
+
+  // Update default origin when GPS userLocation becomes available if still on default
+  useEffect(() => {
+    if (userLocation && (!navOrigin || originName.includes('Default'))) {
+      setNavOrigin({ lat: userLocation.lat, lng: userLocation.lng });
+      setOriginName(t.yourLocation || 'Your Location');
+    }
+  }, [userLocation, navOrigin, originName, t.yourLocation]);
+
+  // Calculate Single-Pandal Route when destination, origin, or mode changes
+  useEffect(() => {
+    if (!navDestinationPandal || !navOrigin) return;
+
+    let active = true;
+    setNavLoading(true);
+    setNavError(null);
+
+    routingService
+      .getRoute(
+        navOrigin,
+        { lat: navDestinationPandal.lat, lng: navDestinationPandal.lng },
+        navMode
+      )
+      .then((res: RouteResult) => {
+        if (active) {
+          setNavRoute(res);
+          setActiveStepIndex(0);
+          setIsOffRoute(false);
+          setNavLoading(false);
+        }
+      })
+      .catch((err: Error) => {
+        if (active) {
+          console.error('Routing calculation failed:', err);
+          setNavError(err.message || 'Unable to calculate route. Please try again.');
+          setNavLoading(false);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [navDestinationPandal, navOrigin, navMode]);
+
+  // Live Guidance & GPS watchPosition
+  useEffect(() => {
+    if (!isLiveTracking) {
+      if (watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+        watchIdRef.current = null;
+      }
+      return;
+    }
+
+    if (!('geolocation' in navigator)) {
+      console.warn('Geolocation not supported for live tracking');
+      setIsLiveTracking(false);
+      return;
+    }
+
+    watchIdRef.current = navigator.geolocation.watchPosition(
+      (pos) => {
+        const currentLoc: UserLocation = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          accuracy: pos.coords.accuracy,
+        };
+        setLiveUserLocation(currentLoc);
+        setLiveAccuracy(pos.coords.accuracy);
+
+        // Check off-route distance (> 50m)
+        if (navRoute && navRoute.coordinates.length > 1) {
+          const distMeters = getDistanceToPolylineMeters(
+            { lat: currentLoc.lat, lng: currentLoc.lng },
+            navRoute.coordinates
+          );
+          if (distMeters > 50) {
+            setIsOffRoute(true);
+            // Automatically re-route from new current location
+            setNavOrigin({ lat: currentLoc.lat, lng: currentLoc.lng });
+          } else {
+            setIsOffRoute(false);
+          }
+        }
+      },
+      (err) => {
+        console.warn('Live guidance position watch error:', err);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 2000 }
+    );
+
+    return () => {
+      if (watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+        watchIdRef.current = null;
+      }
+    };
+  }, [isLiveTracking, navRoute]);
+
+  // Active Circuit Multi-Stop Walking Route
+  useEffect(() => {
+    if (!activeCircuit || activeCircuit.pandalIds.length < 2) return;
+
+    const stops: Coordinates[] = [];
+    activeCircuit.pandalIds.forEach((id) => {
+      const found = pandals.find((p) => p.id === id);
+      if (found) stops.push({ lat: found.lat, lng: found.lng });
+    });
+
+    if (stops.length >= 2) {
+      routingService
+        .getMultiStopRoute(stops, 'walk')
+        .then((res: MultiStopRouteResult) => {
+          setNavMultiStopRoute(res);
+        })
+        .catch((err: Error) => {
+          console.warn('Circuit walking route calculation error:', err);
+        });
+    }
+  }, [activeCircuit, pandals]);
+
+  // Navigation Trigger Handlers
+  const handleStartNavigation = useCallback(
+    (pandal: Pandal, mode: TravelMode = 'walk') => {
+      setSelectedPandal(null);
+      setNavDestinationPandal(pandal);
+      setNavMode(mode);
+      setNavMultiStopRoute(null);
+      setActiveCircuit(null);
+      if (isListView) setIsListView(false);
+
+      if (userLocation) {
+        setNavOrigin({ lat: userLocation.lat, lng: userLocation.lng });
+        setOriginName(t.yourLocation || 'Your Location');
+      } else {
+        setNavOrigin({ lat: 19.0183, lng: 72.8434 });
+        setOriginName('Dadar Station (Default)');
+      }
+
+      const params = new URLSearchParams(searchParams);
+      params.set('navigate', pandal.id);
+      params.set('mode', mode);
+      setSearchParams(params, { replace: true });
+    },
+    [isListView, searchParams, setSearchParams, setSelectedPandal, t.yourLocation, userLocation]
+  );
+
+  const handleEndNavigation = useCallback(() => {
+    setNavDestinationPandal(null);
+    setNavRoute(null);
+    setNavMultiStopRoute(null);
+    setIsLiveTracking(false);
+    setIsSelectingOriginOnMap(false);
+    setShowStartPointModal(false);
+    if (watchIdRef.current !== null) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+      watchIdRef.current = null;
+    }
+    const params = new URLSearchParams(searchParams);
+    params.delete('navigate');
+    params.delete('mode');
+    setSearchParams(params, { replace: true });
+    if (routePandalId) {
+      navigate('/', { replace: true });
+    }
+  }, [navigate, routePandalId, searchParams, setSearchParams]);
+
+  const handleRetryRoute = () => {
+    if (navDestinationPandal && navOrigin) {
+      setNavLoading(true);
+      setNavError(null);
+      routingService
+        .getRoute(
+          navOrigin,
+          { lat: navDestinationPandal.lat, lng: navDestinationPandal.lng },
+          navMode
+        )
+        .then((res: RouteResult) => {
+          setNavRoute(res);
+          setActiveStepIndex(0);
+          setIsOffRoute(false);
+        })
+        .catch((err: Error) => {
+          setNavError(err.message || 'Route calculation failed');
+        })
+        .finally(() => {
+          setNavLoading(false);
+        });
+    }
+  };
+
+  const handleRecenterOnUser = () => {
+    const current = liveUserLocation || userLocation;
+    if (current && mapRef.current) {
+      mapRef.current.panTo(current.lat, current.lng, 17);
+    }
+  };
+
+  const handleSelectGpsOrigin = async () => {
+    setShowStartPointModal(false);
+    const loc = await requestLocation();
+    if (loc) {
+      setNavOrigin({ lat: loc.lat, lng: loc.lng });
+      setOriginName(t.yourLocation || 'Your Location');
+    } else {
+      setShowLocationDeniedModal(true);
+    }
+  };
+
+  const handleSelectMapTapOrigin = () => {
+    setShowStartPointModal(false);
+    setIsSelectingOriginOnMap(true);
+  };
+
+  const handleMapClickToSetOrigin = (coords: Coordinates) => {
+    if (isSelectingOriginOnMap) {
+      setNavOrigin(coords);
+      setOriginName('Selected on Map');
+      setIsSelectingOriginOnMap(false);
+    }
+  };
+
+  // Plan Multi-Stop Route from My Darshan
+  const handlePlanMultiStopRoute = async (savedPandals: Pandal[]) => {
+    if (savedPandals.length < 2) return;
+    setShowMyDarshanModal(false);
+    setSelectedPandal(null);
+    setNavDestinationPandal(null);
+    setNavRoute(null);
+
+    const stops: Coordinates[] = [];
+    if (userLocation) {
+      stops.push({ lat: userLocation.lat, lng: userLocation.lng });
+    }
+    savedPandals.forEach((p) => {
+      stops.push({ lat: p.lat, lng: p.lng });
+    });
+
+    try {
+      setNavLoading(true);
+      const res = await routingService.getMultiStopRoute(stops, 'walk');
+      setNavMultiStopRoute(res);
+      if (isListView) setIsListView(false);
+    } catch (e) {
+      console.error('Failed to calculate multi-stop route:', e);
+    } finally {
+      setNavLoading(false);
+    }
+  };
+
   const userDistanceKm =
     userLocation && selectedPandal
       ? distancesMap.get(selectedPandal.id) ?? null
@@ -434,6 +749,26 @@ export const MapPage: React.FC = () => {
         </div>
       )}
 
+      {/* Map Tap Start Location Picker Alert Banner */}
+      {isSelectingOriginOnMap && (
+        <aside
+          aria-label="Map start selection banner"
+          className="bg-amber-500 text-white font-bold text-xs px-4 py-2 flex items-center justify-between gap-2 shadow-lg z-[995] animate-in slide-in-from-top-2"
+        >
+          <div className="flex items-center gap-2">
+            <MapPin className="w-4 h-4 animate-bounce" />
+            <span>{t.chooseStartPoint}: Tap any location on the map to set starting point</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsSelectingOriginOnMap(false)}
+            className="px-2.5 py-1 rounded bg-black/30 hover:bg-black/50 text-white text-xs cursor-pointer transition-colors"
+          >
+            {t.cancel}
+          </button>
+        </aside>
+      )}
+
       {/* Pre-Prompt GPS Modal */}
       <PrePromptGpsModal
         isOpen={showPrePromptGps}
@@ -475,6 +810,21 @@ export const MapPage: React.FC = () => {
         onSelectPandal={(p) => {
           handleSelectSuggestion(p);
         }}
+        onPlanMultiStopRoute={handlePlanMultiStopRoute}
+      />
+
+      {/* Start Point Selection Modal */}
+      <StartPointModal
+        isOpen={showStartPointModal}
+        onClose={() => setShowStartPointModal(false)}
+        onSelectGps={handleSelectGpsOrigin}
+        onSelectMapTap={handleSelectMapTapOrigin}
+        onSelectCoordinates={(coords, name) => {
+          setNavOrigin(coords);
+          setOriginName(name);
+          setShowStartPointModal(false);
+        }}
+        pandals={pandals}
       />
 
       {/* Main View Area: Map or List */}
@@ -522,6 +872,7 @@ export const MapPage: React.FC = () => {
                 setActiveCircuit(null);
               }}
               searchQuery={searchQuery}
+              onNavigateToPandal={(p) => handleStartNavigation(p, 'walk')}
             />
             <Footer
               onOpenMyDarshan={() => setShowMyDarshanModal(true)}
@@ -530,17 +881,82 @@ export const MapPage: React.FC = () => {
           </div>
         ) : (
           <>
+            {/* Desktop Left Navigation Panel */}
+            {navDestinationPandal && (
+              <div className="hidden md:block absolute top-0 left-0 bottom-0 w-[400px] z-[900] shadow-2xl animate-in slide-in-from-left duration-300">
+                <NavigationPanel
+                  destinationPandal={navDestinationPandal}
+                  route={navRoute}
+                  loading={navLoading}
+                  error={navError}
+                  mode={navMode}
+                  onModeChange={(m) => setNavMode(m)}
+                  onClose={handleEndNavigation}
+                  onRetry={handleRetryRoute}
+                  isLiveTracking={isLiveTracking}
+                  onToggleLiveTracking={() => setIsLiveTracking((prev) => !prev)}
+                  onRecenter={handleRecenterOnUser}
+                  activeStepIndex={activeStepIndex}
+                  onSelectStep={(_step, idx) => setActiveStepIndex(idx)}
+                  originName={originName}
+                  onChangeOrigin={() => setShowStartPointModal(true)}
+                  isOffRoute={isOffRoute}
+                />
+              </div>
+            )}
+
+            {/* Mobile Bottom Navigation Sheet */}
+            {navDestinationPandal && (
+              <div className="md:hidden">
+                <NavigationBottomSheet
+                  destinationPandal={navDestinationPandal}
+                  route={navRoute}
+                  loading={navLoading}
+                  error={navError}
+                  mode={navMode}
+                  onModeChange={(m) => setNavMode(m)}
+                  onClose={handleEndNavigation}
+                  onRetry={handleRetryRoute}
+                  isLiveTracking={isLiveTracking}
+                  onToggleLiveTracking={() => setIsLiveTracking((prev) => !prev)}
+                  onRecenter={handleRecenterOnUser}
+                  activeStepIndex={activeStepIndex}
+                  onSelectStep={(_step, idx) => setActiveStepIndex(idx)}
+                  originName={originName}
+                  onChangeOrigin={() => setShowStartPointModal(true)}
+                  isOffRoute={isOffRoute}
+                />
+              </div>
+            )}
+
             <LeafletMap
               ref={mapRef}
               pandals={pandals}
               selectedPandal={selectedPandal}
               onSelectPandal={handleSelectPandal}
-              userLocation={userLocation}
+              userLocation={liveUserLocation || userLocation}
               center={mapCenter}
               zoom={mapZoom}
               onZoomChange={handleZoomChange}
               zoomTarget={zoomTarget}
               activeCircuit={activeCircuit}
+              navigationRoute={navRoute}
+              navigationMultiStopRoute={navMultiStopRoute}
+              navigationOrigin={navOrigin}
+              navigationDestination={
+                navDestinationPandal
+                  ? { lat: navDestinationPandal.lat, lng: navDestinationPandal.lng }
+                  : null
+              }
+              activeStepLocation={
+                activeStepIndex !== null && navRoute?.steps[activeStepIndex]
+                  ? navRoute.steps[activeStepIndex].location
+                  : null
+              }
+              isLiveTracking={isLiveTracking}
+              liveAccuracy={liveAccuracy}
+              onMapClickToSetOrigin={handleMapClickToSetOrigin}
+              isSelectingOriginOnMap={isSelectingOriginOnMap}
             />
 
             {/* Offline Fallback Badge */}
@@ -552,7 +968,7 @@ export const MapPage: React.FC = () => {
             )}
 
             {/* Active Circuit Floating Banner */}
-            {activeCircuit && (
+            {activeCircuit && !navDestinationPandal && (
               <ActiveCircuitBanner
                 circuit={activeCircuit}
                 onClear={handleClearCircuit}
@@ -561,7 +977,7 @@ export const MapPage: React.FC = () => {
             )}
 
             {/* Empty State Overlay for Map View when 0 results */}
-            {displayedPandals.length === 0 && (
+            {displayedPandals.length === 0 && !navDestinationPandal && (
               <div className="absolute top-6 left-1/2 -translate-x-1/2 z-[500] w-[90%] max-w-sm">
                 <div className="bg-white/95 dark:bg-stone-900/95 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-amber-300 dark:border-amber-800 text-center space-y-2">
                   <div className="text-2xl">🕉️</div>
@@ -598,15 +1014,18 @@ export const MapPage: React.FC = () => {
               onLocateMe={handleToggleNearMe}
               onResetCenter={handleResetCenter}
               locating={locating}
-              isSheetOpen={!!selectedPandal}
+              isSheetOpen={Boolean(selectedPandal || navDestinationPandal)}
             />
 
             {/* Bottom Sheet for Mobile & Side Card for Desktop */}
-            <PandalBottomSheet
-              pandal={selectedPandal}
-              onClose={handleCloseDetail}
-              userDistanceKm={userDistanceKm}
-            />
+            {!navDestinationPandal && (
+              <PandalBottomSheet
+                pandal={selectedPandal}
+                onClose={handleCloseDetail}
+                userDistanceKm={userDistanceKm}
+                onNavigateToPandal={(p) => handleStartNavigation(p, 'walk')}
+              />
+            )}
           </>
         )}
       </main>
