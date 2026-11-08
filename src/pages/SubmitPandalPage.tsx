@@ -17,6 +17,7 @@ import { useI18n } from '../context/I18nContext';
 import { pandalService } from '../services/pandalService';
 import type { CrowdLevel, PandalSubmission } from '../types/pandal';
 import { MUMBAI_CENTER } from '../utils/geoUtils';
+import { Footer } from '../components/Footer/Footer';
 
 const DRAFT_STORAGE_KEY = 'ganesh_pandal_submit_draft';
 
@@ -773,6 +774,8 @@ export const SubmitPandalPage: React.FC = () => {
           </div>
         )}
       </main>
+
+      <Footer />
     </div>
   );
 };

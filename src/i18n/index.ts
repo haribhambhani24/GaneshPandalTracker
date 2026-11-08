@@ -295,6 +295,44 @@ export interface Translations {
   prevPhoto: string;
   moveUp: string;
   moveDown: string;
+
+  // Footer & Static Pages
+  home: string;
+  footerBrandDesc: string;
+  footerExploreTitle: string;
+  footerHelpTitle: string;
+  footerLegalTitle: string;
+  footerAboutUs: string;
+  footerHowItWorks: string;
+  footerFaq: string;
+  footerPrivacyPolicy: string;
+  footerTermsOfUse: string;
+  footerDisclaimer: string;
+  footerContactUs: string;
+  footerSafetyTitle: string;
+  footerSafetyText: string;
+  footerDisclaimerText: string;
+  footerMapAttribution: string;
+  footerBuiltWith: string;
+  footerPhotoCreditsNotice: string;
+  footerBackToTop: string;
+  footerCopyright: string;
+  footerAdminLink: string;
+  aboutAndHelp: string;
+  lastUpdated: string;
+  faqTitle: string;
+  faqSubtitle: string;
+  privacyTitle: string;
+  privacySubtitle: string;
+  termsTitle: string;
+  termsSubtitle: string;
+  disclaimerTitle: string;
+  disclaimerSubtitle: string;
+  contactTitle: string;
+  contactSubtitle: string;
+  sendMessage: string;
+  sendEmail: string;
+  officialChannels: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -586,6 +624,44 @@ export const translations: Record<Language, Translations> = {
     prevPhoto: "Previous Photo",
     moveUp: "Move Up",
     moveDown: "Move Down",
+
+    // Footer & Static Pages
+    home: "Home / Map",
+    footerBrandDesc: "Find pandals, timings and routes, all in one place.",
+    footerExploreTitle: "Explore",
+    footerHelpTitle: "Help & Trust",
+    footerLegalTitle: "Legal & About",
+    footerAboutUs: "About Us",
+    footerHowItWorks: "How It Works",
+    footerFaq: "FAQ",
+    footerPrivacyPolicy: "Privacy Policy",
+    footerTermsOfUse: "Terms of Use",
+    footerDisclaimer: "Disclaimer",
+    footerContactUs: "Contact Us",
+    footerSafetyTitle: "Emergency Assistance",
+    footerSafetyText: "Call 112 for national emergency services (Police, Fire, Ambulance). In crowded pandals, please keep your belongings safe and follow Mumbai Police guidance.",
+    footerDisclaimerText: "Timings, crowd levels and details are community-submitted and may change. Please verify before you travel.",
+    footerMapAttribution: "Map data © OpenStreetMap contributors",
+    footerBuiltWith: "Built with Leaflet and Supabase",
+    footerPhotoCreditsNotice: "Photos by their respective photographers and mandals.",
+    footerBackToTop: "Back to top",
+    footerCopyright: "Ganesh Pandal Tracker",
+    footerAdminLink: "Admin",
+    aboutAndHelp: "About & Links",
+    lastUpdated: "Last updated",
+    faqTitle: "Frequently Asked Questions",
+    faqSubtitle: "Everything you need to know about navigating Mumbai Ganesh Chaturthi.",
+    privacyTitle: "Privacy Policy",
+    privacySubtitle: "How we respect your privacy and protect your data.",
+    termsTitle: "Terms of Use",
+    termsSubtitle: "Guidelines for using Ganesh Pandal Tracker responsibly.",
+    disclaimerTitle: "Disclaimer",
+    disclaimerSubtitle: "Important advisory on community-submitted pandal details and timings.",
+    contactTitle: "Contact & Support",
+    contactSubtitle: "Have a question, feedback, or need help? Reach out to our volunteer team.",
+    sendMessage: "Send Message",
+    sendEmail: "Email Support",
+    officialChannels: "Official Channels",
   },
 
   hi: {
@@ -876,6 +952,44 @@ export const translations: Record<Language, Translations> = {
     prevPhoto: "पिछला फोटो",
     moveUp: "ऊपर ले जाएं",
     moveDown: "नीचे ले जाएं",
+
+    // Footer & Static Pages
+    home: "होम / मैप",
+    footerBrandDesc: "पंडाल, समय और रास्ते खोजें — सब एक ही जगह।",
+    footerExploreTitle: "खोजें",
+    footerHelpTitle: "मदद और विश्वास",
+    footerLegalTitle: "नियम और जानकारी",
+    footerAboutUs: "हमारे बारे में",
+    footerHowItWorks: "यह कैसे काम करता है",
+    footerFaq: "अक्सर पूछे जाने वाले सवाल",
+    footerPrivacyPolicy: "गोपनीयता नीति",
+    footerTermsOfUse: "उपयोग की शर्तें",
+    footerDisclaimer: "अस्वीकरण",
+    footerContactUs: "संपर्क करें",
+    footerSafetyTitle: "आपातकालीन सहायता",
+    footerSafetyText: "राष्ट्रीय आपातकालीन सेवाओं (पुलिस, फायर, एम्बुलेंस) के लिए 112 डायल करें। भीड़भाड़ वाले क्षेत्रों में अपने सामान की सुरक्षा रखें और पुलिस निर्देशों का पालन करें।",
+    footerDisclaimerText: "समय, भीड़ का स्तर और विवरण भक्तों द्वारा सबमिट किए गए हैं और इनमें बदलाव हो सकता है। कृपया यात्रा से पहले पुष्टि करें।",
+    footerMapAttribution: "मैप डेटा © OpenStreetMap योगदानकर्ता",
+    footerBuiltWith: "Leaflet और Supabase द्वारा निर्मित",
+    footerPhotoCreditsNotice: "तस्वीरें उनके संबंधित फोटोग्राफरों और मंडलों के सौजन्य से हैं।",
+    footerBackToTop: "शीर्ष पर जाएं",
+    footerCopyright: "गणेश पंडाल ट्रैकर",
+    footerAdminLink: "एडमिन",
+    aboutAndHelp: "जानकारी और लिंक्स",
+    lastUpdated: "अंतिम अपडेट",
+    faqTitle: "अक्सर पूछे जाने वाले प्रश्न",
+    faqSubtitle: "मुंबई गणेशोत्सव दर्शन और नेविगेशन से जुड़ी आवश्यक जानकारी।",
+    privacyTitle: "गोपनीयता नीति",
+    privacySubtitle: "हम आपकी गोपनीयता का सम्मान और आपके डेटा की सुरक्षा कैसे करते हैं।",
+    termsTitle: "उपयोग की शर्तें",
+    termsSubtitle: "गणेश पंडाल ट्रैकर का जिम्मेदारी से उपयोग करने के दिशानिर्देश।",
+    disclaimerTitle: "अस्वीकरण",
+    disclaimerSubtitle: "समुदाय द्वारा सबमिट किए गए विवरणों और समय पर महत्वपूर्ण सूचना।",
+    contactTitle: "संपर्क और सहायता",
+    contactSubtitle: "कोई प्रश्न, सुझाव या सहायता चाहिए? हमारी टीम से संपर्क करें।",
+    sendMessage: "संदेश भेजें",
+    sendEmail: "ईमेल भेजें",
+    officialChannels: "आधिकारिक चैनल",
   },
 
   mr: {
@@ -1166,5 +1280,43 @@ export const translations: Record<Language, Translations> = {
     prevPhoto: "मागील फोटो",
     moveUp: "वर हलवा",
     moveDown: "खाली हलवा",
+
+    // Footer & Static Pages
+    home: "मुख्यपृष्ठ / नकाशा",
+    footerBrandDesc: "मंडळे, वेळा आणि रस्ते शोधा — सर्व एकाच ठिकाणी.",
+    footerExploreTitle: "शोधा",
+    footerHelpTitle: "मदत आणि विश्वास",
+    footerLegalTitle: "नियम आणि माहिती",
+    footerAboutUs: "आमच्याबद्दल",
+    footerHowItWorks: "हे कसे कार्य करते",
+    footerFaq: "नेहमी विचारले जाणारे प्रश्न",
+    footerPrivacyPolicy: "गोपनीयता धोरण",
+    footerTermsOfUse: "वापराच्या अटी",
+    footerDisclaimer: "प्रकटीकरण",
+    footerContactUs: "संपर्क करा",
+    footerSafetyTitle: "आपत्कालीन मदत",
+    footerSafetyText: "राष्ट्रीय आपत्कालीन सेवांसाठी (पोलीस, अग्निशामक, रुग्णवाहिका) 112 वर कॉल करा. गर्दीच्या ठिकाणी आपल्या वस्तूंची काळजी घ्या आणि पोलीस सूचनांचे पालन करा.",
+    footerDisclaimerText: "दर्शन वेळा, गर्दीची स्थिती आणि माहिती भाविकांनी नोंदवली असून यात बदल होऊ शकतो. प्रवासापूर्वी खात्री करा.",
+    footerMapAttribution: "नकाशा डेटा © OpenStreetMap योगदानकर्ते",
+    footerBuiltWith: "Leaflet आणि Supabase द्वारे निर्मित",
+    footerPhotoCreditsNotice: "छायाचित्रे संबंधित छायाचित्रकार आणि मंडळांच्या सौजन्याने.",
+    footerBackToTop: "वर जा",
+    footerCopyright: "गणेश मंडळ ट्रॅकर",
+    footerAdminLink: "प्रशासक",
+    aboutAndHelp: "माहिती आणि लिंक्स",
+    lastUpdated: "शेवटचे अपडेट",
+    faqTitle: "नेहमी विचारले जाणारे प्रश्न",
+    faqSubtitle: "मुंबई गणेशोत्सव दर्शन आणि मार्गांबद्दल सर्व आवश्यक माहिती.",
+    privacyTitle: "गोपनीयता धोरण",
+    privacySubtitle: "आम्ही आपल्या गोपनीयतेचा कसा आदर करतो आणि डेटा सुरक्षित ठेवतो.",
+    termsTitle: "वापराच्या अटी" ,
+    termsSubtitle: "गणेश मंडळ ट्रॅकरचा जबाबदारीने वापर करण्यासाठी मार्गदर्शक तत्त्वे.",
+    disclaimerTitle: "प्रकटीकरण",
+    disclaimerSubtitle: "भाविकांनी दिलेल्या मंडळाच्या माहिती आणि वेळेबद्दल महत्त्वाची सूचना.",
+    contactTitle: "संपर्क आणि मदत",
+    contactSubtitle: "काही प्रश्न, अभिप्राय किंवा मदत हवी असल्यास आमच्याशी संपर्क साधा.",
+    sendMessage: "संदेश पाठवा",
+    sendEmail: "ईमेल पाठवा",
+    officialChannels: "अधिकृत चॅनेल्स",
   },
 };

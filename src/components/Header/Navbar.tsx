@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { List, Map, MoreVertical, Plus, Shield, X } from 'lucide-react';
+import { Info, List, Map, MoreVertical, Plus, Shield, X } from 'lucide-react';
 import { useI18n } from '../../context/I18nContext';
 import { SearchBarWithSuggestions } from '../Search/SearchBarWithSuggestions';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -17,6 +17,7 @@ interface NavbarProps {
   totalPandals: number;
   filteredCount: number;
   distancesMap?: Map<string, number>;
+  onOpenAboutSheet?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -29,6 +30,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   totalPandals,
   filteredCount,
   distancesMap,
+  onOpenAboutSheet,
 }) => {
   const { t, formatNumber } = useI18n();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -166,6 +168,22 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </div>
                   <span>{t.adminPortalTitle}</span>
                 </Link>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    if (onOpenAboutSheet) {
+                      onOpenAboutSheet();
+                    }
+                  }}
+                  className="w-full text-left flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-stone-800 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors cursor-pointer"
+                >
+                  <div className="w-6 h-6 rounded-lg bg-amber-100 dark:bg-stone-800 text-amber-700 dark:text-amber-400 flex items-center justify-center">
+                    <Info className="w-3.5 h-3.5" />
+                  </div>
+                  <span>{t.aboutAndHelp}</span>
+                </button>
               </div>
             )}
           </div>

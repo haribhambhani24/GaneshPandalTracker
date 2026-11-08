@@ -9,6 +9,12 @@ const PandalDetailPage = lazy(() => import('./pages/PandalDetailPage'));
 const SubmitPandalPage = lazy(() => import('./pages/SubmitPandalPage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const AboutPage = lazy(() => import('./pages/static/AboutPage'));
+const FaqPage = lazy(() => import('./pages/static/FaqPage'));
+const PrivacyPage = lazy(() => import('./pages/static/PrivacyPage'));
+const TermsPage = lazy(() => import('./pages/static/TermsPage'));
+const DisclaimerPage = lazy(() => import('./pages/static/DisclaimerPage'));
+const ContactPage = lazy(() => import('./pages/static/ContactPage'));
 
 const PageLoadingFallback: React.FC = () => (
   <main
@@ -34,6 +40,13 @@ export function App() {
               <Route path="/pandal/:id" element={<PandalDetailPage />} />
               <Route path="/submit" element={<SubmitPandalPage />} />
               <Route path="/admin" element={<AdminPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/how-it-works" element={<AboutPage />} />
+              <Route path="/faq" element={<FaqPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/disclaimer" element={<DisclaimerPage />} />
+              <Route path="/contact" element={<ContactPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>

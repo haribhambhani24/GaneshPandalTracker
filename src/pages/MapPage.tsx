@@ -20,6 +20,8 @@ import { circuitService } from '../services/circuitService';
 import type { Pandal } from '../types/pandal';
 import type { Circuit } from '../types/circuit';
 import { Sparkles, WifiOff, X } from 'lucide-react';
+import { Footer } from '../components/Footer/Footer';
+import { AboutBottomSheet } from '../components/Footer/AboutBottomSheet';
 
 const HINT_STORAGE_KEY = 'ganesh_pandal_hint_dismissed';
 const LANG_CHOSEN_KEY = 'ganesh_pandal_lang_chosen';
@@ -131,6 +133,7 @@ export const MapPage: React.FC = () => {
   const [circuits, setCircuits] = useState<Circuit[]>([]);
   const [activeCircuit, setActiveCircuit] = useState<Circuit | null>(null);
   const [showCircuitsModal, setShowCircuitsModal] = useState<boolean>(false);
+  const [showAboutSheet, setShowAboutSheet] = useState<boolean>(false);
 
   // My Darshan bookmark filter & Modal
   const [myDarshanFilterOnly, setMyDarshanFilterOnly] = useState<boolean>(false);
@@ -323,6 +326,7 @@ export const MapPage: React.FC = () => {
         totalPandals={pandals.length}
         filteredCount={displayedPandals.length}
         distancesMap={distancesMap}
+        onOpenAboutSheet={() => setShowAboutSheet(true)}
       />
 
       {/* Offline Status Banner */}
@@ -503,7 +507,7 @@ export const MapPage: React.FC = () => {
             </button>
           </div>
         ) : isListView ? (
-          <div className="w-full h-full overflow-y-auto bg-stone-50 dark:bg-stone-950">
+          <div className="w-full h-full overflow-y-auto bg-stone-50 dark:bg-stone-950 flex flex-col justify-between">
             <PandalListView
               pandals={displayedPandals}
               onSelectPandal={(p) => {
@@ -518,6 +522,10 @@ export const MapPage: React.FC = () => {
                 setActiveCircuit(null);
               }}
               searchQuery={searchQuery}
+            />
+            <Footer
+              onOpenMyDarshan={() => setShowMyDarshanModal(true)}
+              onOpenCircuits={() => setShowCircuitsModal(true)}
             />
           </div>
         ) : (
@@ -602,6 +610,14 @@ export const MapPage: React.FC = () => {
           </>
         )}
       </main>
+
+      {/* About & Quick Links Bottom Sheet for Mobile Map View */}
+      <AboutBottomSheet
+        isOpen={showAboutSheet}
+        onClose={() => setShowAboutSheet(false)}
+        onOpenMyDarshan={() => setShowMyDarshanModal(true)}
+        onOpenCircuits={() => setShowCircuitsModal(true)}
+      />
     </div>
   );
 };

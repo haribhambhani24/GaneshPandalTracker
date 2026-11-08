@@ -38,6 +38,7 @@ import { useMyDarshan } from '../hooks/useMyDarshan';
 import { getGoogleMapsDirectionsUrl } from '../utils/geoUtils';
 import { getDarshanStatus, getNextAarti } from '../utils/timingsUtils';
 import { ReportProblemModal } from '../components/Modal/ReportProblemModal';
+import { Footer } from '../components/Footer/Footer';
 
 export const PandalDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -286,7 +287,7 @@ export const PandalDetailPage: React.FC = () => {
   const badge = crowdBadge();
 
   return (
-    <div className="min-h-[100vh] min-h-[100dvh] bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 font-sans pb-16">
+    <div className="min-h-[100vh] min-h-[100dvh] bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 font-sans flex flex-col justify-between">
       {/* Sticky Top Header */}
       <nav className="sticky top-0 z-[1000] bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-b border-stone-200 dark:border-stone-800 px-3 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between gap-2 sm:gap-3 shadow-xs pt-safe">
         <button
@@ -753,6 +754,8 @@ export const PandalDetailPage: React.FC = () => {
           </section>
         )}
       </main>
+
+      <Footer />
 
       {/* Crowdsourced Report Problem Modal */}
       <ReportProblemModal

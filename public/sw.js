@@ -1,11 +1,12 @@
-const CACHE_NAME = 'ganesh-pandal-tracker-shell-v4';
-const DATA_CACHE_NAME = 'ganesh-pandal-tracker-data-v4';
+const CACHE_NAME = 'ganesh-pandal-tracker-shell-v5';
+const DATA_CACHE_NAME = 'ganesh-pandal-tracker-data-v5';
 
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.webmanifest',
   '/robots.txt',
+  '/sitemap.xml',
   '/favicon.svg',
   '/icon-192.png',
   '/icon-512.png',

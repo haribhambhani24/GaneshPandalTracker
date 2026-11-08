@@ -28,6 +28,7 @@ import { useI18n } from '../context/I18nContext';
 import { LanguageSwitcher } from '../components/Header/LanguageSwitcher';
 import { ThemeToggle } from '../components/Header/ThemeToggle';
 import { PhotoManagerModal } from '../components/Admin/PhotoManagerModal';
+import { Footer } from '../components/Footer/Footer';
 import type { CrowdLevel, Pandal, PandalStatus, PandalReport } from '../types/pandal';
 
 interface AdminSessionUser {
@@ -266,7 +267,7 @@ export const AdminPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-[100vh] min-h-[100dvh] bg-stone-100 dark:bg-stone-950 text-stone-900 dark:text-stone-100 pb-safe pb-20">
+    <div className="min-h-[100vh] min-h-[100dvh] bg-stone-100 dark:bg-stone-950 text-stone-900 dark:text-stone-100 flex flex-col justify-between">
       {/* Top Navbar */}
       <header className="sticky top-0 z-40 bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 border-b border-stone-200 dark:border-stone-800 shadow-xs pt-safe">
         <div className="max-w-6xl mx-auto px-4 py-2.5 sm:py-3 flex items-center justify-between">
@@ -768,6 +769,8 @@ export const AdminPage: React.FC = () => {
           </div>
         )}
       </main>
+
+      <Footer />
 
       {/* ==================================================================
           EDIT PANDAL MODAL
