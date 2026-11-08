@@ -1,6 +1,23 @@
 export type CrowdLevel = 'Low' | 'Medium' | 'High';
 export type PandalStatus = 'pending' | 'approved' | 'rejected';
 
+export interface PandalPhoto {
+  id: string;
+  pandalId: string;
+  storagePath: string;
+  thumbPath: string;
+  url: string;
+  thumbUrl: string;
+  captionEn?: string;
+  captionHi?: string;
+  captionMr?: string;
+  altText?: string;
+  credit?: string;
+  sortOrder: number;
+  isCover: boolean;
+  createdAt?: string;
+}
+
 export interface Pandal {
   id: string;
   name: string;
@@ -10,7 +27,9 @@ export interface Pandal {
   address: string;
   description: string;
   photoUrl: string;
+  coverThumbUrl?: string;
   gallery?: string[];
+  photos?: PandalPhoto[];
   history?: string;
   darshanTimings: string;
   aartiTimings: string;
@@ -52,7 +71,9 @@ export interface PandalSubmission {
   address: string;
   description: string;
   photoUrl: string;
+  coverThumbUrl?: string;
   gallery?: string[];
+  photos?: PandalPhoto[];
   history?: string;
   darshanTimings: string;
   aartiTimings: string;

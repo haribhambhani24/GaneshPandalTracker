@@ -20,6 +20,8 @@ This document outlines the standardized, unified design token architecture for L
 | `primary-contrast`| `#9A3412` (dark saffron) | `#FFEDD5` (orange-100) | `text-orange-900 dark:text-orange-200` | Active filter pill text and border in Light theme |
 | `overlay-scrim` | `rgba(0,0,0,0.45)` | `rgba(0,0,0,0.75)` | `bg-black/45 dark:bg-black/75` | Modal backdrop scrims, drawer dimming |
 | `photo-scrim` | `rgba(0,0,0,0.70)` | `rgba(0,0,0,0.85)` | `from-black/80 via-black/30 to-transparent` | Text contrast protection on top of pandal photos |
+| `header-bg` | `linear-gradient(to right, #ea580c, #d97706, #b91c1c)` | `linear-gradient(to right, #ea580c, #d97706, #b91c1c)` | `bg-[image:var(--header-bg)]` | Shared brand orange-to-red gradient for header |
+| `header-text` | `#FFFFFF` | `#FFFFFF` | `text-[color:var(--header-text)]` | White header text and primary iconography |
 
 ---
 
@@ -37,8 +39,13 @@ This document outlines the standardized, unified design token architecture for L
 ## 3. Component-Specific Theme Rules
 
 ### A. Header & Navbar
-- **Light Theme**: Clean crisp white surface (`bg-white/95 backdrop-blur-md text-stone-900 border-b border-stone-200 shadow-xs`). No dark red/orange gradient. Brand emblem uses soft amber/saffron accent. Search input has `bg-stone-50 border-stone-200 text-stone-900` with subtle focus ring.
-- **Dark Theme**: Rich dark stone surface (`dark:bg-stone-900/95 dark:text-stone-100 dark:border-stone-800 shadow-md`).
+- **Brand Identity**: Retains its original saffron-orange to deep-red gradient (`--header-bg: linear-gradient(to right, #ea580c, #d97706, #b91c1c)`) in both Light and Dark themes for immediate brand recognition.
+- **Header Text & Icons**: High-contrast white (`--header-text: #ffffff`), contrast $\ge 4.5:1$ against the header gradient.
+- **Controls on Header**:
+  - Language switcher: Translucent dark pill (`bg-black/30 border-white/25`) with solid white selected state (`bg-white text-orange-950 font-extrabold`) and crisp white unselected state (`text-white hover:bg-white/20`).
+  - View toggle (Map/List), Theme toggle, Admin shield & mobile menu button: Translucent white surfaces (`bg-white/15 hover:bg-white/25 text-white border-white/25`) with pure white icons and clear hover/focus-visible states.
+  - "Submit Pandal" CTA: Solid white button (`bg-white hover:bg-amber-50 text-orange-700 font-extrabold shadow-md border-white/80`) that stands out vibrantly as the primary call-to-action.
+- **Search Bar**: Untouched. Retains its existing design, background, border, shadow, radius, text colour and layout in both themes.
 
 ### B. Festival Countdown Banner
 - **Light Theme**: Soft warm brand tint (`bg-orange-50/90 text-stone-800 border-b border-orange-200/80 shadow-xs`). Countdown numbers and labels use high-contrast dark saffron text (`text-orange-950` and `text-stone-700`).

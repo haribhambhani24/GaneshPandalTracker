@@ -58,9 +58,9 @@ export const PandalListView: React.FC<PandalListViewProps> = ({
             }`}
           >
             {/* Card Thumbnail */}
-            <div className="relative h-44 w-full overflow-hidden bg-stone-800">
+            <div className="relative h-44 w-full overflow-hidden bg-stone-100 dark:bg-stone-800">
               <img
-                src={pandal.photoUrl}
+                src={pandal.coverThumbUrl || pandal.photoUrl}
                 alt={pandal.name}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 loading="lazy"

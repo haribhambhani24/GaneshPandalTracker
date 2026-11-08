@@ -1,6 +1,7 @@
 import type { Pandal, PandalSubmission, PandalStatus, CrowdLevel, PandalReport } from '../types/pandal';
 import rawPandalsData from '../data/pandals.json?raw';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { photoService } from './photoService';
 
 const CACHE_STORAGE_KEY = 'ganesh_pandal_tracker_offline_pandals';
 const REQUEST_TIMEOUT_MS = 8000;
@@ -311,18 +312,22 @@ class PandalService {
       return this.parseJsonFallback();
     }
 
-    const adminQuery = supabase
-      .from('pandals')
-      .select('*')
-      .order('created_at', { ascending: false });
+    try {
+      const adminQuery = supabase
+        .from('pandals')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-    const { data, error } = await withTimeout(adminQuery);
+      const { data, error } = await withTimeout(adminQuery);
 
-    if (error) {
-      throw new Error(`Admin fetch failed: ${error.message}`);
+      if (!error && data && data.length > 0) {
+        return (data as unknown as PandalDbRow[]).map(mapDbRowToPandal);
+      }
+    } catch (e) {
+      console.warn('Failed to fetch admin pandals from Supabase, using local fallback:', e);
     }
 
-    return (data as unknown as PandalDbRow[]).map(mapDbRowToPandal);
+    return this.parseJsonFallback();
   }
 
   /**
@@ -393,6 +398,8 @@ class PandalService {
    * Delete a pandal (as admin).
    */
   public async deletePandal(id: string): Promise<boolean> {
+    await photoService.deletePandalPhotos(id);
+
     if (!isSupabaseConfigured) return true;
 
     const deletePromise = supabase

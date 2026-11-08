@@ -269,6 +269,32 @@ export interface Translations {
   filtersButton: string;
   applyFilters: string;
   filtersModalTitle: string;
+  managePhotos: string;
+  photoManagerTitle: string;
+  coverPhoto: string;
+  replaceCover: string;
+  galleryPhotos: string;
+  uploadPhotos: string;
+  dragDropOrBrowse: string;
+  uploadingCount: string;
+  setAsCover: string;
+  isCoverBadge: string;
+  photoCaption: string;
+  photoCaptionPlaceholder: string;
+  photoCredit: string;
+  photoCreditPlaceholder: string;
+  altText: string;
+  altTextPlaceholder: string;
+  confirmDeletePhoto: string;
+  photoDeletedToast: string;
+  maxPhotosLimit: string;
+  unsavedChangesWarning: string;
+  noPhotosPlaceholder: string;
+  fullScreenViewer: string;
+  nextPhoto: string;
+  prevPhoto: string;
+  moveUp: string;
+  moveDown: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -534,6 +560,32 @@ export const translations: Record<Language, Translations> = {
     filtersButton: "Filters",
     applyFilters: "Apply Filters",
     filtersModalTitle: "Filters",
+    managePhotos: "Photos",
+    photoManagerTitle: "Photo & Gallery Manager",
+    coverPhoto: "Cover Photo",
+    replaceCover: "Replace Cover",
+    galleryPhotos: "Gallery Photos",
+    uploadPhotos: "Upload Photos",
+    dragDropOrBrowse: "Drag & drop photos here or click to browse",
+    uploadingCount: "Uploading {current} of {total}...",
+    setAsCover: "Set as Cover",
+    isCoverBadge: "Cover",
+    photoCaption: "Caption",
+    photoCaptionPlaceholder: "Enter photo description...",
+    photoCredit: "Photo Credit",
+    photoCreditPlaceholder: "e.g. Photo by Mandal Official",
+    altText: "Alt Text",
+    altTextPlaceholder: "Describe the image for screen readers",
+    confirmDeletePhoto: "Are you sure you want to delete this photo?",
+    photoDeletedToast: "Photo deleted",
+    maxPhotosLimit: "Maximum 12 photos reached",
+    unsavedChangesWarning: "You have unsaved changes. Are you sure you want to leave?",
+    noPhotosPlaceholder: "No photos uploaded yet.",
+    fullScreenViewer: "View Full Screen",
+    nextPhoto: "Next Photo",
+    prevPhoto: "Previous Photo",
+    moveUp: "Move Up",
+    moveDown: "Move Down",
   },
 
   hi: {
@@ -798,6 +850,32 @@ export const translations: Record<Language, Translations> = {
     filtersButton: "फ़िल्टर",
     applyFilters: "लागू करें",
     filtersModalTitle: "फ़िल्टर",
+    managePhotos: "फोटो",
+    photoManagerTitle: "फोटो और गैलरी प्रबंधक",
+    coverPhoto: "मुख्य फोटो",
+    replaceCover: "कवर बदलें",
+    galleryPhotos: "गैलरी फोटो",
+    uploadPhotos: "फोटो अपलोड करें",
+    dragDropOrBrowse: "यहाँ फोटो खींचकर छोड़ें या ब्राउज़ करने के लिए क्लिक करें",
+    uploadingCount: "{total} में से {current} अपलोड हो रहा है...",
+    setAsCover: "कवर बनाएं",
+    isCoverBadge: "कवर",
+    photoCaption: "शीर्षक",
+    photoCaptionPlaceholder: "फोटो का विवरण दर्ज करें...",
+    photoCredit: "फोटो श्रेय",
+    photoCreditPlaceholder: "जैसे: फोटो मंडल द्वारा",
+    altText: "ऑल्ट टेक्स्ट",
+    altTextPlaceholder: "स्क्रीन रीडर के लिए विवरण",
+    confirmDeletePhoto: "क्या आप वाकई यह फोटो हटाना चाहते हैं?",
+    photoDeletedToast: "फोटो हटा दिया गया",
+    maxPhotosLimit: "अधिकतम 12 फोटो की सीमा पूरी हुई",
+    unsavedChangesWarning: "आपके पास असंरक्षित बदलाव हैं। क्या आप वाकई छोड़ना चाहते हैं?",
+    noPhotosPlaceholder: "अभी तक कोई फोटो अपलोड नहीं की गई।",
+    fullScreenViewer: "फुल स्क्रीन देखें",
+    nextPhoto: "अगला फोटो",
+    prevPhoto: "पिछला फोटो",
+    moveUp: "ऊपर ले जाएं",
+    moveDown: "नीचे ले जाएं",
   },
 
   mr: {
@@ -1062,5 +1140,31 @@ export const translations: Record<Language, Translations> = {
     filtersButton: "फिल्टर",
     applyFilters: "लागू करा",
     filtersModalTitle: "फिल्टर",
+    managePhotos: "फोटो",
+    photoManagerTitle: "फोटो आणि गॅलरी व्यवस्थापक",
+    coverPhoto: "मुख्य फोटो",
+    replaceCover: "कव्हर बदला",
+    galleryPhotos: "गॅलरी फोटो",
+    uploadPhotos: "फोटो अपलोड करा",
+    dragDropOrBrowse: "येथे फोटो ड्रॅग करा किंवा ब्राउझ करण्यासाठी क्लिक करा",
+    uploadingCount: "{total} पैकी {current} अपलोड होत आहे...",
+    setAsCover: "कव्हर बनवा",
+    isCoverBadge: "कव्हर",
+    photoCaption: "शीर्षक",
+    photoCaptionPlaceholder: "फोटोचे वर्णन प्रविष्ट करा...",
+    photoCredit: "फोटो श्रेय",
+    photoCreditPlaceholder: "उदा. फोटो मंडळाद्वारे",
+    altText: "ऑल्ट टेक्स्ट",
+    altTextPlaceholder: "स्क्रीन रीडरसाठी वर्णन",
+    confirmDeletePhoto: "तुम्हाला खात्री आहे का की हा फोटो हटवायचा आहे?",
+    photoDeletedToast: "फोटो काढला",
+    maxPhotosLimit: "कमाल १२ फोटो मर्यादा पूर्ण झाली",
+    unsavedChangesWarning: "तुमचे बदल जतन केलेले नाहीत. तुम्हाला नक्की बाहेर पडायचे आहे का?",
+    noPhotosPlaceholder: "अद्याप कोणतेही फोटो अपलोड केलेले नाहीत.",
+    fullScreenViewer: "पूर्ण स्क्रीन पहा",
+    nextPhoto: "पुढील फोटो",
+    prevPhoto: "मागील फोटो",
+    moveUp: "वर हलवा",
+    moveDown: "खाली हलवा",
   },
 };

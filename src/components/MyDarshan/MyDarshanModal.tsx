@@ -150,7 +150,7 @@ export const MyDarshanModal: React.FC<MyDarshanModalProps> = ({
                         {index + 1}
                       </span>
                       <img
-                        src={pandal.photoUrl}
+                        src={pandal.coverThumbUrl || pandal.photoUrl}
                         alt={pandal.name}
                         className="w-10 h-10 rounded-lg object-cover shrink-0 border border-stone-200 dark:border-stone-700"
                         loading="lazy"

@@ -50,7 +50,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, [menuOpen]);
 
   return (
-    <header className="sticky top-0 z-[1000] w-full bg-gradient-to-r from-orange-600 via-amber-600 to-red-700 dark:from-orange-700 dark:via-amber-800 dark:to-red-800 text-white shadow-lg shadow-orange-950/20 pt-safe">
+    <header
+      className="sticky top-0 z-[1000] w-full bg-[image:var(--header-bg)] text-[color:var(--header-text)] shadow-lg shadow-orange-950/20 pt-safe"
+      style={{ backgroundColor: '#c2410c', backgroundImage: 'var(--header-bg)', color: 'var(--header-text)' }}
+    >
       {/* Top Brand & Controls Row: Strictly designed to fit on 1 row down to 320px width */}
       <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-1 sm:gap-2">
         {/* Brand & Emblem */}
@@ -64,11 +67,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span className="hidden min-[360px]:inline">{t.appName}</span>
                 <span className="min-[360px]:hidden">{t.appNameShort}</span>
               </h1>
-              <span className="hidden lg:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-300 text-red-950 uppercase shrink-0">
+              <span className="hidden lg:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-black/25 text-white border border-white/20 uppercase shrink-0">
                 {t.mumbai} • {formatNumber(totalPandals)}
               </span>
             </div>
-            <p className="hidden sm:block text-[11px] sm:text-xs text-amber-100 font-medium opacity-90 truncate max-w-[200px] md:max-w-none">
+            <p className="hidden sm:block text-[11px] sm:text-xs text-white/95 font-medium truncate max-w-[200px] md:max-w-none drop-shadow-xs">
               {t.tagline}
             </p>
           </div>
@@ -85,22 +88,22 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Map vs List View Toggle */}
           <button
             onClick={onToggleView}
-            className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-xs font-semibold border border-white/25 transition-all cursor-pointer min-h-[36px]"
+            className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xs font-semibold border border-white/25 transition-all cursor-pointer min-h-[36px] focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:outline-none shadow-xs"
             title={`${isListView ? t.mapView : t.listView} (${formatNumber(filteredCount)})`}
             aria-label={`${isListView ? t.mapView : t.listView} ${formatNumber(filteredCount)}`}
           >
             {isListView ? (
               <>
-                <Map className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-                <span className="hidden sm:inline">{t.mapView}</span>
+                <Map className="w-3.5 h-3.5 text-white shrink-0" />
+                <span className="hidden sm:inline text-white">{t.mapView}</span>
               </>
             ) : (
               <>
-                <List className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-                <span className="hidden sm:inline">{t.listView}</span>
+                <List className="w-3.5 h-3.5 text-white shrink-0" />
+                <span className="hidden sm:inline text-white">{t.listView}</span>
               </>
             )}
-            <span className="px-1.5 py-0.2 rounded-full bg-amber-400 text-red-950 text-[10px] font-bold">
+            <span className="px-1.5 py-0.2 rounded-full bg-white text-orange-950 text-[10px] font-extrabold shadow-xs">
               {formatNumber(filteredCount)}
             </span>
           </button>
@@ -108,46 +111,46 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Desktop-only Direct Links */}
           <Link
             to="/submit"
-            className="hidden md:flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-red-950 font-bold text-xs shadow-xs active:scale-95 transition-all min-h-[36px]"
+            className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white hover:bg-amber-50 active:scale-95 text-orange-700 font-extrabold text-xs shadow-md border border-white/80 transition-all min-h-[36px] focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:outline-none"
             title={t.submitPandal}
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-3.5 h-3.5 text-orange-700 stroke-[2.5]" />
             <span>{t.submitPandal}</span>
           </Link>
 
           <Link
             to="/admin"
-            className="hidden md:flex p-2 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-amber-100 hover:text-white border border-white/20 transition-all min-h-[36px] items-center justify-center"
+            className="hidden md:flex p-2 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 text-white border border-white/25 transition-all min-h-[36px] min-w-[36px] items-center justify-center focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:outline-none shadow-xs"
             title={t.adminPortalTitle}
             aria-label={t.adminPortalTitle}
           >
-            <Shield className="w-4 h-4 text-amber-300" />
+            <Shield className="w-4 h-4 text-white" />
           </Link>
 
           {/* Mobile Secondary Menu Button (Collapses Submit & Admin on < md screens) */}
           <div className="relative md:hidden" ref={menuRef}>
             <button
               onClick={() => setMenuOpen((prev) => !prev)}
-              className="p-1.5 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-amber-100 hover:text-white border border-white/20 transition-all min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer"
+              className="p-1.5 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 text-white border border-white/25 transition-all min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:outline-none shadow-xs"
               aria-label="More navigation options"
               aria-expanded={menuOpen}
             >
               {menuOpen ? (
-                <X className="w-4 h-4 text-amber-300" />
+                <X className="w-4 h-4 text-white" />
               ) : (
-                <MoreVertical className="w-4 h-4 text-amber-300" />
+                <MoreVertical className="w-4 h-4 text-white" />
               )}
             </button>
 
             {/* Mobile Dropdown Menu Popover */}
             {menuOpen && (
-              <div className="absolute right-0 mt-2 w-48 rounded-2xl bg-white dark:bg-stone-900 border border-amber-300 dark:border-amber-800 shadow-2xl py-2 z-[1100] animate-in fade-in zoom-in-95 duration-150">
+              <div className="absolute right-0 mt-2 w-48 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-2xl py-2 z-[1100] animate-in fade-in zoom-in-95 duration-150">
                 <Link
                   to="/submit"
                   onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-stone-800 dark:text-stone-200 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors"
+                  className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-stone-800 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
                 >
-                  <div className="w-6 h-6 rounded-lg bg-amber-100 dark:bg-stone-800 text-amber-700 dark:text-amber-400 flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-lg bg-orange-100 dark:bg-stone-800 text-orange-700 dark:text-orange-400 flex items-center justify-center">
                     <Plus className="w-3.5 h-3.5" />
                   </div>
                   <span>{t.submitPandal}</span>
@@ -156,9 +159,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <Link
                   to="/admin"
                   onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-stone-800 dark:text-stone-200 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors"
+                  className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-stone-800 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
                 >
-                  <div className="w-6 h-6 rounded-lg bg-amber-100 dark:bg-stone-800 text-amber-700 dark:text-amber-400 flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 flex items-center justify-center">
                     <Shield className="w-3.5 h-3.5" />
                   </div>
                   <span>{t.adminPortalTitle}</span>

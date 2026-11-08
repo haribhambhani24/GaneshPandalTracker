@@ -1,5 +1,5 @@
-const CACHE_NAME = 'ganesh-pandal-tracker-shell-v3';
-const DATA_CACHE_NAME = 'ganesh-pandal-tracker-data-v3';
+const CACHE_NAME = 'ganesh-pandal-tracker-shell-v4';
+const DATA_CACHE_NAME = 'ganesh-pandal-tracker-data-v4';
 
 const STATIC_ASSETS = [
   '/',

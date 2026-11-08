@@ -9,6 +9,8 @@ import {
   Calendar,
   Check,
   CheckCircle,
+  ChevronLeft,
+  ChevronRight,
   Clock,
   Copy,
   ExternalLink,
@@ -17,15 +19,18 @@ import {
   Image as ImageIcon,
   Info,
   MapPin,
+  Maximize2,
   Navigation,
   Share2,
   ShieldCheck,
   Sparkles,
   Train,
   Users,
+  X,
 } from 'lucide-react';
 import { pandalService } from '../services/pandalService';
-import type { Pandal } from '../types/pandal';
+import { photoService } from '../services/photoService';
+import type { Pandal, PandalPhoto } from '../types/pandal';
 import { useI18n } from '../context/I18nContext';
 import { LanguageSwitcher } from '../components/Header/LanguageSwitcher';
 import { ThemeToggle } from '../components/Header/ThemeToggle';
@@ -37,13 +42,16 @@ import { ReportProblemModal } from '../components/Modal/ReportProblemModal';
 export const PandalDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const { isSaved, toggleSave, isVisited, toggleVisited } = useMyDarshan();
 
   const [pandal, setPandal] = useState<Pandal | null>(null);
   const [allPandals, setAllPandals] = useState<Pandal[]>([]);
   const [loading, setLoading] = useState<boolean>(Boolean(id));
+  const [pandalPhotos, setPandalPhotos] = useState<PandalPhoto[]>([]);
   const [activePhotoIdx, setActivePhotoIdx] = useState<number>(0);
+  const [lightboxOpen, setLightboxOpen] = useState<boolean>(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
   const [addressCopied, setAddressCopied] = useState<boolean>(false);
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
@@ -56,12 +64,43 @@ export const PandalDetailPage: React.FC = () => {
     });
 
     if (id) {
-      pandalService.getPandalById(id).then((data) => {
+      pandalService.getPandalById(id).then(async (data) => {
         if (mounted) {
           setPandal(data || null);
           setLoading(false);
           setActivePhotoIdx(0);
+          setImageLoaded(false);
           window.scrollTo({ top: 0, behavior: 'smooth' });
+
+          if (data) {
+            try {
+              const fetched = await photoService.getPhotosByPandalId(data.id);
+              if (mounted) {
+                if (fetched && fetched.length > 0) {
+                  setPandalPhotos(fetched);
+                } else if (data.photoUrl) {
+                  const gallery = data.gallery && data.gallery.length > 0 ? data.gallery : [data.photoUrl];
+                  setPandalPhotos(
+                    gallery.map((url, idx) => ({
+                      id: `legacy-${idx}`,
+                      pandalId: data.id,
+                      storagePath: url,
+                      thumbPath: url,
+                      url: url,
+                      thumbUrl: url,
+                      isCover: idx === 0,
+                      sortOrder: idx,
+                      createdAt: '',
+                    }))
+                  );
+                } else {
+                  setPandalPhotos([]);
+                }
+              }
+            } catch (err) {
+              console.warn('Failed to load photos:', err);
+            }
+          }
         }
       });
     }
@@ -69,6 +108,24 @@ export const PandalDetailPage: React.FC = () => {
       mounted = false;
     };
   }, [id]);
+
+  // Keyboard navigation for Lightbox
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightboxOpen(false);
+      if (e.key === 'ArrowRight' && pandalPhotos.length > 1) {
+        setActivePhotoIdx((prev) => (prev + 1) % pandalPhotos.length);
+        setImageLoaded(false);
+      }
+      if (e.key === 'ArrowLeft' && pandalPhotos.length > 1) {
+        setActivePhotoIdx((prev) => (prev - 1 + pandalPhotos.length) % pandalPhotos.length);
+        setImageLoaded(false);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [lightboxOpen, pandalPhotos.length]);
 
   if (loading) {
     return (
@@ -108,8 +165,46 @@ export const PandalDetailPage: React.FC = () => {
 
   const saved = isSaved(pandal.id);
   const visited = isVisited(pandal.id);
-  const photos = pandal.gallery && pandal.gallery.length > 0 ? pandal.gallery : [pandal.photoUrl];
   const directionsUrl = getGoogleMapsDirectionsUrl(pandal.lat, pandal.lng, pandal.name);
+
+  // Active photo attributes & localization
+  const currentPhoto = pandalPhotos[activePhotoIdx];
+  const currentPhotoCaption = (() => {
+    if (!currentPhoto) return '';
+    if (language === 'hi' && currentPhoto.captionHi) return currentPhoto.captionHi;
+    if (language === 'mr' && currentPhoto.captionMr) return currentPhoto.captionMr;
+    return currentPhoto.captionEn || currentPhoto.captionMr || currentPhoto.captionHi || '';
+  })();
+  const currentPhotoAlt =
+    currentPhoto?.altText || currentPhotoCaption || `${pandal.name} photo ${activePhotoIdx + 1}`;
+  const currentPhotoSrc = currentPhoto?.url || currentPhoto?.storagePath || pandal.photoUrl;
+
+  const handleNextPhoto = () => {
+    if (pandalPhotos.length <= 1) return;
+    setActivePhotoIdx((prev) => (prev + 1) % pandalPhotos.length);
+    setImageLoaded(false);
+  };
+
+  const handlePrevPhoto = () => {
+    if (pandalPhotos.length <= 1) return;
+    setActivePhotoIdx((prev) => (prev - 1 + pandalPhotos.length) % pandalPhotos.length);
+    setImageLoaded(false);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) handleNextPhoto();
+      else handlePrevPhoto();
+    }
+    setTouchStartX(null);
+  };
 
   // Real-time status computations
   const darshanStatus = getDarshanStatus(pandal);
@@ -249,48 +344,148 @@ export const PandalDetailPage: React.FC = () => {
       <main className="max-w-4xl mx-auto px-3 sm:px-6 pt-4 space-y-4 sm:space-y-6">
         {/* TOP CARD: Answer All Key Questions Without Scrolling */}
         <section className="bg-white dark:bg-stone-900 rounded-3xl overflow-hidden shadow-xl border border-stone-200/80 dark:border-stone-800">
-          {/* Featured Photo with Header Overlay */}
-          <div className="relative h-60 sm:h-80 w-full bg-stone-800 overflow-hidden">
-            {!imageLoaded && (
-              <div className="absolute inset-0 bg-stone-800 animate-pulse flex items-center justify-center">
-                <ImageIcon className="w-8 h-8 text-stone-600 animate-spin" />
+          {/* Featured Photo / Gallery Carousel with Header Overlay */}
+          <div
+            className="relative h-64 sm:h-96 w-full bg-stone-100 dark:bg-stone-900 overflow-hidden group select-none"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            {pandalPhotos.length === 0 ? (
+              <div className="w-full h-full flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-6 text-center">
+                <span className="text-4xl mb-2">🕉️</span>
+                <p className="text-xs font-semibold">{t.noPhotosPlaceholder}</p>
               </div>
-            )}
-            <img
-              src={photos[activePhotoIdx]}
-              alt={`${pandal.name} photo ${activePhotoIdx + 1}`}
-              onLoad={() => setImageLoaded(true)}
-              className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-stone-950/30 to-transparent pointer-events-none" />
-
-            {/* Top Area & Verification Badges */}
-            <div className="absolute top-3 left-3 flex flex-wrap items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-black/60 text-white backdrop-blur-md border border-white/20">
-                <MapPin className="w-3.5 h-3.5 text-amber-400" />
-                {pandal.area}
-              </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-black/60 text-emerald-300 backdrop-blur-md border border-white/20">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                {pandal.isVerified ? t.verifiedBadge : t.communityBadge}
-              </span>
-            </div>
-
-            {/* Title & Status on Image */}
-            <div className="absolute bottom-3 left-3 right-3 text-white">
-              <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight drop-shadow-md text-amber-100 select-text">
-                {pandal.name}
-              </h1>
-              <p className="text-xs text-stone-300 mt-0.5 flex items-center gap-1">
-                <Train className="w-3.5 h-3.5 text-amber-400" />
-                <span>{pandal.nearestStation}</span>
-                {pandal.stationDistance && (
-                  <span className="text-amber-200">({pandal.stationDistance})</span>
+            ) : (
+              <>
+                {!imageLoaded && (
+                  <div className="absolute inset-0 bg-stone-100 dark:bg-stone-800 animate-pulse flex items-center justify-center z-0">
+                    <ImageIcon className="w-8 h-8 text-stone-400 dark:text-stone-600 animate-spin" />
+                  </div>
                 )}
-              </p>
-            </div>
+                <img
+                  src={currentPhotoSrc}
+                  alt={currentPhotoAlt}
+                  onLoad={() => setImageLoaded(true)}
+                  onClick={() => setLightboxOpen(true)}
+                  className={`w-full h-full object-cover transition-opacity duration-300 cursor-pointer ${
+                    imageLoaded ? 'opacity-100' : 'opacity-0'
+                  }`}
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-stone-950/30 to-transparent pointer-events-none" />
+
+                {/* Carousel Prev/Next Buttons */}
+                {pandalPhotos.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePrevPhoto();
+                      }}
+                      className="absolute left-2.5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 hover:bg-black text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 cursor-pointer z-10 shadow-md border border-white/20"
+                      aria-label={t.prevPhoto}
+                      title={t.prevPhoto}
+                    >
+                      <ChevronLeft className="w-6 h-6" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNextPhoto();
+                      }}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 hover:bg-black text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 cursor-pointer z-10 shadow-md border border-white/20"
+                      aria-label={t.nextPhoto}
+                      title={t.nextPhoto}
+                    >
+                      <ChevronRight className="w-6 h-6" />
+                    </button>
+                  </>
+                )}
+
+                {/* Top Area & Verification Badges */}
+                <div className="absolute top-3 left-3 flex flex-wrap items-center gap-1.5 z-10 pointer-events-none">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-black/60 text-white backdrop-blur-md border border-white/20">
+                    <MapPin className="w-3.5 h-3.5 text-amber-400" />
+                    {pandal.area}
+                  </span>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-black/60 text-emerald-300 backdrop-blur-md border border-white/20">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                    {pandal.isVerified ? t.verifiedBadge : t.communityBadge}
+                  </span>
+                </div>
+
+                {/* Top Right: Counter & Fullscreen trigger */}
+                <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
+                  {pandalPhotos.length > 1 && (
+                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-black/60 text-white backdrop-blur-md border border-white/20">
+                      {activePhotoIdx + 1} / {pandalPhotos.length}
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setLightboxOpen(true)}
+                    className="p-1.5 sm:px-2.5 sm:py-1 rounded-full text-xs font-semibold bg-black/60 hover:bg-black text-white backdrop-blur-md border border-white/20 flex items-center gap-1.5 transition-all cursor-pointer min-h-[36px]"
+                    title={t.fullScreenViewer}
+                    aria-label={t.fullScreenViewer}
+                  >
+                    <Maximize2 className="w-4 h-4 text-amber-300" />
+                    <span className="hidden sm:inline">{t.fullScreenViewer}</span>
+                  </button>
+                </div>
+
+                {/* Navigation Dots */}
+                {pandalPhotos.length > 1 && (
+                  <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10">
+                    {pandalPhotos.map((_, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActivePhotoIdx(idx);
+                          setImageLoaded(false);
+                        }}
+                        className={`h-2 rounded-full transition-all cursor-pointer ${
+                          activePhotoIdx === idx ? 'w-6 bg-amber-400' : 'w-2 bg-white/60 hover:bg-white'
+                        }`}
+                        aria-label={`Go to photo ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {/* Title & Status on Image */}
+                <div className="absolute bottom-3 left-3 right-3 text-white pointer-events-none">
+                  <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight drop-shadow-md text-amber-100 select-text">
+                    {pandal.name}
+                  </h1>
+                  <p className="text-xs text-stone-300 mt-0.5 flex items-center gap-1">
+                    <Train className="w-3.5 h-3.5 text-amber-400" />
+                    <span>{pandal.nearestStation}</span>
+                    {pandal.stationDistance && (
+                      <span className="text-amber-200">({pandal.stationDistance})</span>
+                    )}
+                  </p>
+                </div>
+              </>
+            )}
           </div>
+
+          {/* Optional Caption & Credit Strip */}
+          {(currentPhotoCaption || currentPhoto?.credit) && (
+            <div className="px-4 py-2 bg-stone-100 dark:bg-stone-800/80 border-b border-stone-200 dark:border-stone-800 text-xs flex flex-wrap items-center justify-between gap-2">
+              {currentPhotoCaption && (
+                <p className="text-stone-700 dark:text-stone-300 italic">{currentPhotoCaption}</p>
+              )}
+              {currentPhoto?.credit && (
+                <p className="text-[11px] text-amber-700 dark:text-amber-400 font-medium ml-auto">
+                  {t.photoCredit}: {currentPhoto.credit}
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Quick-Scan Status Strip: Darshan Status & Crowd Level */}
           <div className="p-4 bg-stone-50 dark:bg-stone-800/60 border-b border-stone-200/80 dark:border-stone-800 flex flex-wrap items-center justify-between gap-3">
@@ -565,6 +760,91 @@ export const PandalDetailPage: React.FC = () => {
         onClose={() => setShowReportModal(false)}
         pandal={pandal}
       />
+
+      {/* Full-Screen Lightbox Viewer */}
+      {lightboxOpen && pandalPhotos.length > 0 && (
+        <div
+          className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-md flex flex-col justify-between p-4 sm:p-6 select-none"
+          role="dialog"
+          aria-modal="true"
+          aria-label={t.fullScreenViewer}
+          onClick={() => setLightboxOpen(false)}
+        >
+          {/* Top Bar */}
+          <div
+            className="flex items-center justify-between text-white z-10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-bold text-stone-300">
+                {activePhotoIdx + 1} / {pandalPhotos.length}
+              </span>
+              <span className="text-xs text-stone-400 hidden sm:inline truncate max-w-xs">
+                {pandal.name}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setLightboxOpen(false)}
+              className="w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+              aria-label={t.cancel}
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+
+          {/* Center Image Area */}
+          <div
+            className="relative flex-1 flex items-center justify-center min-h-0 my-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {pandalPhotos.length > 1 && (
+              <button
+                type="button"
+                onClick={handlePrevPhoto}
+                className="absolute left-1 sm:left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all active:scale-95 cursor-pointer z-20"
+                aria-label={t.prevPhoto}
+              >
+                <ChevronLeft className="w-7 h-7" />
+              </button>
+            )}
+
+            <img
+              src={currentPhotoSrc}
+              alt={currentPhotoAlt}
+              className="max-h-[75vh] max-w-[92vw] sm:max-w-[85vw] object-contain rounded-xl shadow-2xl transition-all"
+            />
+
+            {pandalPhotos.length > 1 && (
+              <button
+                type="button"
+                onClick={handleNextPhoto}
+                className="absolute right-1 sm:right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all active:scale-95 cursor-pointer z-20"
+                aria-label={t.nextPhoto}
+              >
+                <ChevronRight className="w-7 h-7" />
+              </button>
+            )}
+          </div>
+
+          {/* Bottom Caption & Credit Area */}
+          <div
+            className="max-w-2xl mx-auto text-center z-10 px-4 py-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {currentPhotoCaption && (
+              <p className="text-sm sm:text-base text-stone-100 font-medium">
+                {currentPhotoCaption}
+              </p>
+            )}
+            {currentPhoto?.credit && (
+              <p className="text-xs text-amber-300 mt-1">
+                {t.photoCredit}: {currentPhoto.credit}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

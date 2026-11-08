@@ -134,9 +134,9 @@ export const PandalDetailCard: React.FC<PandalDetailCardProps> = ({
   return (
     <div className="flex flex-col h-full bg-white dark:bg-stone-900 rounded-2xl overflow-hidden shadow-2xl">
       {/* Header Image with Overlays */}
-      <div className="relative h-44 sm:h-52 w-full bg-stone-800 overflow-hidden shrink-0">
+      <div className="relative h-44 sm:h-52 w-full bg-stone-100 dark:bg-stone-800 overflow-hidden shrink-0">
         <img
-          src={imageError ? fallbackPhoto : pandal.photoUrl}
+          src={imageError ? fallbackPhoto : (pandal.coverThumbUrl || pandal.photoUrl)}
           alt={pandal.name}
           onError={() => setImageError(true)}
           className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"

@@ -416,14 +416,14 @@ export const MapPage: React.FC = () => {
 
       {/* First-Visit Lightweight Dismissible Hint */}
       {showFirstVisitHint && (
-        <div className="bg-amber-500 text-white text-xs px-3.5 py-1.5 flex items-center justify-between gap-2 z-[960] shadow-sm">
+        <div className="bg-amber-50 dark:bg-stone-900 border-b border-amber-200 dark:border-amber-900/40 text-amber-950 dark:text-amber-200 text-xs px-3.5 py-1.5 flex items-center justify-between gap-2 z-[960] shadow-xs">
           <span className="flex items-center gap-1.5 font-medium">
-            <Sparkles className="w-3.5 h-3.5 shrink-0" />
+            <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
             <span>{t.firstVisitHint}</span>
           </span>
           <button
             onClick={handleDismissHint}
-            className="font-bold underline hover:text-amber-100 shrink-0 cursor-pointer ml-2"
+            className="font-bold underline text-amber-800 hover:text-amber-950 dark:text-amber-300 dark:hover:text-amber-100 shrink-0 cursor-pointer ml-2"
           >
             {t.firstVisitDismiss}
           </button>
