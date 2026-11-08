@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 import React, { useState } from 'react';
 import { Crosshair, MapPin, Navigation, Search, Train, X } from 'lucide-react';
 import type { Coordinates } from '../../services/routing';

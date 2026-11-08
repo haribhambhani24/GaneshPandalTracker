@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Scale } from 'lucide-react';

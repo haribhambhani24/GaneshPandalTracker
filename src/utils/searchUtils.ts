@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 /**
  * Search Utilities: Multilingual (English, Hindi, Marathi) & Fuzzy Matcher
  * Supports typo tolerance, Devanagari script, phonetic aliases, and recent search history.

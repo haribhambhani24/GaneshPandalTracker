@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import type { PandalPhoto } from '../types/pandal';
 import { processPandalPhoto, MAX_PHOTOS_PER_PANDAL } from '../utils/imageProcessor';

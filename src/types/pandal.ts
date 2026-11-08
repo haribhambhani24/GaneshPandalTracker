@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 export type CrowdLevel = 'Low' | 'Medium' | 'High';
 export type PandalStatus = 'pending' | 'approved' | 'rejected';
 

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 import React from 'react';
 import { Locate, ShieldCheck, X } from 'lucide-react';
 import { useI18n } from '../../context/I18nContext';

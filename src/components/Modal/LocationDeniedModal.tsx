@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, HelpCircle, MapPin, NavigationOff, X } from 'lucide-react';
 import { useI18n } from '../../context/I18nContext';

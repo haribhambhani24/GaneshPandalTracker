@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { pandalService } from '../services/pandalService';
 import type { CrowdLevel, Pandal } from '../types/pandal';

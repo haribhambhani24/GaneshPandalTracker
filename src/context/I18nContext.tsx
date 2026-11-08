@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { Language, Translations } from '../i18n';
 import { translations } from '../i18n';

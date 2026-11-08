@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 import type { Pandal, PandalSubmission, PandalStatus, CrowdLevel, PandalReport } from '../types/pandal';
 import rawPandalsData from '../data/pandals.json?raw';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';

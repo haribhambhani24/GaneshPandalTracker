@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import L from 'leaflet';

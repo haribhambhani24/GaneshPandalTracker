@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 import React, { useEffect, useState } from 'react';
 import { Calendar, ChevronDown, ChevronUp } from 'lucide-react';
 import { useI18n } from '../../context/I18nContext';

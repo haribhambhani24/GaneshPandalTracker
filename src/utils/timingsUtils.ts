@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 /**
  * Timings & Real-Time Status Utilities
  * Calculates live "Open Now / Closed" status and conversational "Next Aarti" countdowns

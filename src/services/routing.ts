@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 /**
  * In-App Routing Service for Ganesh Pandal Tracker
  * Powered by OpenStreetMap / FOSSGIS OSRM

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 import { useCallback, useEffect, useState } from 'react';
 
 const STORAGE_SAVED_KEY = 'ganesh_pandal_tracker_saved';

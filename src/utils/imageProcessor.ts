@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 /**
  * Image Processing & Validation Utilities
  * - Validates file types by binary magic numbers (JPEG, PNG, WebP)

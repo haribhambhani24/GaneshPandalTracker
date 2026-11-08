@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 import React, { useEffect, useRef, useState } from 'react';
 import { History, Leaf, MapPin, Navigation, Search, X } from 'lucide-react';
 import type { Pandal } from '../../types/pandal';

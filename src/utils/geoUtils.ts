@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 export const MUMBAI_CENTER: [number, number] = [19.0150, 72.8450];
 export const DEFAULT_ZOOM = 12;
 

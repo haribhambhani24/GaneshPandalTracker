@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 import type { Circuit } from '../types/circuit';
 import circuitsData from '../data/circuits.json';
 

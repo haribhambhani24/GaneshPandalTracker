@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Hari Bhambhani. All rights reserved.
+// See LICENSE for terms of use.
+
 /**
  * LocalStorage Migration Utility
  * Migrates legacy 'pandal_map_*' keys to 'ganesh_pandal_tracker_*'
