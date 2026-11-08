@@ -53,7 +53,7 @@ function loadDraft() {
 
 export const SubmitPandalPage: React.FC = () => {
   const navigate = useNavigate();
-  const { t, formatCrowdLevel } = useI18n();
+  const { t, language, formatCrowdLevel } = useI18n();
 
   const initialDraft = React.useMemo(() => loadDraft(), []);
 
@@ -736,6 +736,34 @@ export const SubmitPandalPage: React.FC = () => {
                   <p><strong>Area:</strong> {area === 'Other Area' ? customArea : area}</p>
                   <p><strong>Station:</strong> {nearestStation || '—'}</p>
                   <p><strong>Timings:</strong> {darshanTimings}</p>
+                </div>
+
+                {/* Contributor Display License Notice */}
+                <div className="p-3.5 rounded-xl bg-stone-100 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700/80 text-[11px] text-stone-600 dark:text-stone-400 leading-relaxed">
+                  <p>
+                    {language === 'mr' ? (
+                      <>
+                        सबमिट करून, आपण पुष्टी करता की मूळ साहित्याची मालकी आपल्याकडेच राहील आणि आपण गणेश पंडाल ट्रॅकरला हे साहित्य दर्शनासाठी प्रदर्शित करण्याचा गैर-अनन्य परवाना देता.{' '}
+                        <Link to="/terms" className="text-orange-600 dark:text-amber-400 font-semibold hover:underline">
+                          वापराच्या अटी
+                        </Link>
+                      </>
+                    ) : language === 'hi' ? (
+                      <>
+                        सबमिट करके, आप पुष्टि करते हैं कि सामग्री का स्वामित्व आपका रहेगा और आप गणेश पंडाल ट्रैकर को इसे प्रदर्शित करने का गैर-अनन्य लाइसेंस प्रदान करते हैं।{' '}
+                        <Link to="/terms" className="text-orange-600 dark:text-amber-400 font-semibold hover:underline">
+                          उपयोग की शर्तें
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        By submitting, you confirm that you retain ownership of your content and grant Ganesh Pandal Tracker a non-exclusive license to display it.{' '}
+                        <Link to="/terms" className="text-orange-600 dark:text-amber-400 font-semibold hover:underline">
+                          Terms of Use
+                        </Link>
+                      </>
+                    )}
+                  </p>
                 </div>
               </div>
             )}

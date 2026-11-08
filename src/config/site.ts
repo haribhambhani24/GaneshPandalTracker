@@ -38,7 +38,7 @@ export interface SiteConfig {
 
 export const siteConfig: SiteConfig = {
   name: 'Ganesh Pandal Tracker',
-  shortName: 'Pandal Map',
+  shortName: 'Pandal Tracker',
   tagline: 'Mumbai Ganesh Chaturthi Pandal Guide',
   description: 'Find pandals, timings and routes, all in one place.',
   url: 'https://mumbaiganeshpandals.com',

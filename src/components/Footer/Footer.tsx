@@ -365,9 +365,28 @@ export const Footer: React.FC<FooterProps> = ({
             <ThemeToggle variant="nav" />
           </div>
 
-          {/* Center: Copyright */}
-          <div className="text-center text-[11px] sm:text-xs text-stone-500 dark:text-stone-400 font-medium">
-            © {CURRENT_YEAR} {t.footerCopyright}. All rights reserved.
+          {/* Center: Copyright & OpenStreetMap attribution */}
+          <div className="text-center text-[11px] sm:text-xs text-stone-500 dark:text-stone-400 font-medium flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+            <span>
+              © {CURRENT_YEAR}{' '}
+              <Link to="/terms" className="font-semibold text-stone-700 dark:text-stone-300 hover:underline">
+                Ganesh Pandal Tracker
+              </Link>
+              . All rights reserved.
+            </span>
+            <span className="hidden sm:inline text-stone-400">•</span>
+            <span>
+              Map data ©{' '}
+              <a
+                href={siteConfig.credits.osmUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline text-stone-600 dark:text-stone-300"
+              >
+                OpenStreetMap
+              </a>{' '}
+              contributors
+            </span>
           </div>
 
           {/* Right: Back to Top & Subtle Admin Link */}
