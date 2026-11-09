@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useI18n } from '../context/I18nContext';
 import { LanguageSwitcher } from '../components/Header/LanguageSwitcher';
 import { ThemeToggle } from '../components/Header/ThemeToggle';
+import { Footer } from '../components/Footer/Footer';
 
 const POPULAR_HUBS = ['Lalbaug', 'Girgaon', 'Khetwadi', 'Andheri'];
 
@@ -73,6 +74,8 @@ export const NotFoundPage: React.FC = () => {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };

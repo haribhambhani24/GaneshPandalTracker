@@ -6,6 +6,7 @@ import { getGoogleMapsDirectionsUrl, formatDistance } from '../../utils/geoUtils
 import { useI18n } from '../../context/I18nContext';
 import { EmptyState } from '../EmptyState/EmptyState';
 import { getDarshanStatus, getTravelEstimate } from '../../utils/timingsUtils';
+import { Footer } from '../Footer/Footer';
 
 interface PandalListViewProps {
   pandals: Pandal[];
@@ -39,13 +40,14 @@ export const PandalListView: React.FC<PandalListViewProps> = ({
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-3 sm:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-24">
-      {pandals.map((pandal) => {
-        const isSelected = selectedPandal?.id === pandal.id;
-        const directionsUrl = getGoogleMapsDirectionsUrl(pandal.lat, pandal.lng, pandal.name);
-        const distanceKm = distancesMap?.get(pandal.id);
-        const darshanStatus = getDarshanStatus(pandal);
-        const travelEst = getTravelEstimate(distanceKm);
+    <div className="w-full pb-24">
+      <div className="w-full max-w-5xl mx-auto p-3 sm:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {pandals.map((pandal) => {
+          const isSelected = selectedPandal?.id === pandal.id;
+          const directionsUrl = getGoogleMapsDirectionsUrl(pandal.lat, pandal.lng, pandal.name);
+          const distanceKm = distancesMap?.get(pandal.id);
+          const darshanStatus = getDarshanStatus(pandal);
+          const travelEst = getTravelEstimate(distanceKm);
 
         return (
           <div
@@ -189,6 +191,11 @@ export const PandalListView: React.FC<PandalListViewProps> = ({
           </div>
         );
       })}
+      </div>
+
+      <div className="mt-8">
+        <Footer />
+      </div>
     </div>
   );
 };

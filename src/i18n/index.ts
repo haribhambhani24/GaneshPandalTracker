@@ -295,6 +295,100 @@ export interface Translations {
   prevPhoto: string;
   moveUp: string;
   moveDown: string;
+
+  // Footer & Static Pages
+  footerTagline: string;
+  footerDescription: string;
+  footerExploreTitle: string;
+  footerHelpTitle: string;
+  footerLegalTitle: string;
+  footerHome: string;
+  footerNearMe: string;
+  footerSavedPandals: string;
+  footerSubmitPandal: string;
+  footerWalkingTours: string;
+  footerHowItWorks: string;
+  footerFaq: string;
+  footerReportProblem: string;
+  footerContactUs: string;
+  footerPrivacyPolicy: string;
+  footerTermsOfUse: string;
+  footerDisclaimer: string;
+  footerCreditsOsm: string;
+  footerCopyright: string;
+  footerAdmin: string;
+  footerBackToTop: string;
+  footerDisclaimerLine: string;
+
+  // About / How It Works page
+  aboutTitle: string;
+  aboutSubtitle: string;
+  aboutSectionHowTitle: string;
+  aboutSectionHowBody: string;
+  aboutSectionDataTitle: string;
+  aboutSectionDataBody: string;
+  aboutSectionOsmTitle: string;
+  aboutSectionOsmBody: string;
+
+  // FAQ page
+  faqTitle: string;
+  faqSubtitle: string;
+  faqQ1: string;
+  faqA1: string;
+  faqQ2: string;
+  faqA2: string;
+  faqQ3: string;
+  faqA3: string;
+  faqQ4: string;
+  faqA4: string;
+  faqQ5: string;
+  faqA5: string;
+  faqQ6: string;
+  faqA6: string;
+
+  // Privacy page
+  privacyTitle: string;
+  privacySubtitle: string;
+  privacyLastUpdated: string;
+  privacySectionLocationTitle: string;
+  privacySectionLocationBody: string;
+  privacySectionSavedTitle: string;
+  privacySectionSavedBody: string;
+  privacySectionSubmitTitle: string;
+  privacySectionSubmitBody: string;
+  privacySectionThirdTitle: string;
+  privacySectionThirdBody: string;
+  privacySectionContactTitle: string;
+  privacySectionContactBody: string;
+
+  // Terms page
+  termsTitle: string;
+  termsSubtitle: string;
+  termsLastUpdated: string;
+  termsSectionUseTitle: string;
+  termsSectionUseBody: string;
+  termsSectionContentTitle: string;
+  termsSectionContentBody: string;
+  termsSectionSubmitTitle: string;
+  termsSectionSubmitBody: string;
+  termsSectionContactTitle: string;
+  termsSectionContactBody: string;
+
+  // Disclaimer page
+  disclaimerTitle: string;
+  disclaimerSubtitle: string;
+  disclaimerLastUpdated: string;
+  disclaimerBody: string;
+
+  // Contact page
+  contactTitle: string;
+  contactSubtitle: string;
+  contactEmailLabel: string;
+  contactReportLabel: string;
+  contactReportLink: string;
+
+  // Static page shared
+  staticPageBackHome: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -586,6 +680,100 @@ export const translations: Record<Language, Translations> = {
     prevPhoto: "Previous Photo",
     moveUp: "Move Up",
     moveDown: "Move Down",
+
+    // Footer & Static Pages
+    footerTagline: 'Mumbai Ganesh Chaturthi Pandal Guide',
+    footerDescription: 'Find pandals, timings and routes — all in one place.',
+    footerExploreTitle: 'Explore',
+    footerHelpTitle: 'Help',
+    footerLegalTitle: 'Legal',
+    footerHome: 'Home / Map',
+    footerNearMe: 'Near Me',
+    footerSavedPandals: 'My Darshan',
+    footerSubmitPandal: 'Submit a Pandal',
+    footerWalkingTours: 'Walking Tours',
+    footerHowItWorks: 'How It Works',
+    footerFaq: 'FAQ',
+    footerReportProblem: 'Report a Problem',
+    footerContactUs: 'Contact Us',
+    footerPrivacyPolicy: 'Privacy Policy',
+    footerTermsOfUse: 'Terms of Use',
+    footerDisclaimer: 'Disclaimer',
+    footerCreditsOsm: 'Map data \u00a9 OpenStreetMap contributors',
+    footerCopyright: '\u00a9 {year} Ganesh Pandal Tracker. All rights reserved.',
+    footerAdmin: 'Admin',
+    footerBackToTop: 'Back to top',
+    footerDisclaimerLine: 'Pandal information is community-submitted. Verify timings before you travel.',
+
+    // About page
+    aboutTitle: 'How It Works',
+    aboutSubtitle: 'Ganesh Pandal Tracker helps pilgrims and visitors explore Mumbai\'s Ganesh Chaturthi pandals.',
+    aboutSectionHowTitle: 'What This App Does',
+    aboutSectionHowBody: 'We show approved pandals on an interactive map with timings, crowd levels, nearest railway station and directions. You can save pandals to your personal My Darshan list and follow curated walking routes.',
+    aboutSectionDataTitle: 'Who Adds the Data',
+    aboutSectionDataBody: 'Pandal information is submitted by community members and reviewed by volunteer moderators before it appears on the map. If you spot an error, use the Report a Problem button on any pandal.',
+    aboutSectionOsmTitle: 'Map Attribution',
+    aboutSectionOsmBody: 'The map is powered by OpenStreetMap, a free and open map of the world built by volunteers. \u00a9 OpenStreetMap contributors.',
+
+    // FAQ page
+    faqTitle: 'Frequently Asked Questions',
+    faqSubtitle: 'Quick answers about Ganesh Pandal Tracker.',
+    faqQ1: 'Is this app free?',
+    faqA1: 'Yes, completely free. No account required.',
+    faqQ2: 'How do I add a pandal?',
+    faqA2: 'Use the Submit a Pandal form. Your submission is reviewed by a moderator before it goes live.',
+    faqQ3: 'How is the crowd level decided?',
+    faqA3: 'Crowd levels are submitted by the community and reviewed by our moderators. They reflect typical conditions and may not match real-time rush.',
+    faqQ4: 'How do I report wrong information?',
+    faqA4: 'Open any pandal and tap "Report a problem". Your report goes straight to our moderators.',
+    faqQ5: 'Does the app work offline?',
+    faqA5: 'Basic features and saved pandals work offline after your first visit, thanks to the built-in service worker.',
+    faqQ6: 'Who runs this?',
+    faqA6: 'Ganesh Pandal Tracker is a community project run by volunteers. It is not affiliated with any mandal, municipality or commercial organisation.',
+
+    // Privacy page
+    privacyTitle: 'Privacy Policy',
+    privacySubtitle: 'Plain language. No legal jargon.',
+    privacyLastUpdated: 'Last updated: 1 November 2026',
+    privacySectionLocationTitle: 'Location',
+    privacySectionLocationBody: 'If you tap Near Me, your GPS coordinates are used only inside your browser to sort pandals by distance. We never store or transmit your location to our servers.',
+    privacySectionSavedTitle: 'Saved Pandals',
+    privacySectionSavedBody: 'Your My Darshan list and app preferences are stored only in your browser\'s localStorage. They stay on your device and are never sent to us.',
+    privacySectionSubmitTitle: 'Pandal Submissions',
+    privacySectionSubmitBody: 'When you submit a pandal, the details and photo you provide are stored in our database (Supabase) for moderation. We do not collect your name or contact details unless you choose to include them in the form.',
+    privacySectionThirdTitle: 'Third-Party Services',
+    privacySectionThirdBody: 'The map tiles are served by OpenStreetMap. The database is hosted on Supabase. Neither service receives your personal data from us.',
+    privacySectionContactTitle: 'Contact',
+    privacySectionContactBody: 'For privacy questions or data deletion requests, email us at the address on the Contact page.',
+
+    // Terms page
+    termsTitle: 'Terms of Use',
+    termsSubtitle: 'Short and plain.',
+    termsLastUpdated: 'Last updated: 1 November 2026',
+    termsSectionUseTitle: 'Permitted Use',
+    termsSectionUseBody: 'You may use this site for personal, non-commercial purposes only. You may not copy, scrape, harvest or republish the pandal data, photos or text. You may not frame or mirror this site, or use the name "Ganesh Pandal Tracker" to imply affiliation.',
+    termsSectionContentTitle: 'Content',
+    termsSectionContentBody: 'Pandal information is community-submitted and may be inaccurate. We do our best to verify it, but we make no guarantees. Always confirm timings directly with the mandal before travelling.',
+    termsSectionSubmitTitle: 'Your Submissions',
+    termsSectionSubmitBody: 'You keep ownership of content you submit. By submitting, you give us a non-exclusive, royalty-free licence to display it on this site.',
+    termsSectionContactTitle: 'Takedown Requests',
+    termsSectionContactBody: 'If you are a mandal representative and want your pandal removed, or if you believe any content infringes your rights, email us at the address on the Contact page.',
+
+    // Disclaimer page
+    disclaimerTitle: 'Disclaimer',
+    disclaimerSubtitle: 'Please read before you travel.',
+    disclaimerLastUpdated: 'Last updated: 1 November 2026',
+    disclaimerBody: 'Pandal timings, crowd levels, visarjan dates and directions on this site are contributed by the community and may be outdated or inaccurate. Always confirm details directly with the pandal mandal before travelling. We are not responsible for any inconvenience caused by inaccurate information. Road closures and security arrangements during the festival may change without notice.',
+
+    // Contact page
+    contactTitle: 'Contact Us',
+    contactSubtitle: 'We are volunteers, so responses may take a few days.',
+    contactEmailLabel: 'Email',
+    contactReportLabel: 'Report a problem with a pandal',
+    contactReportLink: 'Use the in-app report form',
+
+    // Shared
+    staticPageBackHome: 'Back to Map',
   },
 
   hi: {
@@ -876,6 +1064,100 @@ export const translations: Record<Language, Translations> = {
     prevPhoto: "पिछला फोटो",
     moveUp: "ऊपर ले जाएं",
     moveDown: "नीचे ले जाएं",
+
+    // Footer & Static Pages
+    footerTagline: 'मुंबई गणेशोत्सव पंडाल दर्शिका',
+    footerDescription: 'पंडाल, समय और मार्ग — एक ही जगह पर।',
+    footerExploreTitle: 'अन्वेषण',
+    footerHelpTitle: 'सहायता',
+    footerLegalTitle: 'कानूनी',
+    footerHome: 'होम / नक्शा',
+    footerNearMe: 'मेरे निकट',
+    footerSavedPandals: 'मेरा दर्शन',
+    footerSubmitPandal: 'पंडाल जोड़ें',
+    footerWalkingTours: 'पदयात्रा टूर',
+    footerHowItWorks: 'यह कैसे काम करता है',
+    footerFaq: 'अक्सर पूछे जाने वाले प्रश्न',
+    footerReportProblem: 'समस्या रिपोर्ट करें',
+    footerContactUs: 'संपर्क करें',
+    footerPrivacyPolicy: 'गोपनीयता नीति',
+    footerTermsOfUse: 'उपयोग की शर्तें',
+    footerDisclaimer: 'अस्वीकरण',
+    footerCreditsOsm: 'मानचित्र डेटा \u00a9 OpenStreetMap योगदानकर्ता',
+    footerCopyright: '\u00a9 {year} Ganesh Pandal Tracker. सर्वाधिकार सुरक्षित।',
+    footerAdmin: 'व्यवस्थापक',
+    footerBackToTop: 'ऊपर जाएं',
+    footerDisclaimerLine: 'पंडाल जानकारी समुदाय द्वारा प्रदान की गई है। यात्रा से पहले समय की पुष्टि करें।',
+
+    // About page
+    aboutTitle: 'यह कैसे काम करता है',
+    aboutSubtitle: 'Ganesh Pandal Tracker मुंबई के गणेश चतुर्थी पंडालों को खोजने में मदद करता है।',
+    aboutSectionHowTitle: 'यह ऐप क्या करता है',
+    aboutSectionHowBody: 'हम स्वीकृत पंडालों को इंटरैक्टिव नक्शे पर समय, भीड़ स्तर, नजदीकी रेलवे स्टेशन और दिशाओं के साथ दिखाते हैं। आप पंडालों को अपनी व्यक्तिगत दर्शन सूची में सहेज सकते हैं और चुनिंदा पैदल मार्गों का अनुसरण कर सकते हैं।',
+    aboutSectionDataTitle: 'डेटा कौन जोड़ता है',
+    aboutSectionDataBody: 'पंडाल की जानकारी समुदाय के सदस्यों द्वारा जमा की जाती है और स्वयंसेवी संचालकों द्वारा नक्शे पर दिखाने से पहले समीक्षा की जाती है।',
+    aboutSectionOsmTitle: 'मानचित्र श्रेय',
+    aboutSectionOsmBody: 'मानचित्र OpenStreetMap द्वारा संचालित है। \u00a9 OpenStreetMap योगदानकर्ता।',
+
+    // FAQ page
+    faqTitle: 'अक्सर पूछे जाने वाले प्रश्न',
+    faqSubtitle: 'Ganesh Pandal Tracker के बारे में त्वरित उत्तर।',
+    faqQ1: 'क्या यह ऐप मुफ़्त है?',
+    faqA1: 'हाँ, पूरी तरह मुफ़्त। कोई खाता आवश्यक नहीं।',
+    faqQ2: 'मैं पंडाल कैसे जोड़ूं?',
+    faqA2: 'पंडाल जमा करें फ़ॉर्म का उपयोग करें। लाइव होने से पहले आपकी प्रविष्टि की समीक्षा की जाएगी।',
+    faqQ3: 'भीड़ स्तर कैसे तय होता है?',
+    faqA3: 'भीड़ स्तर समुदाय द्वारा जमा किए जाते हैं और हमारे संचालकों द्वारा समीक्षा की जाती है।',
+    faqQ4: 'गलत जानकारी की रिपोर्ट कैसे करूं?',
+    faqA4: 'किसी भी पंडाल को खोलें और "समस्या रिपोर्ट करें" पर टैप करें।',
+    faqQ5: 'क्या ऐप ऑफलाइन काम करती है?',
+    faqA5: 'पहली विज़िट के बाद बुनियादी सुविधाएं और सहेजे गए पंडाल ऑफलाइन काम करते हैं।',
+    faqQ6: 'इसे कौन चलाता है?',
+    faqA6: 'Ganesh Pandal Tracker एक स्वयंसेवी सामुदायिक परियोजना है। यह किसी मंडल या सरकारी संगठन से संबद्ध नहीं है।',
+
+    // Privacy page
+    privacyTitle: 'गोपनीयता नीति',
+    privacySubtitle: 'सरल भाषा में। कोई कानूनी शब्दजाल नहीं।',
+    privacyLastUpdated: 'अंतिम अपडेट: 1 नवंबर 2026',
+    privacySectionLocationTitle: 'स्थान',
+    privacySectionLocationBody: 'यदि आप "मेरे निकट" टैप करते हैं, तो आपके GPS निर्देशांक केवल आपके ब्राउज़र में दूरी के अनुसार पंडालों को क्रमबद्ध करने के लिए उपयोग किए जाते हैं। हम आपका स्थान कभी भी संग्रहीत या प्रसारित नहीं करते।',
+    privacySectionSavedTitle: 'सहेजे गए पंडाल',
+    privacySectionSavedBody: 'आपकी दर्शन सूची और प्राथमिकताएं केवल आपके ब्राउज़र के localStorage में संग्रहीत हैं। वे आपके डिवाइस पर रहते हैं।',
+    privacySectionSubmitTitle: 'पंडाल प्रविष्टियां',
+    privacySectionSubmitBody: 'जब आप पंडाल जमा करते हैं, तो आपके द्वारा प्रदान की गई जानकारी हमारे डेटाबेस में संग्रहीत की जाती है। हम आपका नाम या संपर्क विवरण तब तक एकत्र नहीं करते जब तक आप स्वयं इसे न जोड़ें।',
+    privacySectionThirdTitle: 'तृतीय-पक्ष सेवाएं',
+    privacySectionThirdBody: 'मानचित्र टाइल्स OpenStreetMap द्वारा और डेटाबेस Supabase पर होस्ट किया गया है।',
+    privacySectionContactTitle: 'संपर्क',
+    privacySectionContactBody: 'गोपनीयता संबंधी प्रश्नों के लिए संपर्क पृष्ठ पर दिए गए ईमेल पर लिखें।',
+
+    // Terms page
+    termsTitle: 'उपयोग की शर्तें',
+    termsSubtitle: 'संक्षिप्त और स्पष्ट।',
+    termsLastUpdated: 'अंतिम अपडेट: 1 नवंबर 2026',
+    termsSectionUseTitle: 'अनुमत उपयोग',
+    termsSectionUseBody: 'आप इस साइट का उपयोग केवल व्यक्तिगत, गैर-व्यावसायिक उद्देश्यों के लिए कर सकते हैं। आप पंडाल डेटा, फ़ोटो या टेक्स्ट को कॉपी, स्क्रेप या पुनः प्रकाशित नहीं कर सकते।',
+    termsSectionContentTitle: 'सामग्री',
+    termsSectionContentBody: 'पंडाल की जानकारी समुदाय द्वारा जमा की जाती है और सटीक नहीं हो सकती। यात्रा से पहले मंडल से सीधे पुष्टि करें।',
+    termsSectionSubmitTitle: 'आपकी प्रविष्टियां',
+    termsSectionSubmitBody: 'आप अपनी प्रविष्टियों के स्वामी बने रहते हैं। जमा करके, आप हमें इसे साइट पर प्रदर्शित करने का अधिकार देते हैं।',
+    termsSectionContactTitle: 'टेकडाउन अनुरोध',
+    termsSectionContactBody: 'यदि आप किसी सामग्री को हटवाना चाहते हैं, तो संपर्क पृष्ठ पर दिए गए ईमेल पर लिखें।',
+
+    // Disclaimer page
+    disclaimerTitle: 'अस्वीकरण',
+    disclaimerSubtitle: 'यात्रा से पहले कृपया पढ़ें।',
+    disclaimerLastUpdated: 'अंतिम अपडेट: 1 नवंबर 2026',
+    disclaimerBody: 'इस साइट पर पंडाल समय, भीड़ स्तर, विसर्जन तिथियां और दिशाएं समुदाय द्वारा योगदान की गई हैं और पुरानी या गलत हो सकती हैं। यात्रा से पहले मंडल से सीधे पुष्टि करें। गलत जानकारी के कारण होने वाली किसी भी असुविधा के लिए हम जिम्मेदार नहीं हैं।',
+
+    // Contact page
+    contactTitle: 'संपर्क करें',
+    contactSubtitle: 'हम स्वयंसेवक हैं, इसलिए प्रतिक्रिया में कुछ दिन लग सकते हैं।',
+    contactEmailLabel: 'ईमेल',
+    contactReportLabel: 'पंडाल की समस्या रिपोर्ट करें',
+    contactReportLink: 'ऐप में रिपोर्ट फ़ॉर्म उपयोग करें',
+
+    // Shared
+    staticPageBackHome: 'नक्शे पर वापस',
   },
 
   mr: {
@@ -1166,5 +1448,99 @@ export const translations: Record<Language, Translations> = {
     prevPhoto: "मागील फोटो",
     moveUp: "वर हलवा",
     moveDown: "खाली हलवा",
+
+    // Footer & Static Pages
+    footerTagline: 'मुंबई गणेशोत्सव पंडाल वाटाड्या',
+    footerDescription: 'पंडाल, वेळा आणि मार्ग — एकाच ठिकाणी.',
+    footerExploreTitle: 'अन्वेषण',
+    footerHelpTitle: 'मदत',
+    footerLegalTitle: 'कायदेशीर',
+    footerHome: 'मुख्यपृष्ठ / नकाशा',
+    footerNearMe: 'माझ्या जवळचे',
+    footerSavedPandals: 'माझे दर्शन',
+    footerSubmitPandal: 'मंडळ जोडा',
+    footerWalkingTours: 'पदयात्रा टूर्स',
+    footerHowItWorks: 'हे कसे काम करते',
+    footerFaq: 'वारंवार विचारले जाणारे प्रश्न',
+    footerReportProblem: 'समस्या नोंदवा',
+    footerContactUs: 'संपर्क करा',
+    footerPrivacyPolicy: 'गोपनीयता धोरण',
+    footerTermsOfUse: 'वापराच्या अटी',
+    footerDisclaimer: 'अस्वीकरण',
+    footerCreditsOsm: 'नकाशा डेटा \u00a9 OpenStreetMap योगदानकर्ते',
+    footerCopyright: '\u00a9 {year} Ganesh Pandal Tracker. सर्व हक्क राखीव.',
+    footerAdmin: 'प्रशासक',
+    footerBackToTop: 'वर जा',
+    footerDisclaimerLine: 'पंडाल माहिती समुदायाने दिली आहे. प्रवासापूर्वी वेळा तपासा.',
+
+    // About page
+    aboutTitle: 'हे कसे काम करते',
+    aboutSubtitle: 'Ganesh Pandal Tracker मुंबईच्या गणेशोत्सव मंडळांचा शोध घेण्यास मदत करतो.',
+    aboutSectionHowTitle: 'हे ॲप काय करते',
+    aboutSectionHowBody: 'आम्ही मंजूर मंडळे परस्परसंवादी नकाशावर वेळा, गर्दीची पातळी, जवळचे रेल्वे स्टेशन आणि मार्गदर्शनासह दाखवतो. तुम्ही मंडळे दर्शन यादीत जतन करू शकता आणि नियोजित पदयात्रा मार्गांचे अनुसरण करू शकता.',
+    aboutSectionDataTitle: 'डेटा कोण जोडतो',
+    aboutSectionDataBody: 'मंडळाची माहिती समुदायाच्या सदस्यांद्वारे सादर केली जाते आणि नकाशावर दिसण्यापूर्वी स्वयंसेवक संचालकांद्वारे तपासली जाते.',
+    aboutSectionOsmTitle: 'नकाशा श्रेय',
+    aboutSectionOsmBody: 'नकाशा OpenStreetMap द्वारे चालवला जातो. \u00a9 OpenStreetMap योगदानकर्ते.',
+
+    // FAQ page
+    faqTitle: 'वारंवार विचारले जाणारे प्रश्न',
+    faqSubtitle: 'Ganesh Pandal Tracker बद्दल त्वरित उत्तरे.',
+    faqQ1: 'हे ॲप मोफत आहे का?',
+    faqA1: 'होय, पूर्णपणे मोफत. कोणत्याही खात्याची आवश्यकता नाही.',
+    faqQ2: 'मी मंडळ कसे जोडू?',
+    faqA2: 'मंडळ सादर करा फॉर्म वापरा. थेट होण्यापूर्वी तुमची नोंद तपासली जाईल.',
+    faqQ3: 'गर्दीची पातळी कशी ठरवली जाते?',
+    faqA3: 'गर्दीची पातळी समुदायाने सादर केली जाते आणि आमच्या संचालकांद्वारे तपासली जाते.',
+    faqQ4: 'चुकीची माहिती कशी नोंदवू?',
+    faqA4: 'कोणतेही मंडळ उघडा आणि "समस्या नोंदवा" टॅप करा.',
+    faqQ5: 'ॲप ऑफलाइन काम करते का?',
+    faqA5: 'पहिल्या भेटीनंतर मूलभूत वैशिष्ट्ये आणि जतन केलेली मंडळे ऑफलाइन काम करतात.',
+    faqQ6: 'हे कोण चालवतो?',
+    faqA6: 'Ganesh Pandal Tracker हा स्वयंसेवकांचा समुदाय प्रकल्प आहे. कोणत्याही मंडळाशी किंवा शासकीय संस्थेशी संबंधित नाही.',
+
+    // Privacy page
+    privacyTitle: 'गोपनीयता धोरण',
+    privacySubtitle: 'सोप्या भाषेत. कोणतीही कायदेशीर जटिलता नाही.',
+    privacyLastUpdated: 'शेवटचे अपडेट: १ नोव्हेंबर २०२६',
+    privacySectionLocationTitle: 'स्थान',
+    privacySectionLocationBody: 'तुम्ही "माझ्याजवळ" टॅप केल्यास, तुमचे GPS निर्देशांक केवळ ब्राउझरमध्ये अंतरानुसार मंडळे क्रमवारी लावण्यासाठी वापरले जातात. आम्ही तुमचे स्थान कधीही साठवत किंवा पाठवत नाही.',
+    privacySectionSavedTitle: 'जतन केलेली मंडळे',
+    privacySectionSavedBody: 'तुमची दर्शन यादी आणि प्राधान्ये केवळ तुमच्या ब्राउझरच्या localStorage मध्ये साठवली जातात. ती तुमच्या डिव्हाइसवर राहतात.',
+    privacySectionSubmitTitle: 'मंडळ सादरीकरण',
+    privacySectionSubmitBody: 'तुम्ही मंडळ सादर केल्यावर, तुम्ही दिलेली माहिती आमच्या डेटाबेसमध्ये साठवली जाते. तुम्ही स्वतः समाविष्ट केल्याशिवाय आम्ही तुमचे नाव किंवा संपर्क तपशील गोळा करत नाही.',
+    privacySectionThirdTitle: 'तृतीय-पक्ष सेवा',
+    privacySectionThirdBody: 'नकाशाचे टाइल्स OpenStreetMap द्वारे आणि डेटाबेस Supabase वर होस्ट केला आहे.',
+    privacySectionContactTitle: 'संपर्क',
+    privacySectionContactBody: 'गोपनीयतेबाबत प्रश्नांसाठी संपर्क पृष्ठावरील ईमेलवर लिहा.',
+
+    // Terms page
+    termsTitle: 'वापराच्या अटी',
+    termsSubtitle: 'संक्षिप्त आणि स्पष्ट.',
+    termsLastUpdated: 'शेवटचे अपडेट: १ नोव्हेंबर २०२६',
+    termsSectionUseTitle: 'परवानगी असलेला वापर',
+    termsSectionUseBody: 'तुम्ही ही साइट केवळ वैयक्तिक, गैर-व्यावसायिक हेतूंसाठी वापरू शकता. तुम्ही मंडळ डेटा, फोटो किंवा मजकूर कॉपी, स्क्रेप किंवा पुन्हा प्रकाशित करू शकत नाही.',
+    termsSectionContentTitle: 'सामग्री',
+    termsSectionContentBody: 'मंडळाची माहिती समुदायाने सादर केली आहे आणि अचूक नसू शकते. प्रवासापूर्वी मंडळाकडून थेट पुष्टी करा.',
+    termsSectionSubmitTitle: 'तुमची सादरीकरणे',
+    termsSectionSubmitBody: 'तुम्ही तुमच्या सादरीकरणाचे मालक राहता. सादर करून, तुम्ही आम्हाला ती साइटवर प्रदर्शित करण्याचा परवाना देता.',
+    termsSectionContactTitle: 'टेकडाउन विनंत्या',
+    termsSectionContactBody: 'एखादी सामग्री काढायची असल्यास, संपर्क पृष्ठावरील ईमेलवर लिहा.',
+
+    // Disclaimer page
+    disclaimerTitle: 'अस्वीकरण',
+    disclaimerSubtitle: 'प्रवासापूर्वी कृपया वाचा.',
+    disclaimerLastUpdated: 'शेवटचे अपडेट: १ नोव्हेंबर २०२६',
+    disclaimerBody: 'या साइटवरील मंडळांचे वेळा, गर्दीची पातळी, विसर्जन तारखा आणि दिशा समुदायाने योगदान दिल्या आहेत आणि जुन्या किंवा चुकीच्या असू शकतात. प्रवासापूर्वी मंडळाकडून थेट पुष्टी करा. चुकीच्या माहितीमुळे होणाऱ्या कोणत्याही गैरसोयीसाठी आम्ही जबाबदार नाही.',
+
+    // Contact page
+    contactTitle: 'संपर्क करा',
+    contactSubtitle: 'आम्ही स्वयंसेवक आहोत, त्यामुळे प्रतिसादास काही दिवस लागू शकतात.',
+    contactEmailLabel: 'ईमेल',
+    contactReportLabel: 'मंडळाची समस्या नोंदवा',
+    contactReportLink: 'ॲपमधील अहवाल फॉर्म वापरा',
+
+    // Shared
+    staticPageBackHome: 'नकाशावर परत',
   },
 };

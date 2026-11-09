@@ -38,6 +38,7 @@ import { useMyDarshan } from '../hooks/useMyDarshan';
 import { getGoogleMapsDirectionsUrl } from '../utils/geoUtils';
 import { getDarshanStatus, getNextAarti } from '../utils/timingsUtils';
 import { ReportProblemModal } from '../components/Modal/ReportProblemModal';
+import { Footer } from '../components/Footer/Footer';
 
 export const PandalDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -845,6 +846,8 @@ export const PandalDetailPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      <Footer />
     </div>
   );
 };

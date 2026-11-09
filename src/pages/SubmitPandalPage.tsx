@@ -13,6 +13,7 @@ import {
 import { LocationPickerMap } from '../components/Map/LocationPickerMap';
 import { LanguageSwitcher } from '../components/Header/LanguageSwitcher';
 import { ThemeToggle } from '../components/Header/ThemeToggle';
+import { Footer } from '../components/Footer/Footer';
 import { useI18n } from '../context/I18nContext';
 import { pandalService } from '../services/pandalService';
 import type { CrowdLevel, PandalSubmission } from '../types/pandal';
@@ -773,6 +774,8 @@ export const SubmitPandalPage: React.FC = () => {
           </div>
         )}
       </main>
+
+      <Footer />
     </div>
   );
 };

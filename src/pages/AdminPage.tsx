@@ -28,6 +28,7 @@ import { useI18n } from '../context/I18nContext';
 import { LanguageSwitcher } from '../components/Header/LanguageSwitcher';
 import { ThemeToggle } from '../components/Header/ThemeToggle';
 import { PhotoManagerModal } from '../components/Admin/PhotoManagerModal';
+import { Footer } from '../components/Footer/Footer';
 import type { CrowdLevel, Pandal, PandalStatus, PandalReport } from '../types/pandal';
 
 interface AdminSessionUser {
@@ -942,6 +943,8 @@ export const AdminPage: React.FC = () => {
           }}
         />
       )}
+
+      <Footer />
     </div>
   );
 };
