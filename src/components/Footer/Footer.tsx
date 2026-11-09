@@ -107,8 +107,21 @@ export const Footer: React.FC = () => {
   const { exploreLinks, helpLinks, legalLinks } = useFooterLinks();
   const year = CURRENT_YEAR;
 
-  const handleBackToTop = () => {
+  const handleBackToTop = (e: React.MouseEvent) => {
+    // 1. Scroll window/document
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // 2. Also check and scroll any scrollable parent container (e.g. MapPage list view)
+    let el = (e.currentTarget as HTMLElement).parentElement;
+    while (el) {
+      if (el.scrollHeight > el.clientHeight && el.clientHeight > 0) {
+        const overflowY = window.getComputedStyle(el).overflowY;
+        if (overflowY === 'auto' || overflowY === 'scroll') {
+          el.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+      el = el.parentElement;
+    }
   };
 
   // Build label maps for AccordionSection
