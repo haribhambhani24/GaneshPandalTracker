@@ -17,6 +17,7 @@ interface NavbarProps {
   totalPandals: number;
   filteredCount: number;
   distancesMap?: Map<string, number>;
+  onResetToDefault?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -29,6 +30,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   totalPandals,
   filteredCount,
   distancesMap,
+  onResetToDefault,
 }) => {
   const { t, formatNumber } = useI18n();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -57,13 +59,25 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Top Brand & Controls Row: Strictly designed to fit on 1 row down to 320px width */}
       <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-1 sm:gap-2">
         {/* Brand & Emblem */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0 shrink">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-base sm:text-xl shadow-inner border border-amber-200 shrink-0">
+        <Link
+          to="/"
+          onClick={() => {
+            if (onResetToDefault) {
+              onResetToDefault();
+            }
+            if (window.location.pathname === '/' && window.location.search === '') {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+          className="flex items-center gap-1.5 sm:gap-2.5 min-w-0 shrink group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80 rounded-xl"
+          aria-label={t.appName}
+        >
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-base sm:text-xl shadow-inner border border-amber-200 shrink-0 group-hover:scale-105 transition-transform">
             🕉️
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <h1 className="font-extrabold text-xs sm:text-base md:text-lg tracking-tight leading-tight text-white drop-shadow truncate">
+              <h1 className="font-extrabold text-xs sm:text-base md:text-lg tracking-tight leading-tight text-white drop-shadow truncate group-hover:text-amber-200 transition-colors">
                 <span className="hidden min-[360px]:inline">{t.appName}</span>
                 <span className="min-[360px]:hidden">{t.appNameShort}</span>
               </h1>
@@ -75,7 +89,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               {t.tagline}
             </p>
           </div>
-        </div>
+        </Link>
 
         {/* Right Actions: Lang Switcher, Theme Toggle, View Toggle, plus Links */}
         <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">

@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { LeafletMap, type LeafletMapRef } from '../components/Map/LeafletMap';
 import { MUMBAI_CENTER } from '../utils/geoUtils';
 import { Navbar } from '../components/Header/Navbar';
@@ -17,6 +18,8 @@ import { useUserLocation } from '../hooks/useUserLocation';
 import { useMyDarshan } from '../hooks/useMyDarshan';
 import { useI18n } from '../context/I18nContext';
 import { circuitService } from '../services/circuitService';
+import { routingService, type RouteResult, type TravelMode } from '../services/routing';
+import { DirectionsPanel } from '../components/Navigation/DirectionsPanel';
 import type { Pandal } from '../types/pandal';
 import type { Circuit } from '../types/circuit';
 import { Sparkles, WifiOff, X } from 'lucide-react';
@@ -26,6 +29,7 @@ const LANG_CHOSEN_KEY = 'ganesh_pandal_lang_chosen';
 const MAP_POS_KEY = 'ganesh_pandal_map_pos';
 
 export const MapPage: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t, setLanguage } = useI18n();
   const {
     location: userLocation,
@@ -65,6 +69,18 @@ export const MapPage: React.FC = () => {
   const { isSaved, savedCount } = useMyDarshan();
 
   const [isListView, setIsListView] = useState<boolean>(false);
+
+  // In-App Navigation State
+  const [navDestinationPandal, setNavDestinationPandal] = useState<Pandal | null>(null);
+  const [navMode, setNavMode] = useState<TravelMode>('foot');
+  const [navStartPoint, setNavStartPoint] = useState<{ lat: number; lng: number } | null>(null);
+  const [navStartLabel, setNavStartLabel] = useState<string>('My Current GPS');
+  const [navRoute, setNavRoute] = useState<RouteResult | null>(null);
+  const [navLoading, setNavLoading] = useState<boolean>(false);
+  const [navError, setNavError] = useState<string | null>(null);
+  const [isLiveGuidance, setIsLiveGuidance] = useState<boolean>(false);
+  const [isOffRoute, setIsOffRoute] = useState<boolean>(false);
+  const [multiStopWaypoints, setMultiStopWaypoints] = useState<{ lat: number; lng: number; label: string }[] | null>(null);
 
   // Preserve map center and zoom in sessionStorage
   const [mapCenter, setMapCenter] = useState<[number, number]>(() => {
@@ -305,10 +321,228 @@ export const MapPage: React.FC = () => {
     } catch {}
   };
 
+  // Watch for ?navigate=<pandalId> URL query parameter
+  useEffect(() => {
+    const navId = searchParams.get('navigate');
+    const modeParam = searchParams.get('mode');
+    if (navId && pandals.length > 0) {
+      const targetPandal = pandals.find((p) => p.id === navId);
+      if (targetPandal) {
+        setNavDestinationPandal(targetPandal);
+        setSelectedPandal(targetPandal);
+        if (modeParam === 'driving' || modeParam === 'bike' || modeParam === 'foot') {
+          setNavMode(modeParam);
+        }
+        setIsListView(false);
+      }
+    }
+  }, [searchParams, pandals, setSelectedPandal]);
+
+  // Compute route when destination, start point, or mode changes
+  useEffect(() => {
+    if (!navDestinationPandal) {
+      setNavRoute(null);
+      setNavError(null);
+      return;
+    }
+
+    const startCoords = navStartPoint || (userLocation ? { lat: userLocation.lat, lng: userLocation.lng } : null);
+    if (!startCoords) {
+      // Auto prompt for GPS if not available
+      requestLocation().then((loc) => {
+        if (loc) {
+          setNavStartPoint({ lat: loc.lat, lng: loc.lng });
+          setNavStartLabel(t.useCurrentGps || 'Current Location');
+        } else {
+          setNavStartLabel(t.navUsePinStart || 'Choose on Map');
+        }
+      });
+      return;
+    }
+
+    let isMounted = true;
+    setNavLoading(true);
+    setNavError(null);
+
+    routingService
+      .getRoute([startCoords, { lat: navDestinationPandal.lat, lng: navDestinationPandal.lng }], navMode)
+      .then((res) => {
+        if (isMounted) {
+          setNavRoute(res);
+          setNavLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (isMounted) {
+          setNavError(err.message || 'Route calculation failed');
+          setNavLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [navDestinationPandal, navStartPoint, navMode, userLocation, t.useCurrentGps, t.navUsePinStart, requestLocation]);
+
+  // Live Guidance Geolocation Watcher
+  useEffect(() => {
+    if (!isLiveGuidance || !navRoute || !navDestinationPandal) return;
+
+    if (!('geolocation' in navigator)) return;
+
+    let lastCalcTime = 0;
+    const watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        const userLat = pos.coords.latitude;
+        const userLng = pos.coords.longitude;
+        setNavStartPoint({ lat: userLat, lng: userLng });
+
+        // Off-route check: calculate minimum distance to any route coordinate
+        const minDistanceMeters = Math.min(
+          ...navRoute.coordinates.map((c) => {
+            const dLat = ((c[0] - userLat) * Math.PI) / 180;
+            const dLng = ((c[1] - userLng) * Math.PI) / 180;
+            const a =
+              Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos((userLat * Math.PI) / 180) *
+                Math.cos((c[0] * Math.PI) / 180) *
+                Math.sin(dLng / 2) *
+                Math.sin(dLng / 2);
+            return 2 * 6371000 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          })
+        );
+
+        if (minDistanceMeters > 50) {
+          setIsOffRoute(true);
+          const now = Date.now();
+          if (now - lastCalcTime > 5000) {
+            lastCalcTime = now;
+            routingService
+              .getRoute(
+                [{ lat: userLat, lng: userLng }, { lat: navDestinationPandal.lat, lng: navDestinationPandal.lng }],
+                navMode
+              )
+              .then((newRoute) => {
+                setNavRoute(newRoute);
+                setIsOffRoute(false);
+              })
+              .catch(() => {});
+          }
+        } else {
+          setIsOffRoute(false);
+        }
+      },
+      () => {},
+      { enableHighAccuracy: true, maximumAge: 3000, timeout: 10000 }
+    );
+
+    return () => {
+      navigator.geolocation.clearWatch(watchId);
+    };
+  }, [isLiveGuidance, navRoute, navDestinationPandal, navMode]);
+
+  const handleToggleLiveGuidance = () => {
+    if (!isLiveGuidance) {
+      setIsLiveGuidance(true);
+      // Immediately center on current user location or start point if available
+      const loc = userLocation || navStartPoint;
+      if (loc) {
+        const nextSeq = zoomCounter + 1;
+        setZoomCounter(nextSeq);
+        setZoomTarget({
+          lat: loc.lat,
+          lng: loc.lng,
+          zoom: 17,
+          timestamp: nextSeq,
+        });
+      }
+    } else {
+      setIsLiveGuidance(false);
+      setIsOffRoute(false);
+    }
+  };
+
+  const handleCloseNavigation = () => {
+    setNavDestinationPandal(null);
+    setNavRoute(null);
+    setIsLiveGuidance(false);
+    setIsOffRoute(false);
+    setMultiStopWaypoints(null);
+    setSearchParams({}, { replace: true });
+  };
+
+  const handlePlanMultiStopRoute = (stops: Pandal[]) => {
+    if (stops.length < 2) return;
+    const waypoints = stops.map((p, idx) => ({
+      lat: p.lat,
+      lng: p.lng,
+      label: `${idx + 1}. ${p.name}`,
+    }));
+    setMultiStopWaypoints(waypoints);
+
+    const routePoints = stops.map((p) => ({ lat: p.lat, lng: p.lng }));
+    setNavLoading(true);
+    routingService
+      .getRoute(routePoints, 'foot')
+      .then((res) => {
+        setNavRoute(res);
+        setNavDestinationPandal(stops[stops.length - 1]);
+        setNavStartLabel(stops[0].name);
+        setNavLoading(false);
+      })
+      .catch((err) => {
+        setNavError(err.message || 'Failed to calculate tour');
+        setNavLoading(false);
+      });
+  };
+
+  const handleRecenterNav = () => {
+    if (navStartPoint) {
+      const nextSeq = zoomCounter + 1;
+      setZoomCounter(nextSeq);
+      setZoomTarget({
+        lat: navStartPoint.lat,
+        lng: navStartPoint.lng,
+        zoom: 16,
+        timestamp: nextSeq,
+      });
+    }
+  };
+
+  const handleResetToDefault = () => {
+    // 1. Clear search & filters
+    setSearchQuery('');
+    clearAllFilters();
+    setActiveCircuit(null);
+    setMyDarshanFilterOnly(false);
+    setSelectedPandal(null);
+    setIsListView(false);
+    setSortByDistance(false);
+
+    // 2. Clear navigation state
+    handleCloseNavigation();
+
+    // 3. Reset map viewport to Mumbai default center and zoom
+    handleResetCenter();
+  };
+
   const userDistanceKm =
     userLocation && selectedPandal
       ? distancesMap.get(selectedPandal.id) ?? null
       : null;
+
+  const navigationRouteProp = useMemo(() => {
+    if (!navRoute || !navRoute.coordinates || navRoute.coordinates.length < 2) return null;
+    return {
+      coordinates: navRoute.coordinates,
+      startPoint: navStartPoint || undefined,
+      endPoint: navDestinationPandal
+        ? { lat: navDestinationPandal.lat, lng: navDestinationPandal.lng }
+        : undefined,
+      isLiveGuidance,
+      waypoints: multiStopWaypoints || undefined,
+    };
+  }, [navRoute, navStartPoint, navDestinationPandal, isLiveGuidance, multiStopWaypoints]);
 
   return (
     <div className="relative w-full max-w-full h-[100vh] h-[100dvh] flex flex-col overflow-hidden bg-stone-50 dark:bg-stone-950 font-sans">
@@ -323,6 +557,7 @@ export const MapPage: React.FC = () => {
         totalPandals={pandals.length}
         filteredCount={displayedPandals.length}
         distancesMap={distancesMap}
+        onResetToDefault={handleResetToDefault}
       />
 
       {/* Offline Status Banner */}
@@ -471,6 +706,7 @@ export const MapPage: React.FC = () => {
         onSelectPandal={(p) => {
           handleSelectSuggestion(p);
         }}
+        onPlanMultiStopRoute={handlePlanMultiStopRoute}
       />
 
       {/* Main View Area: Map or List */}
@@ -502,7 +738,7 @@ export const MapPage: React.FC = () => {
               Retry Connection
             </button>
           </div>
-        ) : isListView ? (
+        ) : isListView && !navDestinationPandal ? (
           <div className="w-full h-full overflow-y-auto bg-stone-50 dark:bg-stone-950">
             <PandalListView
               pandals={displayedPandals}
@@ -533,6 +769,7 @@ export const MapPage: React.FC = () => {
               onZoomChange={handleZoomChange}
               zoomTarget={zoomTarget}
               activeCircuit={activeCircuit}
+              navigationRoute={navigationRouteProp}
             />
 
             {/* Offline Fallback Badge */}
@@ -590,15 +827,66 @@ export const MapPage: React.FC = () => {
               onLocateMe={handleToggleNearMe}
               onResetCenter={handleResetCenter}
               locating={locating}
-              isSheetOpen={!!selectedPandal}
+              isSheetOpen={!!selectedPandal && !navDestinationPandal}
             />
 
+            {/* Floating Navigation Directions Panel */}
+            {navDestinationPandal && (
+              <div className="absolute top-4 left-4 z-[990] max-w-[calc(100vw-32px)]">
+                <DirectionsPanel
+                  destinationPandal={navDestinationPandal}
+                  startLabel={navStartLabel}
+                  route={navRoute}
+                  loading={navLoading}
+                  error={navError}
+                  mode={navMode}
+                  onModeChange={setNavMode}
+                  onClose={handleCloseNavigation}
+                  onRetry={() => {
+                    if (navDestinationPandal) {
+                      const startCoords = navStartPoint || (userLocation ? { lat: userLocation.lat, lng: userLocation.lng } : null);
+                      if (startCoords) {
+                        setNavLoading(true);
+                        setNavError(null);
+                        routingService
+                          .getRoute([startCoords, { lat: navDestinationPandal.lat, lng: navDestinationPandal.lng }], navMode)
+                          .then((res) => {
+                            setNavRoute(res);
+                            setNavLoading(false);
+                          })
+                          .catch((e) => {
+                            setNavError(e.message || 'Route calculation failed');
+                            setNavLoading(false);
+                          });
+                      }
+                    }
+                  }}
+                  onSelectStep={(step) => {
+                    const nextSeq = zoomCounter + 1;
+                    setZoomCounter(nextSeq);
+                    setZoomTarget({
+                      lat: step.location[0],
+                      lng: step.location[1],
+                      zoom: 17,
+                      timestamp: nextSeq,
+                    });
+                  }}
+                  isLiveGuidance={isLiveGuidance}
+                  onToggleLiveGuidance={handleToggleLiveGuidance}
+                  onRecenter={handleRecenterNav}
+                  isOffRoute={isOffRoute}
+                />
+              </div>
+            )}
+
             {/* Bottom Sheet for Mobile & Side Card for Desktop */}
-            <PandalBottomSheet
-              pandal={selectedPandal}
-              onClose={handleCloseDetail}
-              userDistanceKm={userDistanceKm}
-            />
+            {!navDestinationPandal && (
+              <PandalBottomSheet
+                pandal={selectedPandal}
+                onClose={handleCloseDetail}
+                userDistanceKm={userDistanceKm}
+              />
+            )}
           </>
         )}
       </main>

@@ -13,7 +13,6 @@ import {
   ChevronRight,
   Clock,
   Copy,
-  ExternalLink,
   Flame,
   Flag,
   Image as ImageIcon,
@@ -35,7 +34,6 @@ import { useI18n } from '../context/I18nContext';
 import { LanguageSwitcher } from '../components/Header/LanguageSwitcher';
 import { ThemeToggle } from '../components/Header/ThemeToggle';
 import { useMyDarshan } from '../hooks/useMyDarshan';
-import { getGoogleMapsDirectionsUrl } from '../utils/geoUtils';
 import { getDarshanStatus, getNextAarti } from '../utils/timingsUtils';
 import { ReportProblemModal } from '../components/Modal/ReportProblemModal';
 import { Footer } from '../components/Footer/Footer';
@@ -166,7 +164,6 @@ export const PandalDetailPage: React.FC = () => {
 
   const saved = isSaved(pandal.id);
   const visited = isVisited(pandal.id);
-  const directionsUrl = getGoogleMapsDirectionsUrl(pandal.lat, pandal.lng, pandal.name);
 
   // Active photo attributes & localization
   const currentPhoto = pandalPhotos[activePhotoIdx];
@@ -525,16 +522,14 @@ export const PandalDetailPage: React.FC = () => {
 
           {/* Primary Action Button: LARGE DIRECTIONS BUTTON */}
           <div className="p-4 sm:p-5">
-            <a
-              href={directionsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-2xl font-black text-white bg-gradient-to-r from-orange-600 via-amber-600 to-red-600 hover:from-orange-700 hover:via-amber-700 hover:to-red-700 shadow-xl shadow-orange-600/30 active:scale-[0.98] transition-all text-base sm:text-lg cursor-pointer"
+            <button
+              type="button"
+              onClick={() => navigate(`/?navigate=${pandal.id}`)}
+              className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-2xl font-black text-white bg-gradient-to-r from-orange-600 via-amber-600 to-red-600 hover:from-orange-700 hover:via-amber-700 hover:to-red-700 shadow-xl shadow-orange-600/30 active:scale-[0.98] transition-all text-base sm:text-lg cursor-pointer min-h-[48px]"
             >
               <Navigation className="w-6 h-6" />
               <span>{t.getDirections}</span>
-              <ExternalLink className="w-4 h-4 opacity-80" />
-            </a>
+            </button>
           </div>
         </section>
 

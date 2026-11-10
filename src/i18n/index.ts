@@ -236,6 +236,7 @@ export interface Translations {
   roadClosureNotice: string;
   myDarshanRoute: string;
   openGoogleMapsRoute: string;
+  planDarshanRoute: string;
   localDeviceNote: string;
   reorderTip: string;
   pandalRemoved: string;
@@ -389,6 +390,30 @@ export interface Translations {
 
   // Static page shared
   staticPageBackHome: string;
+
+  // In-App Navigation
+  navDirections: string;
+  navModeWalk: string;
+  navModeDrive: string;
+  navModeBike: string;
+  navStartNavigation: string;
+  navEndNavigation: string;
+  navRecenter: string;
+  navRouteUnavailable: string;
+  navCalculatingRoute: string;
+  navRetry: string;
+  navByTrainTip: string;
+  navFestivalRoadAdvisory: string;
+  navTurnByTurn: string;
+  navOffRouteRecalculating: string;
+  navGpsRequiredTitle: string;
+  navGpsRequiredMsg: string;
+  navUsePinStart: string;
+  navStartPoint: string;
+  navDestination: string;
+  navArrivalEstimate: string;
+  navOfflineWarning: string;
+  navAttribution: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -424,7 +449,7 @@ export const translations: Record<Language, Translations> = {
     nearestStation: 'Nearest Railway Station',
     visarjanDate: 'Visarjan (Immersion)',
     address: 'Address',
-    getDirections: 'Get Directions (Google Maps)',
+    getDirections: 'Directions',
     viewFullDetails: 'View Full Details & Story',
     close: 'Close',
     share: 'Share',
@@ -620,7 +645,8 @@ export const translations: Record<Language, Translations> = {
     nextPandal: "Next",
     roadClosureNotice: "Traffic Advisory: Road restricted to pedestrian entry only",
     myDarshanRoute: "My Darshan Itinerary",
-    openGoogleMapsRoute: "Open Multi-Stop Route in Google Maps",
+    openGoogleMapsRoute: "Plan Darshan Route",
+    planDarshanRoute: "Plan Darshan Route",
     localDeviceNote: "Saved pandals are stored safely on this device without requiring a login.",
     reorderTip: "Use arrows to reorder your stops or export to Google Maps directions.",
     pandalRemoved: "Pandal removed from My Darshan",
@@ -774,6 +800,30 @@ export const translations: Record<Language, Translations> = {
 
     // Shared
     staticPageBackHome: 'Back to Map',
+
+    // In-App Navigation
+    navDirections: 'Directions',
+    navModeWalk: 'Walk',
+    navModeDrive: 'Drive',
+    navModeBike: 'Cycle',
+    navStartNavigation: 'Start Guidance',
+    navEndNavigation: 'End Navigation',
+    navRecenter: 'Recenter',
+    navRouteUnavailable: 'Route Unavailable',
+    navCalculatingRoute: 'Calculating best route...',
+    navRetry: 'Retry Route',
+    navByTrainTip: 'By Train',
+    navFestivalRoadAdvisory: 'Roads near pandals may be closed or crowded during the festival. Follow police and volunteer guidance on the ground.',
+    navTurnByTurn: 'Turn-by-turn Directions',
+    navOffRouteRecalculating: 'Off route. Recalculating path...',
+    navGpsRequiredTitle: 'Enable GPS for Live Guidance',
+    navGpsRequiredMsg: 'Allow location access to navigate from your current location, or tap the map to choose a starting point.',
+    navUsePinStart: 'Choose start on map',
+    navStartPoint: 'Starting Point',
+    navDestination: 'Destination Pandal',
+    navArrivalEstimate: 'Est. arrival',
+    navOfflineWarning: 'Showing saved route. Live re-routing is unavailable offline.',
+    navAttribution: 'Routing by OSRM / FOSSGIS, map data © OpenStreetMap contributors',
   },
 
   hi: {
@@ -808,7 +858,7 @@ export const translations: Record<Language, Translations> = {
     nearestStation: 'निकटतम रेलवे स्टेशन',
     visarjanDate: 'विसर्जन तिथि',
     address: 'पता',
-    getDirections: 'दिशा-निर्देश (Google Maps)',
+    getDirections: 'दिशा-निर्देश',
     viewFullDetails: 'पूर्ण विवरण व इतिहास देखें',
     close: 'बंद करें',
     share: 'साझा करें',
@@ -1004,7 +1054,8 @@ export const translations: Record<Language, Translations> = {
     nextPandal: "अगला",
     roadClosureNotice: "यातायात सूचना: केवल पैदल यात्रियों के लिए मार्ग खुला है",
     myDarshanRoute: "मेरा दर्शन मार्ग",
-    openGoogleMapsRoute: "गूगल मैप्स में संपूर्ण मार्ग खोलें",
+    openGoogleMapsRoute: "दर्शन मार्ग बनाएं",
+    planDarshanRoute: "दर्शन मार्ग बनाएं",
     localDeviceNote: "सहेजे गए पंडाल बिना लॉगिन के इस डिवाइस पर सुरक्षित रहते हैं।",
     reorderTip: "अपने स्टॉप्स को पुनर्व्यवस्थित करने के लिए तीर का उपयोग करें।",
     pandalRemoved: "पंडाल को दर्शन सूची से हटाया गया",
@@ -1158,6 +1209,30 @@ export const translations: Record<Language, Translations> = {
 
     // Shared
     staticPageBackHome: 'नक्शे पर वापस',
+
+    // In-App Navigation
+    navDirections: 'दिशा-निर्देश',
+    navModeWalk: 'पैदल',
+    navModeDrive: 'गाड़ी',
+    navModeBike: 'साइकिल',
+    navStartNavigation: 'मार्गदर्शन शुरू करें',
+    navEndNavigation: 'नेविगेशन समाप्त करें',
+    navRecenter: 'पुनः केंद्रित करें',
+    navRouteUnavailable: 'मार्ग उपलब्ध नहीं है',
+    navCalculatingRoute: 'सर्वोत्तम मार्ग खोज रहे हैं...',
+    navRetry: 'पुनः प्रयास करें',
+    navByTrainTip: 'ट्रेन से',
+    navFestivalRoadAdvisory: 'उत्सव के दौरान पंडालों के पास की सड़कें बंद या अत्यधिक भीड़भाड़ वाली हो सकती हैं। पुलिस व स्वयंसेवकों के निर्देशों का पालन करें।',
+    navTurnByTurn: 'विस्तृत मार्ग निर्देश',
+    navOffRouteRecalculating: 'आप मार्ग से अलग हैं। नया मार्ग ढूंढा जा रहा है...',
+    navGpsRequiredTitle: 'लाइव नेविगेशन के लिए GPS चालू करें',
+    navGpsRequiredMsg: 'वर्तमान स्थान से नेविगेट करने के लिए अनुमति दें या नक्शे पर शुरुआती स्थान चुनें।',
+    navUsePinStart: 'नक्शे पर शुरुआती स्थान चुनें',
+    navStartPoint: 'शुरुआती स्थान',
+    navDestination: 'गंतव्य पंडाल',
+    navArrivalEstimate: 'अनुमानित आगमन',
+    navOfflineWarning: 'सहेजा गया मार्ग दिखाया जा रहा है। ऑफलाइन में लाइव पुनः मार्ग निर्धारण उपलब्ध नहीं है।',
+    navAttribution: 'Routing by OSRM / FOSSGIS, map data © OpenStreetMap contributors',
   },
 
   mr: {
@@ -1192,7 +1267,7 @@ export const translations: Record<Language, Translations> = {
     nearestStation: 'जवळचे रेल्वे स्टेशन',
     visarjanDate: 'विसर्जन दिवस',
     address: 'पत्ता',
-    getDirections: 'मार्ग दाखवा (Google Maps)',
+    getDirections: 'मार्ग दाखवा',
     viewFullDetails: 'संपूर्ण माहिती व इतिहास पहा',
     close: 'बंद करा',
     share: 'शेअर करा',
@@ -1388,7 +1463,8 @@ export const translations: Record<Language, Translations> = {
     nextPandal: "पुढील",
     roadClosureNotice: "वाहतूक सूचना: वाहनांना बंदी, केवळ पायी प्रवेश अनुज्ञेय",
     myDarshanRoute: "माझा दर्शन मार्ग",
-    openGoogleMapsRoute: "गुगल मॅप्समध्ये संपूर्ण मार्ग उघडा",
+    openGoogleMapsRoute: "दर्शन मार्ग आखा",
+    planDarshanRoute: "दर्शन मार्ग आखा",
     localDeviceNote: "जतन केलेली मंडळे लॉगिनशिवाय याच डिव्हाइसवर सुरक्षित साठवली जातात.",
     reorderTip: "थांब्यांची क्रमवारी बदलण्यासाठी बाण वापरा किंवा थेट गुगल मॅप्स मार्ग उघडा.",
     pandalRemoved: "मंडळ दर्शन यादीतून काढले",
@@ -1542,5 +1618,29 @@ export const translations: Record<Language, Translations> = {
 
     // Shared
     staticPageBackHome: 'नकाशावर परत',
+
+    // In-App Navigation
+    navDirections: 'मार्ग दाखवा',
+    navModeWalk: 'पायी',
+    navModeDrive: 'गाडी',
+    navModeBike: 'सायकल',
+    navStartNavigation: 'मार्गदर्शन सुरू करा',
+    navEndNavigation: 'नेव्हिगेशन समाप्त करा',
+    navRecenter: 'पुन्हा केंद्रित करा',
+    navRouteUnavailable: 'मार्ग उपलब्ध नाही',
+    navCalculatingRoute: 'उत्तम मार्ग शोधत आहे...',
+    navRetry: 'पुन्हा प्रयत्न करा',
+    navByTrainTip: 'रेल्वेने',
+    navFestivalRoadAdvisory: 'उत्सवादरम्यान पंडालजवळील रस्ते बंद किंवा गर्दीचे असू शकतात. पोलीस व स्वयंसेवकांच्या सूचनांचे पालन करा.',
+    navTurnByTurn: 'तपशीलवार वळणे व मार्ग',
+    navOffRouteRecalculating: 'आपण मार्गापासून दूर आहात. नवा मार्ग शोधत आहे...',
+    navGpsRequiredTitle: 'थेट नेव्हिगेशनसाठी GPS सुरू करा',
+    navGpsRequiredMsg: 'सध्याच्या ठिकाणाहून नेव्हिगेट करण्यासाठी परवानगी द्या किंवा नकाशावर सुरुवातीचे ठिकाण निवडा.',
+    navUsePinStart: 'नकाशावर सुरुवातीचे ठिकाण निवडा',
+    navStartPoint: 'सुरुवातीचे ठिकाण',
+    navDestination: 'गंतव्य पंडाल',
+    navArrivalEstimate: 'अंदाजे आगमन',
+    navOfflineWarning: 'जतन केलेला मार्ग दाखवत आहे. ऑफलाइन थेट मार्ग बदल उपलब्ध नाही.',
+    navAttribution: 'Routing by OSRM / FOSSGIS, map data © OpenStreetMap contributors',
   },
 };

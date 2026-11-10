@@ -2,7 +2,6 @@ import React from 'react';
 import {
   ArrowDown,
   ArrowUp,
-  ExternalLink,
   MapPin,
   Navigation,
   RotateCcw,
@@ -21,14 +20,16 @@ interface MyDarshanModalProps {
   pandals: Pandal[];
   userLocation: UserLocation | null;
   onSelectPandal: (pandal: Pandal) => void;
+  onPlanMultiStopRoute?: (pandals: Pandal[]) => void;
 }
 
 export const MyDarshanModal: React.FC<MyDarshanModalProps> = ({
   isOpen,
   onClose,
   pandals,
-  userLocation,
+  userLocation: _userLocation,
   onSelectPandal,
+  onPlanMultiStopRoute,
 }) => {
   const { t, formatNumber } = useI18n();
   const {
@@ -37,7 +38,6 @@ export const MyDarshanModal: React.FC<MyDarshanModalProps> = ({
     undoLastRemoval,
     lastRemoved,
     reorderSaved,
-    generateGoogleMapsRouteUrl,
   } = useMyDarshan();
 
   if (!isOpen) return null;
@@ -64,8 +64,6 @@ export const MyDarshanModal: React.FC<MyDarshanModalProps> = ({
     next[index + 1] = temp;
     reorderSaved(next);
   };
-
-  const routeUrl = generateGoogleMapsRouteUrl(savedPandals, userLocation);
 
   return (
     <div
@@ -199,19 +197,22 @@ export const MyDarshanModal: React.FC<MyDarshanModalProps> = ({
           )}
         </div>
 
-        {/* Footer: Multi-Stop Google Maps Route Link & Privacy Note */}
+        {/* Footer: Multi-Stop In-App Route & Privacy Note */}
         <div className="p-4 bg-stone-50 dark:bg-stone-900/90 border-t border-stone-200 dark:border-stone-800 space-y-2 shrink-0">
           {savedPandals.length > 0 && (
-            <a
-              href={routeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-white bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 shadow-md transition-all text-xs sm:text-sm cursor-pointer"
+            <button
+              type="button"
+              onClick={() => {
+                if (onPlanMultiStopRoute) {
+                  onPlanMultiStopRoute(savedPandals.slice(0, 8));
+                }
+                onClose();
+              }}
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-white bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 shadow-md transition-all text-xs sm:text-sm cursor-pointer min-h-[44px]"
             >
               <Navigation className="w-4 h-4" />
-              <span>{t.openGoogleMapsRoute}</span>
-              <ExternalLink className="w-3.5 h-3.5 opacity-80" />
-            </a>
+              <span>{t.planDarshanRoute} ({Math.min(savedPandals.length, 8)} stops)</span>
+            </button>
           )}
           <p className="text-[10px] text-center text-stone-400 dark:text-stone-500">
             {t.localDeviceNote}

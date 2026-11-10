@@ -34,6 +34,13 @@ export interface LeafletMapProps {
   onZoomChange?: (zoom: number) => void;
   zoomTarget?: { lat: number; lng: number; zoom: number; timestamp: number } | null;
   activeCircuit?: Circuit | null;
+  navigationRoute?: {
+    coordinates: [number, number][];
+    startPoint?: { lat: number; lng: number };
+    endPoint?: { lat: number; lng: number };
+    isLiveGuidance?: boolean;
+    waypoints?: { lat: number; lng: number; label: string }[];
+  } | null;
 }
 
 export const LeafletMap = React.forwardRef<LeafletMapRef, LeafletMapProps>(
@@ -48,6 +55,7 @@ export const LeafletMap = React.forwardRef<LeafletMapRef, LeafletMapProps>(
       onZoomChange,
       zoomTarget,
       activeCircuit,
+      navigationRoute,
     },
     ref
   ) => {
@@ -58,6 +66,13 @@ export const LeafletMap = React.forwardRef<LeafletMapRef, LeafletMapProps>(
     const markersMapRef = useRef<Map<string, L.Marker>>(new Map());
     const userMarkerRef = useRef<L.Marker | null>(null);
     const circuitPolylineRef = useRef<L.Polyline | null>(null);
+    const routePolylineOutlineRef = useRef<L.Polyline | null>(null);
+    const routePolylineRef = useRef<L.Polyline | null>(null);
+    const routeMarkersRef = useRef<L.Marker[]>([]);
+    const lastRenderedRouteKeyRef = useRef<string>('');
+    const lastFittedRouteKeyRef = useRef<string>('');
+    const prevSelectedPandalIdRef = useRef<string | null>(null);
+    const lastAppliedZoomRef = useRef<number>(zoom);
 
     // Expose imperative map controls to parent component
     useImperativeHandle(
@@ -96,7 +111,8 @@ export const LeafletMap = React.forwardRef<LeafletMapRef, LeafletMapProps>(
 
       // Synchronize map zoom state with React state
       map.on('zoomend', () => {
-        const currentZoom = map.getZoom();
+        const currentZoom = Math.round(map.getZoom());
+        lastAppliedZoomRef.current = currentZoom;
         onZoomChange?.(currentZoom);
       });
 
@@ -112,7 +128,7 @@ export const LeafletMap = React.forwardRef<LeafletMapRef, LeafletMapProps>(
     L.control
       .attribution({
         position: 'bottomleft',
-        prefix: 'Leaflet | © OpenStreetMap',
+        prefix: 'Leaflet | Routing by OSRM / FOSSGIS | © OpenStreetMap',
       })
       .addTo(map);
 
@@ -233,22 +249,29 @@ export const LeafletMap = React.forwardRef<LeafletMapRef, LeafletMapProps>(
       }
     });
 
-    if (selectedPandal && mapInstanceRef.current) {
-      mapInstanceRef.current.panTo([selectedPandal.lat, selectedPandal.lng], {
-        animate: true,
-        duration: 0.5,
-      });
+    if (selectedPandal && selectedPandal.id !== prevSelectedPandalIdRef.current && mapInstanceRef.current) {
+      prevSelectedPandalIdRef.current = selectedPandal.id;
+      // Do not pan to pandal if active navigation route is displayed
+      if (!navigationRoute) {
+        mapInstanceRef.current.panTo([selectedPandal.lat, selectedPandal.lng], {
+          animate: true,
+          duration: 0.5,
+        });
+      }
       // Invalidate size smoothly after bottom sheet opens
       setTimeout(() => {
         mapInstanceRef.current?.invalidateSize();
       }, 350);
-    } else if (mapInstanceRef.current) {
-      // Invalidate size after bottom sheet closes
-      setTimeout(() => {
-        mapInstanceRef.current?.invalidateSize();
-      }, 350);
+    } else if (!selectedPandal) {
+      prevSelectedPandalIdRef.current = null;
+      if (mapInstanceRef.current) {
+        // Invalidate size after bottom sheet closes
+        setTimeout(() => {
+          mapInstanceRef.current?.invalidateSize();
+        }, 350);
+      }
     }
-  }, [selectedPandal, pandals, activeCircuit]);
+  }, [selectedPandal, pandals, activeCircuit, navigationRoute]);
 
   // Handle Active Circuit Polyline
   useEffect(() => {
@@ -299,6 +322,152 @@ export const LeafletMap = React.forwardRef<LeafletMapRef, LeafletMapProps>(
     }
   }, [zoomTarget]);
 
+  // Navigation Route Polyline & Waypoint Markers
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    if (!navigationRoute || navigationRoute.coordinates.length < 2) {
+      // Clean up previous navigation layers
+      if (routePolylineOutlineRef.current) {
+        routePolylineOutlineRef.current.remove();
+        routePolylineOutlineRef.current = null;
+      }
+      if (routePolylineRef.current) {
+        routePolylineRef.current.remove();
+        routePolylineRef.current = null;
+      }
+      routeMarkersRef.current.forEach((m) => m.remove());
+      routeMarkersRef.current = [];
+      lastRenderedRouteKeyRef.current = '';
+      lastFittedRouteKeyRef.current = '';
+      return;
+    }
+
+    const routeCoords = navigationRoute.coordinates;
+    const startCoord = routeCoords[0];
+    const endCoord = routeCoords[routeCoords.length - 1];
+    const routeKey = `${routeCoords.length}_${startCoord[0].toFixed(5)},${startCoord[1].toFixed(5)}_${endCoord[0].toFixed(5)},${endCoord[1].toFixed(5)}_${navigationRoute.waypoints?.length || 0}`;
+
+    // Only recreate polylines and markers if route geometry actually changed
+    if (routeKey !== lastRenderedRouteKeyRef.current) {
+      if (routePolylineOutlineRef.current) {
+        routePolylineOutlineRef.current.remove();
+        routePolylineOutlineRef.current = null;
+      }
+      if (routePolylineRef.current) {
+        routePolylineRef.current.remove();
+        routePolylineRef.current = null;
+      }
+      routeMarkersRef.current.forEach((m) => m.remove());
+      routeMarkersRef.current = [];
+
+      const latLngs = routeCoords.map((c) => L.latLng(c[0], c[1]));
+
+      // Outer outline polyline for high contrast in both light and dark themes
+      const outline = L.polyline(latLngs, {
+        color: '#7c2d12',
+        weight: 8,
+        opacity: 0.8,
+        lineCap: 'round',
+        lineJoin: 'round',
+      }).addTo(map);
+      routePolylineOutlineRef.current = outline;
+
+      // Inner glowing route polyline
+      const line = L.polyline(latLngs, {
+        color: '#f97316',
+        weight: 5,
+        opacity: 0.95,
+        lineCap: 'round',
+        lineJoin: 'round',
+      }).addTo(map);
+      routePolylineRef.current = line;
+
+      // Add Start Marker if provided
+      if (navigationRoute.startPoint) {
+        const startIcon = L.divIcon({
+          html: `
+            <div class="w-6 h-6 rounded-full bg-emerald-600 text-white font-black text-[11px] flex items-center justify-center border-2 border-white shadow-lg">
+              S
+            </div>
+          `,
+          className: 'route-start-marker',
+          iconSize: [24, 24],
+          iconAnchor: [12, 12],
+        });
+        const startMarker = L.marker(
+          [navigationRoute.startPoint.lat, navigationRoute.startPoint.lng],
+          { icon: startIcon, zIndexOffset: 1500 }
+        ).addTo(map);
+        routeMarkersRef.current.push(startMarker);
+      }
+
+      // Add End Marker if provided
+      if (navigationRoute.endPoint) {
+        const endIcon = L.divIcon({
+          html: `
+            <div class="w-6 h-6 rounded-full bg-orange-600 text-white font-black text-[11px] flex items-center justify-center border-2 border-white shadow-lg">
+              🏁
+            </div>
+          `,
+          className: 'route-end-marker',
+          iconSize: [24, 24],
+          iconAnchor: [12, 12],
+        });
+        const endMarker = L.marker(
+          [navigationRoute.endPoint.lat, navigationRoute.endPoint.lng],
+          { icon: endIcon, zIndexOffset: 1500 }
+        ).addTo(map);
+        routeMarkersRef.current.push(endMarker);
+      }
+
+      // Add Multi-stop Waypoints if provided
+      if (navigationRoute.waypoints) {
+        navigationRoute.waypoints.forEach((wp, index) => {
+          const wpIcon = L.divIcon({
+            html: `
+              <div class="w-6 h-6 rounded-full bg-amber-500 text-stone-900 font-black text-xs flex items-center justify-center border-2 border-white shadow-lg">
+                ${index + 1}
+              </div>
+            `,
+            className: 'route-waypoint-marker',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12],
+          });
+          const wpMarker = L.marker([wp.lat, wp.lng], {
+            icon: wpIcon,
+            zIndexOffset: 1400,
+          }).addTo(map);
+          routeMarkersRef.current.push(wpMarker);
+        });
+      }
+
+      lastRenderedRouteKeyRef.current = routeKey;
+    }
+
+    // Auto fit map bounds to the route ONLY once when a new route is loaded or changed!
+    // NEVER fitBounds on re-renders, allowing the user to freely zoom in, zoom out, pinch, and pan.
+    if (routeKey !== lastFittedRouteKeyRef.current && routePolylineRef.current) {
+      lastFittedRouteKeyRef.current = routeKey;
+      const bounds = routePolylineRef.current.getBounds();
+      if (bounds.isValid()) {
+        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 768;
+        const paddingLeft = isDesktop ? 420 : 40;
+        const paddingTop = 40;
+        const paddingRight = 40;
+        const paddingBottom = isDesktop ? 40 : 160;
+
+        map.fitBounds(bounds, {
+          paddingTopLeft: [paddingLeft, paddingTop],
+          paddingBottomRight: [paddingRight, paddingBottom],
+          maxZoom: 16,
+          animate: true,
+        });
+      }
+    }
+  }, [navigationRoute]);
+
   // User GPS Location Marker
   useEffect(() => {
     const map = mapInstanceRef.current;
@@ -335,8 +504,11 @@ export const LeafletMap = React.forwardRef<LeafletMapRef, LeafletMapProps>(
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || zoom === undefined) return;
-    if (map.getZoom() !== zoom) {
-      map.setZoom(zoom);
+    if (zoom !== lastAppliedZoomRef.current) {
+      lastAppliedZoomRef.current = zoom;
+      if (map.getZoom() !== zoom) {
+        map.setZoom(zoom);
+      }
     }
   }, [zoom]);
 
