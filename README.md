@@ -1,33 +1,63 @@
 # 🕉️ Ganesh Pandal Tracker | Mumbai Ganesh Chaturthi Guide
 
-A mobile-first, high-performance web and PWA application designed specifically for travellers, devotees, and tourists navigating Mumbai during **Ganesh Chaturthi**. Built with React 19, TypeScript, Tailwind CSS, Leaflet (OpenStreetMap), and Supabase.
+A mobile-first, high-performance web and PWA application designed specifically for devotees, travellers, and tourists navigating Mumbai during **Ganesh Chaturthi**. Built with React 19, TypeScript, Tailwind CSS v4, Leaflet (OpenStreetMap), OSRM In-App Navigation, and Supabase.
 
 ---
 
 ## 🌟 Key Features
 
-- **Interactive Full-Screen Map**: Custom Ganesha SVG markers with status rings, dynamic marker clustering, and zero paid API keys.
-- **Dark Mode Free Basemap**: Uses standard OpenStreetMap tiles with pure CSS inverted rendering (no CartoDB API keys or watermarks).
-- **Live Search & Autocomplete**: Instant search by pandal name, area, or nearest railway station with live suggestion cards and auto-zoom.
-- **Multi-Criteria Filter Chips**: Filter by Area, Eco-Friendly (Shadu Mati) idols, 24-Hour Darshan, and Crowd Rush levels with active removable chips.
-- **"Near Me" GPS Radar**: Haversine distance calculation sorting pandals by distance in kilometers with distance badges and friendly permission-denied modal.
-- **Curated Walking Trails (Circuits)**: Pre-planned walking itineraries (Lalbaug Trail, Girgaon Heritage Trail, Vedic Annadanam Tour) with numbered stop pins and dashed route polylines.
-- **Dedicated Pandal Detail Page (`/pandal/:id`)**: High-res photo gallery, historical stories, darshan & aarti timings, nearest suburban railway/metro station, and direct Google Maps directions.
-- **Multi-Language Support (i18n)**: English (`en`), Hindi (`hi`), and Marathi (`mr`) with instant toggle and `localStorage` persistence.
-- **Community Submission (`/submit`)**: Submit new pandals with image upload (< 2 MB) and an interactive Leaflet map to drop/drag the exact entrance pin.
-- **Admin Moderation Portal (`/admin`)**: Protected by Supabase Auth (email/password) to review pending submissions, edit coordinates/details, approve to live map, or reject spam.
-- **Progressive Web App (PWA)**: Installable on iOS and Android with Service Worker caching app shell, map tiles, and offline data.
+### 🧭 100% In-App Directions & Live Navigation
+- **Zero External Map App Redirects**: All navigation happens directly inside the application. No redirects to Google Maps, Apple Maps, or external apps.
+- **Multiple Travel Modes**: Supports **Walking** (default for short distances), **Driving** (car/taxi), and **Cycling** via OpenStreetMap/OSRM routing.
+- **Turn-by-Turn Directions Panel**: Floating, responsive directions panel with summarized travel time, total distance, plain-language turn maneuvers translated in all supported languages, and step-by-step route inspection.
+- **Live GPS Guidance**: Real-time position tracking via `navigator.geolocation.watchPosition`, accuracy ring, dynamic re-centering, next-turn highlighting, and automated off-route recalculation (> 50m threshold).
+- **Public Transit / "By Train" Tip**: Provides the nearest suburban railway or metro station with walking guidance directly to the pandal gates.
+- **Festival Safety Advisories**: Live cautionary notes regarding crowded alleys, barricaded routes, and police traffic diversions during peak festival hours.
+- **Multi-Stop "Plan My Darshan Route"**: Plan Darshan visits for up to 8 saved pandals in "My Darshan" with sequenced waypoints, optimized route ordering, and per-leg summaries.
+- **Curated Walking Tours**: Explore pre-planned trails (Lalbaug Trail, Girgaon Heritage Trail, Vedic Annadanam Tour) rendered directly on the map as interactive numbered routes.
+- **Offline Route Caching**: Recovers and displays the last calculated route even when intermittent festival network connectivity drops.
+
+### 🗺️ Interactive Full-Screen Map
+- **Custom SVG Ganesha Markers**: Visually distinct status markers with halo rings, stop indicators, and active selection states.
+- **Smooth Marker Clustering**: High-performance grouping for dense clusters using `leaflet.markercluster`.
+- **CSS-Powered Dark Mode Map**: Standard OpenStreetMap tiles dynamically inverted via pure CSS (zero external API keys or watermarks required).
+- **Responsive Controls**: Floating thumb-friendly zoom in/out, Mumbai center reset compass, and GPS radar location button.
+
+### 🔍 Discovery & Filtering
+- **Live Search & Autocomplete**: Instant search by pandal name, suburban area, or nearest railway/metro station with auto-zoom.
+- **Multi-Criteria Filter Chips**: Filter by Area, Eco-Friendly (Shadu Mati) idols, 24-Hour Darshan, and Crowd Rush levels (Low Wait / High Rush) with removable filter chips.
+- **"Near Me" GPS Radar**: Haversine distance calculations sorting pandals by distance in kilometers with distance badges and polite permission pre-prompts.
+- **Dual View Modes**: Seamless toggle between full-screen Interactive Map view and structured List view.
+
+### 🌐 Internationalization (i18n)
+- **Full Trilingual Support**: English (`en`), Hindi (`hi`), and Marathi (`mr`).
+- **Instant Language Switching**: Dynamic UI, countdown, filters, and routing step localization with `localStorage` persistence.
+
+### 📸 Pandal Detail Pages (`/pandal/:id`)
+- **Rich Historical Context**: Dedicated pages featuring stories, darshan timings, aarti schedules, dress codes, and transit advice.
+- **Cover Photo & Gallery**: High-resolution pandal photos with accessible alt texts.
+- **One-Tap In-App Directions**: Primary CTA opens navigation directly on the home map without leaving the site.
+
+### 🤝 Community Contribution & Moderation
+- **Public Submissions (`/submit`)**: Devotees can submit new pandals with image uploads (< 2 MB) and an interactive pin-drop map.
+- **Admin Moderation Portal (`/admin`)**: Protected by Supabase Auth (email/password) to review pending submissions, update details, manage photos, and approve or reject submissions.
+
+### ⚡ Progressive Web App (PWA)
+- **Installable**: Full PWA support with native standalone launch on Android and iOS.
+- **Service Worker Caching**: Offline app shell, asset caching, and graceful offline fallback indicators.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React 19, TypeScript, Vite 8
+- **Frontend Framework**: React 19, TypeScript, Vite 8
 - **Styling**: Tailwind CSS v4 (`@tailwindcss/vite`)
-- **Map & Geodata**: Leaflet, `leaflet.markercluster`, OpenStreetMap (free tile layer)
+- **Map & Geodata**: Leaflet, `leaflet.markercluster`, OpenStreetMap tile service
+- **Routing Engine**: OSRM (Open Source Routing Machine) hosted by FOSSGIS (`routing.openstreetmap.de`), with in-memory route caching and request debouncing
 - **Backend & Database**: [Supabase](https://supabase.com) (PostgreSQL 15, Auth, Storage, Row Level Security)
 - **Icons**: Lucide React
 - **PWA**: Service Worker (`sw.js`) + Web App Manifest (`manifest.webmanifest`)
+- **Linter**: Oxlint
 
 ---
 
@@ -36,134 +66,116 @@ A mobile-first, high-performance web and PWA application designed specifically f
 Create a `.env` file in the root directory:
 
 ```env
+# Supabase Configuration
 VITE_SUPABASE_URL=https://your-project-id.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-public-key
+
+# Optional: Custom Self-Hosted OSRM or OpenRouteService Endpoint
+# Defaults to public FOSSGIS routing service if omitted:
+# VITE_ROUTING_BASE_URL=https://routing.openstreetmap.de
 ```
 
-> **Security Note**: Never commit `.env` or expose your `service_role` secret key. The application only needs the client-safe public `anon` key. All write and admin permissions are enforced via PostgreSQL Row Level Security (RLS) policies.
+> **Security Note**: Never commit `.env` or expose your `service_role` secret key in frontend code. The application strictly uses client-safe public keys. All database mutations and storage uploads are protected by PostgreSQL Row Level Security (RLS) policies.
 
 ---
 
 ## 🗄️ Supabase Database & Security Setup
 
-### Step 1: Run the SQL Setup Script
+### Step 1: Run the Database Setup Script
 1. Open your [Supabase Project Dashboard](https://supabase.com/dashboard).
 2. Go to the **SQL Editor** tab from the left sidebar.
 3. Click **New query**.
-4. Open the file [`supabase_setup.sql`](./supabase_setup.sql) from this repository, copy all contents, paste into the SQL Editor, and click **Run**.
+4. Copy the contents of [`supabase_setup.sql`](./supabase_setup.sql), paste into the editor, and click **Run**.
 
-### What this script creates:
+### What this script configures:
 1. **`pandals` Table**:
-   - Schema fields matching pandal data + `status: 'pending' | 'approved' | 'rejected'` + `created_at`.
+   - Stores pandal metadata, coordinates, schedules, transit stations, and publication status (`pending`, `approved`, `rejected`).
 2. **Row Level Security (RLS)**:
-   - **Public Read**: Anyone can read pandals where `status = 'approved'`.
-   - **Public Insert**: Anyone can submit pandals, but only with `status = 'pending'`.
-   - **Admin Read/Write**: Only authenticated admin users can view pending/rejected items, update details, or delete.
-3. **Storage Bucket & Policies**:
-   - Ensures `pandal-photos` public storage bucket exists.
-   - Allows public reads.
-   - Enforces file size limit of **2 MB** and image MIME types (`jpg`, `png`, `webp`, `gif`, `avif`).
-4. **Seed Data**:
-   - Inserts the 15 verified Mumbai pandals with `status = 'approved'`.
+   - **Public Read**: Anyone can query pandals with `status = 'approved'`.
+   - **Public Insert**: Devotees can submit pandals with `status = 'pending'`.
+   - **Admin Management**: Only authenticated admin accounts can view pending/rejected items, update records, or delete.
+3. **Storage Bucket & Security**:
+   - Pre-configures the `pandal-photos` public storage bucket.
+   - Enforces 2 MB file size caps and image MIME validation (`jpg`, `png`, `webp`, `gif`, `avif`).
+4. **Seed Dataset**:
+   - Seeds Mumbai's top 15 historic pandals with verified coordinates and timings.
 
 ---
 
 ## 👥 How to Add & Moderate Data
 
 ### 1. Community Contribution (`/submit`)
-- Any devotee can visit `/submit` from the navbar "+ Submit" button.
-- Users fill in the pandal details, upload an image under 2 MB, and drop a pin on the interactive mini-map.
-- Submissions are saved to Supabase with `status = 'pending'` and will not appear on the live map until reviewed.
+- Tap **+ Submit Pandal** in the navigation header.
+- Fill in the pandal details, darshan timings, nearest station, upload a photo under 2 MB, and drop the exact entrance pin on the mini-map.
+- Submissions are marked as `pending` and held for review.
 
-### 2. Admin Moderation (`/admin`)
-- Visit `/admin` and log in with your Supabase Auth admin email and password.
-- The Admin Portal displays three tabs:
-  - **Pending Submissions**: Review new pandals submitted by the public.
-  - **Approved Pandals**: Currently live on the map.
-  - **Rejected**: Entries that were flagged or duplicate.
-- Actions available per pandal:
-  - **Approve**: Immediately publishes the pandal to the public map.
-  - **Edit**: Adjust coordinates, fix typos, correct station or timings before approving.
-  - **Reject**: Move to rejected tab.
-  - **Delete**: Permanently delete spam.
+### 2. Admin Moderation Portal (`/admin`)
+- Log in with your admin credentials.
+- Filter through **Pending**, **Approved**, and **Rejected** submissions.
+- Edit pandal coordinates, descriptions, transit stations, or cover photos before approving.
+- Approved items appear instantly on the live map and search indexes.
 
 ---
 
 ## 🚀 Local Development
 
-1. Clone repository and install dependencies:
+1. **Clone the repository and install dependencies**:
    ```bash
    git clone https://github.com/haribhambhani24/GaneshPandalTracker.git
    cd GaneshPandalTracker
    npm install
    ```
 
-2. Start development server:
+2. **Start the local development server**:
    ```bash
    npm run dev
    ```
    Open `http://localhost:5173` in your browser.
 
-3. Build production bundle:
+3. **Run linter**:
+   ```bash
+   npm run lint
+   ```
+
+4. **Build production bundle**:
    ```bash
    npm run build
    ```
 
-4. Preview production build locally:
+5. **Preview production build locally**:
    ```bash
    npm run preview
    ```
-   Open `http://localhost:4173` to test the production bundle with Service Worker caching.
+   Open `http://localhost:4173` to test the production bundle and Service Worker behavior.
 
 ---
 
-## 📱 How to Test on a Real Mobile Phone
+## 📱 Mobile Testing & PWA Installation
 
-To test on your real phone over your local Wi-Fi:
-
-1. **Expose Vite on Local Network**:
+### Testing on a Physical Mobile Device
+1. **Expose Vite to your Local Network**:
    ```bash
    npm run dev -- --host
    ```
-   or for production build:
-   ```bash
-   npm run preview -- --host
-   ```
-2. **Access from Your Phone**:
-   - Ensure your phone is connected to the same Wi-Fi network as your computer.
-   - Look at the terminal output under `Network:` (e.g., `http://192.168.1.15:5173`).
-   - Open Safari (iOS) or Chrome (Android) on your phone and type that URL.
+2. Connect your mobile phone to the same local Wi-Fi network.
+3. Navigate to the network IP displayed in your terminal (e.g., `http://192.168.1.15:5173`).
 
-3. **Install as a PWA on Your Phone**:
-   - **iOS (Safari)**: Tap the **Share** button (box with upward arrow) -> scroll down and tap **Add to Home Screen** -> tap **Add**.
-   - **Android (Chrome)**: Tap the three-dot menu in the top-right -> tap **Add to Home screen** or **Install App**.
-   - Launch the app from your home screen to experience full-screen standalone mode with native safe-area inset handling!
-
-4. **Testing in Browser Device Emulation**:
-   - Press `F12` in Chrome/Edge, click the **Toggle Device Toolbar** icon (`Ctrl+Shift+M` / `Cmd+Shift+M`).
-   - Select popular viewports: iPhone SE (`375px`), iPhone 12/14/15 (`390px`), Pixel 7 (`412px`), and test both portrait and landscape.
+### Installing as a PWA
+- **iOS (Safari)**: Tap the **Share** button -> scroll down and select **Add to Home Screen** -> tap **Add**.
+- **Android (Chrome)**: Tap the three-dot menu -> tap **Add to Home screen** or **Install App**.
+- Opens in full-screen standalone mode with support for native safe area insets (notch and home indicator).
 
 ---
 
-## ☁️ Vercel Deployment Guide
+## ☁️ Deployment
 
-Deploying Ganesh Pandal Tracker to Vercel is seamless:
-
-1. **Push to GitHub**:
-   Ensure all changes are pushed to your `main` branch.
-2. **Import Project in Vercel**:
-   - Go to [vercel.com](https://vercel.com) and click **Add New... > Project**.
-   - Select your `GaneshPandalTracker` GitHub repository.
-3. **Framework Preset**:
-   - Vercel will automatically detect **Vite**.
-   - Build Command: `npm run build`
-   - Output Directory: `dist`
-4. **Configure Environment Variables**:
-   Under the **Environment Variables** section, add:
-   - `VITE_SUPABASE_URL`: Your Supabase Project URL
-   - `VITE_SUPABASE_ANON_KEY`: Your Supabase Anon Key
-5. **SPA Routing Configuration**:
-   The included `vercel.json` ensures client-side routes (`/pandal/:id`, `/submit`, `/admin`) resolve to `index.html`:
+### Vercel Deployment
+1. Import the repository in [Vercel](https://vercel.com).
+2. Framework Preset: **Vite**.
+3. Build Command: `npm run build`.
+4. Output Directory: `dist`.
+5. Add your environment variables (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`).
+6. The included `vercel.json` provides single-page application (SPA) rewrite rules to ensure client-side routing works smoothly:
    ```json
    {
      "rewrites": [
@@ -171,4 +183,12 @@ Deploying Ganesh Pandal Tracker to Vercel is seamless:
      ]
    }
    ```
-6. Click **Deploy**!
+
+---
+
+## 📜 Attributions & Licenses
+
+- **Map Data**: © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
+- **Routing Engine**: Routing powered by [OSRM](https://project-osrm.org/) hosted by [FOSSGIS](https://routing.openstreetmap.de/)
+- **Marker Icons**: [Lucide Icons](https://lucide.dev/) (ISC License)
+- **Backend Infrastructure**: [Supabase](https://supabase.com/)
